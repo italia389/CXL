@@ -1,0 +1,41 @@
+Instructions for Installing the CXL Library
+
+Installer packages are included for the macOS platform and Linux platforms
+(CentOS, Debian, GNU/Linux, Red Hat, Ubuntu, and others).  The standard
+installation packages place files in /usr/local and require superuser (root)
+privileges.  (C include files and the 'libcx.a' static library are installed.)
+If you are not installing on a macOS or GNU/Linux platform, want to install the
+CXL library in your HOME directory, or want to customize the installation
+process, please refer to file CustomInstall.txt for instructions.
+
+For a standard installation of the CXL library, perform the following steps:
+
+ 1. Move to the directory that contains this Install.txt file:
+
+	$ cd CXL-master
+
+ 2. If you are installing on a Linux platform, go to the next step; otherwise,
+    go to step 5.
+
+ 3. The Linux installer is cxl-1.0.0.sh, which includes 64-bit binaries built
+    on a CentOS vers. 6 machine.  To run the installer, type the following
+    commands:
+
+	$ su root
+	# ./cxl-1.0.0.sh
+	# exit
+
+ 4. Go to step 6.
+
+ 5. The macOS installer is cxl-1.0.0.pkg, which includes 64-bit binaries
+    built for macOS vers. 10.10 (Yosemite) and later.  Open the installer
+    package with the following command:
+
+	$ open cxl-1.0.0.pkg
+
+    and run the installer.
+
+ 6. The installers place the CXL library in /usr/local/lib as libcx.a.
+
+Note that the -lcx switch or path to the CXL library (/usr/local/lib/libcx.a)
+must be provided to the linker when you link your programs.
