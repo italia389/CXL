@@ -1,0 +1,41 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ANEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBanew\fR, \fBainit\fR, \fBaclear\fR - create, initialize, or clear an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *anew(ArraySize len, const Datum *pVal);\fR
+.HP 2
+\fBvoid ainit(Array *pArray);\fR
+.HP 2
+\fBvoid aclear(Array *pArray);\fR
+.SH DESCRIPTION
+These functions either create an array by allocating an \fBArray\fR object in memory, or prepare an existing
+\fBArray\fR object for use.
+.PP
+The \fBanew\fR() function creates an array in memory of \fIlen\fR elements (which may be zero).  If \fIpVal\fR
+is NULL, each array element is set to a nil value; otherwise, the datum pointed to by \fIpVal\fR is copied to each
+element.  Note that the datum may be of any type, including array (in which case the array would contain nested array(s)).
+.PP
+The \fBainit\fR() function initializes the existing array pointed to by \fIpArray\fR (e.g., a
+local variable on the stack) to zero elements.  The pointer to the array should be passed to \fBaclear\fR() when the array
+is no longer needed.
+.PP
+The \fBaclear\fR() function releases all memory used by the array pointed to by \fIpArray\fR, with the exception of
+the \fBArray\fR object itself.  After \fBaclear\fR() is called, the empty array may be reused.  Alternatively, an array
+can be cleared and freed in one step by calling afree(3), but only if it was allocated in memory.  See cxl_array(7)
+for details.
+.SH RETURN VALUES
+If successful, \fBanew\fR() returns a pointer to the array that was created.  It returns NULL on
+failure, and sets an exception code and message in the CXL Exception System to indicate the error.
+.PP
+The \fBainit\fR() and \fBaclear\fR() functions do not return a value.
+.SH SEE ALSO
+afree(3), cxl(3), cxl_datum(7), excep(3)

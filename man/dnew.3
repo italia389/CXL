@@ -1,0 +1,45 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DNEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdnew\fR, \fBdnewtrack\fR, \fBdinit\fR, \fBdclear\fR - create, initialize, or clear a datum.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dnew(Datum **ppDatum);\fR
+.HP 2
+\fBint dnewtrack(Datum **ppDatum);\fR
+.HP 2
+\fBvoid dinit(Datum *pDatum);\fR
+.HP 2
+\fBvoid dclear(Datum *pDatum);\fR
+.SH DESCRIPTION
+These functions prepare a datum for subsequent manipulation by the routines that store data into the object.
+.PP
+\fBdnew\fR() and \fBdnewtrack\fR() allocate a nil \fBDatum\fR object in memory and store a pointer to it in *\fIppDatum\fR.
+The latter function also pushes the pointer onto the garbage collection stack.
+.PP
+\fBdinit\fR() initializes the datum pointed to by \fIpDatum\fR (which is usually the address of a local variable of type
+\fBDatum\fR) and sets its value to nil.  If a string or byte string is subsequently stored into the datum, the memory
+should be freed with \fBdclear\fR() when the datum is no longer needed.
+.PP
+\fBdclear\fR() releases the memory used by the datum pointed to by \fIpDatum\fR.  Note that this is done automatically by
+the routines that store data into a datum.  After a datum is cleared, it can be reused, or disposed of completely by
+passing the \fIpDatum\fR pointer to dfree(3).
+.PP
+Note that it is usually not necessary to call \fBdclear\fR(), except when you are working with a local \fBDatum\fR
+variable that was initialized with \fBdinit\fR(), as mentioned above.  Datums that are created with \fBdnew\fR() are
+usually disposed of with dfree(3); and those created with \fBdnewtrack\fR() are usually disposed of with
+dgarbpop(3).  These two "disposal" functions call \fBdclear\fR() automatically.
+.SH RETURN VALUES
+If successful, \fBdnew\fR() and \fBdnewtrack\fR() return zero.  They return a negative integer on failure, and set an
+exception code and message in the CXL Exception System to indicate the error.
+.PP
+\fBdinit\fR() and \fBdclear\fR() have no return values.
+.SH SEE ALSO
+dfree(3), dgarbpop(3), cxl(3), cxl_datum(7)

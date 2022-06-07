@@ -1,0 +1,26 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AEQ 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaeq\fR - compare one array to another and return Boolean result.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBbool aeq(const Array *pArray1, const Array *pArray2, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBaeq\fR() function compares the two arrays pointed to by \fIpArray1\fR and \fIpArray2\fR for equality,
+subject to the operation flag in \fIaflags\fR, which is either \fBAOpIgnore\fR or zero.
+.PP
+The arrays are considered identical if both are empty or they are the same length and all corresponding
+elements match per calls to the deq(3) datum comparison function.  If the \fBAOpIgnore\fR flag is specified,
+case is ignored in string comparisons.
+.SH RETURN VALUES
+The \fBaeq\fR() function returns true if the arrays match and neither array contains itself or the other array at
+any nesting level, otherwise false.
+.SH SEE ALSO
+amatch(3), cxl(3), cxl_datum(7), deq(3)

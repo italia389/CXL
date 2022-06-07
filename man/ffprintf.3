@@ -1,0 +1,23 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFPRINTF 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffprintf\fR - write a formatted string to a fast file.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBint ffprintf(FastFile *pFastFile, const char *fmt, ...);\fR
+.SH DESCRIPTION
+The \fBffprintf\fR() function writes data to the fast file pointed to by \fIpFastFile\fR according to format string
+\fIfmt\fR and corresponding conversions on subsequent arguments in the same manner as the \fBprintf\fR() function.  See
+printf(3) for an explanation of the available formatting specifications.
+.SH RETURN VALUES
+If successful, \fBffprintf\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3)

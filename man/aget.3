@@ -1,0 +1,42 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AGET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaget\fR - get contents of an array element, optionally auto-extending array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBDatum *aget(Array *pArray, ArraySize index, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBaget\fR() function gets the element at position \fIindex\fR from the array pointed to by \fIpArray\fR,
+subject to the operation flag in \fIaflags\fR, which is either \fBAOpGrow\fR or zero.
+.PP
+If the index is negative, the element is selected by counting backward from the end of the array, where -1 is
+the last element; otherwise, the element is selected from the beginning of the array with the first being 0.
+If the index is non-negative and the \fBAOpGrow\fR flag is specified, the array will be extended if
+necessary to satisfy the request.  In this case, any array elements that are created are set to nil values.
+Otherwise, the referenced element must already exist.
+.PP
+Note that \fBaget\fR() may be used to ensure that an array is of some arbitrary minimum length before its
+elements are accessed.  For example, the following line of code guarantees that the array pointed to by
+\fIpArray\fR contains at least 50 elements:
+.RS 4
+.HP 2
+(void) aget(pArray, 49, AOpGrow);
+.RE
+.PP
+In this simple example, the return value is ignored.  You would probably want to check it for NULL (indicating an
+error) in your code.
+.SH RETURN VALUES
+If successful, \fBaget\fR() returns a pointer to the contents of the selected element (a value of type
+\fBDatum *\fR).  Note that if the referenced datum is subsequently changed, the array element is also changed.
+.PP
+The function returns NULL on failure, and sets an exception code and message in the CXL Exception System to
+indicate the error.
+.SH SEE ALSO
+apop(3), ashift(3), cxl(3), cxl_datum(7), excep(3)

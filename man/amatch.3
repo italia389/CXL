@@ -1,0 +1,38 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AMATCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBamatch\fR, \fBauniq\fR - perform set operations on arrays.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *amatch(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+.HP 2
+\fBArray *auniq(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+.SH DESCRIPTION
+These functions perform set operations on the two arrays pointed to by \fIpArray1\fR and \fIpArray2\fR,
+subject to the operation flag(s) in \fIaflags\fR, which is the bitwise OR of zero or more of the flag(s)
+\fBAOpInPlace\fR and \fBAOpIgnore\fR.
+.PP
+The \fBamatch\fR() function performs set intersection; that is, it constructs a new array of all elements that
+occur in both arrays, excluding duplicates and maintaining the order of the matching elements from the first
+array.  Alternatively, if the \fBAOpNonMatching\fR flag is specified, the function constructs a new array of
+all elements from the first array that do not occur in the second array, excluding duplicates.
+.PP
+The \fBauniq\fR() function performs set union on the first array or both arrays.  It constructs a new array of
+unique elements from the first array, maintaining their order and, if \fIpArray2\fR is not NULL, appends unique
+elements from the second array.
+.PP
+If the \fBAOpInPlace\fR flag is specified for either function, the contents of the first array is replaced with
+the results and \fIpArray1\fR is returned; otherwise, a pointer to the new array is returned.  Additionally,
+if the \fBAOpIgnore\fR flag is specified for either function, case is ignored in string comparisons.
+.SH RETURN VALUES
+If successful, both functions return an array pointer as described above.  They return NULL on failure, and
+set an exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+acat(3), cxl(3)

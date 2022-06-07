@@ -1,0 +1,23 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH MEMCASECMP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBmemcasecmp\fR - compare byte strings, ignoring case.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBint memcasecmp(const void *str1, const void *str2, size_t len);\fR
+.SH DESCRIPTION
+The \fBmemcasecmp\fR() function compares up to \fIlen\fR bytes from byte string \fIstr1\fR against byte string \fIstr2\fR,
+ignoring case of ASCII letter characters in comparisons.  Both strings are assumed to be at least \fIlen\fR bytes in length.
+.SH RETURN VALUES
+The \fBmemcasecmp\fR() function returns zero if the two strings are identical (ignoring case); otherwise, it returns -1
+if the first string is less than the second string, and 1 if the first string is greater than the second string.  Zero-length
+strings are always identical.
+.SH SEE ALSO
+cxl(3), memcmp(3), strcasecmp(3)

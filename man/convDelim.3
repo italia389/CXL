@@ -1,0 +1,53 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CONVDELIM 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBconvDelim\fR - convert a delimiter specification to an 8-bit character.
+.SH SYNOPSIS
+\fB#include "cxl/lib.h"\fR
+.HP 2
+\fBint convDelim(const char *spec);\fR
+.SH DESCRIPTION
+The \fBconvDelim\fR() function converts the delimiter specification \fIspec\fR to an 8-bit
+character and returns it.  The \fIspec\fR argument must be a single character or a numeric
+literal.  If the latter, the value must be in range 0 through 255 (the value of an 8-bit
+character) and conform to the numeric literal requirements of strtol(3) with a base of zero.  In
+either case, leading or trailing white space in the specification is considered an error.
+.PP
+If the string in \fIspec\fR is invalid, the function sets an exception message and returns -1.
+.SH EXAMPLES
+The \fBconvDelim\fR() function is typically used to convert a command line argument, where a
+delimiter must be specified that may be a control character.  The following table shows some
+examples, with the octal value of the 8-bit character that would be returned by the function:
+.PP
+.RS 4
+.PD 0
+.IP \fBSPECIFICATION\fR 20
+\fBCHARACTER\fR
+.RS 4
+.IP : 18
+072 (colon)
+.IP '\~' 18
+040 (space)
+.IP 011 18
+011 (tab)
+.IP 0xB 18
+011 (tab)
+.IP 13 18
+015 (return)
+.IP 126 18
+176 (tilde)
+.IP '~' 18
+176 (tilde)
+.IP 256 18
+*ERROR*
+.RE
+.RE
+.PD
+.SH SEE ALSO
+cxl(3), excep(3), strtol(3)

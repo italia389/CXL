@@ -1,0 +1,344 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CXL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBCXL\fR - C extensions library.
+.SH DESCRIPTION
+The \fBCXL\fR library is a package of
+routines that provide additional functionality and features (or "extensions") to the Standard C Library.
+.SS Overview
+The library's API consists of several functions, which include the following:
+.RS 4
+.PD 0
+.IP \fB\-\fR 2
+A set of exception-handling routines that allow a message to be set and a non-zero code to be returned.
+.IP \fB\-\fR 2
+A \fBgetSwitch()\fR function, which can be used to process command-line switches specified as single letters or keywords,
+with or without arguments.
+.IP \fB\-\fR 2
+A set of routines that define and process "Datum" objects (or "datums"), which can hold any type of data, including
+strings of any length.
+.IP \fB\-\fR 2
+Routines which create and manipulate dynamic arrays of any length which contain datums as elements.
+.IP \fB\-\fR 2
+Routines which create and manipulate hash tables which contain datums as node values.
+.IP \fB\-\fR 2
+A set of fast I/O routines which use large buffers to improve performance and allow reading data sensitive lines of any
+length from a file with automatic line delimiter detection.
+.PD
+.RE
+.PP
+Note that a program using functions in the CXL library must be linked with the -lcx option.
+.SS Routine Name Index
+The following table lists all CXL routines in alphabetical order, grouped by category, and a brief description of each.
+.RS 4
+.PD 0
+.sp
+ARRAY PROCESSING
+.RS 4
+.IP acat 16
+Concatenate arrays.
+.IP aclear 16
+Clear and reinitialize an array.
+.IP aclone 16
+Clone an array.
+.IP acompact 16
+Delete nil elements from an array.
+.IP adelete 16
+Remove an element from an array at given index.
+.IP adeleteif 16
+Remove element(s) from an array that match a datum.
+.IP aeach 16
+Step through an array, returning each element in sequence.
+.IP aeq 16
+Compare one array to another and return Boolean result.
+.IP afill 16
+Fill a portion of an array with copies of a datum.
+.IP afree 16
+Release all allocated memory used by an array and delete it.
+.IP aget 16
+Get an element from an array at given index, possibly extending the array if needed.
+.IP ainclude 16
+Return true if an array contains an element that matches a given datum, otherwise false.
+.IP aindex 16
+Return index of first or last element of an array that matches a given datum.
+.IP ainit 16
+Initalize an Array object as an empty array.
+.IP ainsert 16
+Insert an element into an array at given index.
+.IP ajoin 16
+Join all elements of an array together as a string with a delimiter between the elements.
+.IP amatch 16
+Perform set intersection or exclusion on two arrays.
+.IP anew 16
+Create an array.
+.IP apop 16
+Remove an element from the end of an array and return it.
+.IP apush 16
+Append an element to an array.
+.IP aput 16
+Put an array to a fabrication object.
+.IP ashift 16
+Remove an element from the beginning of an array and return it.
+.IP aslice 16
+Create an array from a portion of another array.
+.IP asplit 16
+Split a string into an array of substrings on white space or a character delimiter.
+.IP atos 16
+Convert an array to a string and store result in a datum.
+.IP auniq 16
+Perform set union on one or two arrays.
+.IP aunshift 16
+Prepend an element to an array.
+.RE
+.sp
+DATUM OBJECTS
+.RS 4
+.IP dadoptarray 16
+Set a array currently allocated in memory in a datum.
+.IP dadoptmem 16
+Set a byte string currently allocated in memory in a datum.
+.IP dadoptstr 16
+Set a string currently allocated in memory in a datum.
+.IP dclear 16
+Clear a datum and set it to nil.
+.IP dclose 16
+Close a fabrication object and convert its datum to a string or byte string.
+.IP dconvchr 16
+Convert a character to string and store result in a datum.
+.IP dcpy 16
+Copy one datum to another.
+.IP deq 16
+Compare one datum to another and return Boolean result.
+.IP dfree 16
+Release all allocated memory used by a datum and delete it.
+.IP dinit 16
+Initialize a datum.
+.IP dfabempty 16
+Return true if a fabrication object is empty, otherwise false.
+.IP dgarbpop 16
+Pop the garbage collection stack to a specified position, releasing memory.
+.IP dischr 16
+Return true if a datum is a character, otherwise false.
+.IP disempty 16
+Return true if a datum is empty, otherwise false.
+.IP disfalse 16
+Return true if a datum is nil or false, otherwise false.
+.IP disnil 16
+Return true if a datum is nil, otherwise false.
+.IP disnull 16
+Return true if a datum is a null string, otherwise false.
+.IP distrue 16
+Return true if a datum is not nil and not false, otherwise false.
+.IP dnew 16
+Create an untracked datum.
+.IP dnewtrack 16
+Create a tracked datum.
+.IP dopen 16
+Open a fabrication object with a new, untracked datum.
+.IP dopentrack 16
+Open a fabrication object with a new, tracked datum.
+.IP dopenwith 16
+Open a fabrication object with a given datum.
+.IP dputc 16
+Put a character to a fabrication object.
+.IP dputd 16
+Copy the contents of a datum to a fabrication object.
+.IP dputf 16
+Put formatted text to a fabrication object.
+.IP dputmem 16
+Copy a byte string (memory region) to a fabrication object.
+.IP dputs 16
+Copy a string to a fabrication object.
+.IP drelease 16
+Change a datum with allocated data to a reference type.
+.IP dputsubstr 16
+Copy a substring to a fabrication object.
+.IP dsalloc 16
+Allocate space for a string value of a given size in a datum.
+.IP dsetarray 16
+Set an array value in a datum.
+.IP dsetarrayref 16
+Set an array reference in a datum.
+.IP dsetbool 16
+Set a Boolean value in a datum.
+.IP dsetchr 16
+Set a character value in a datum.
+.IP dsetint 16
+Set a signed integer value in a datum.
+.IP dsetmem 16
+Copy a byte string (memory region) to a datum.
+.IP dsetmemref 16
+Set a byte string reference in a datum.
+.IP dsetnil 16
+Set a datum to a nil value (alias for dclear).
+.IP dsetnull 16
+Set a datum to a null string.
+.IP dsetreal 16
+Set a real number value in a datum.
+.IP dsetstr 16
+Copy a string to a datum.
+.IP dsetstrref 16
+Set a string reference in a datum.
+.IP dsetsubstr 16
+Copy a fixed-length substring to a datum.
+.IP dsetuint 16
+Set an unsigned integer value in a datum.
+.IP dshquote 16
+Copy a string to a datum in quoted form so it can be used as a shell argument.
+.IP dtos 16
+Convert a datum to a string and store result in another datum.
+.IP dtrack 16
+Start tracking a datum by adding it to the garbage collection stack, if not already present.
+.IP dtyparray 16
+Return true if a datum is an array type, otherwise false.
+.IP dtypbool 16
+Return true if a datum is a Boolean type, otherwise false.
+.IP dtypmem 16
+Return true if a datum is a memory (byte string) type, otherwise false.
+.IP dtypstr 16
+Return true if a datum is a string type, otherwise false.
+.IP dunputc 16
+Un-put a character from a fabrication object.
+.IP duntrack 16
+Stop tracking a datum by removing it from the garbage collection stack, if present.
+.IP dxfer 16
+Transfer contents of one datum to another.
+.RE
+.sp
+EXCEPTION HANDLING
+.RS 4
+.IP emsg 16
+Set an exception code and message.
+.IP emsgf 16
+Set an exception code and formatted message.
+.IP emsgsys 16
+Set an exception code and system (errno) message.
+.IP excep 16
+Build and print an exception message to standard error and, optionally, exit program.
+.RE
+.sp
+FAST I/O
+.RS 4
+.IP ffchomp 16
+Remove delimiter(s), if any, from a fast I/O input line.
+.IP ffclose 16
+Close a fast file and release all allocated memory.
+.IP ffclosekeep 16
+Close a fast file, keeping buffers intact.
+.IP ffflush 16
+Flush a fast I/O output buffer to disk.
+.IP fffree 16
+Free a fast file object.
+.IP ffgetc 16
+Read a character from a fast file and return it.
+.IP ffgets 16
+Read a delimited string from a fast file.
+.IP ffopen 16
+Open a file for fast I/O, given filename and mode.
+.IP ffprintf 16
+Write a formatted string to a fast file.
+.IP ffputc 16
+Write a character to a fast file.
+.IP ffputs 16
+Write a string to a fast file.
+.IP ffputvizc 16
+Write a character to a fast file in visible form.
+.IP ffputvizmem 16
+Write bytes to a fast file in visible form, given memory pointer and size.
+.IP ffread 16
+Read bytes from a fast file, given destination buffer and size.
+.IP ffsetdelim 16
+Set a data-sensitive delimiter type on a fast I/O input file.
+.IP ffslurp 16
+Read an entire fast file into memory.
+.IP ffwrite 16
+Write bytes to a fast file, given memory pointer and size.
+.RE
+.sp
+HASH TABLES
+.RS 4
+.IP hclear 16
+Clear a hash table.
+.IP hcmp 16
+Compare keys of two hash records and return result (qsort() helper function).
+.IP hdelete 16
+Delete a hash record, given key.
+.IP heach 16
+Walk through a hash table, returning each hash record in sequence.
+.IP hfree 16
+Free a hash table.
+.IP hinit 16
+Initialize a HashTable object as an empty hash table.
+.IP hnew 16
+Create a hash table.
+.IP hrename 16
+Rename a hash entry, given old and new keys.
+.IP hsearch 16
+Search for a key in a hash table.
+.IP hset 16
+Store a datum in a hash table, given key.
+.IP hsort 16
+Sort a hash table and return result as an array of hash records.
+.RE
+.sp
+I/O EXTENSIONS
+.RS 4
+.IP fputvizc 16
+Write a character to a stream in visible form.
+.IP fputvizmem 16
+Write bytes to a stream in visible form, given memory pointer and size.
+.RE
+.sp
+STRING PROCESSING
+.RS 4
+.IP join 16
+Join all elements of a StrArray object together with a delimiter between the elements and store result in a datum.
+.IP memcasecmp 16
+Compare byte strings, ignoring case.
+.IP memstpcpy 16
+Copy a byte string and return a pointer in destination buffer to byte after last byte copied.
+.IP split 16
+Split a string into an array of substrings on white space or a character delimiter and save in a StrArray object.
+.IP stplcpy 16
+Copy a string with length restrictions, null-terminated.
+.IP strcbrk 16
+Find first character in a string that does not occur in another string and return pointer to it.
+.IP strconv 16
+Copy a string, with escape sequences converted to single characters.
+.IP strfit 16
+Fit a string into a buffer.
+.IP strip 16
+Remove white space from beginning, end, or both ends of a string.
+.IP vizc 16
+Convert a character to a string in visible form.
+.RE
+.sp
+MISCELLANEOUS
+.RS 4
+.IP convDelim 16
+Convert a delimiter specification string to an 8-bit character.
+.IP cxlvers 16
+Obtain CXL library version information.
+.IP estrtol 16
+Convert a numeric literal to a long integer with exception handling.
+.IP estrtoul 16
+Convert a numeric literal to an unsigned long integer with exception handling.
+.IP getSwitch 16
+Parse a switch and optional value from an array of strings, given switch descriptor table.
+.IP intf 16
+Convert a signed integer to a string with embedded commas.
+.IP prime 16
+Find a prime number that is equal to or greater than a given value.
+.IP uintf 16
+Convert an unsigned integer to a string with embedded commas.
+.PD
+.RE
+.RE
+.SH SEE ALSO
+Specific function names (like \fBdnew\fR or \fBgetSwitch\fR).

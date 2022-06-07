@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -71,11 +71,12 @@ void fffree(FastFile *pFastFile) {
 	// Release heap space.
 	if(pFastFile->lineBuf != NULL)
 		free((void *) pFastFile->lineBuf);
+	free((void *) pFastFile->filename);
 	free((void *) pFastFile);
 	}
 
-// Close a data file, keeping buffers intact.  Caller must call fffree() when file object is no longer needed.  Return status
-// code.
+// Close a data file, keeping buffers intact.  Caller must call fffree() when file object is no longer needed.  Return
+// status code.
 int ffclosekeep(FastFile *pFastFile) {
 
 	// Flush if output file.
@@ -150,6 +151,7 @@ static int growLineBuf(FastFile *pFastFile) {
 FastFile *ffopen(const char *filename, short mode) {
 	FastFile *pFastFile;
 	int handle, openFlags;
+	char *filename1;
 	ushort flags;
 	size_t dataBufSize = FileBufSize;
 	bool inputMode = false;
@@ -192,14 +194,15 @@ Open:
 		}
 
 	// Allocate FastFile object and initialize it.
-	if((pFastFile = (FastFile *) malloc(sizeof(FastFile) + dataBufSize)) == NULL) {
+	if((pFastFile = (FastFile *) malloc(sizeof(FastFile) + dataBufSize)) == NULL ||
+	 (filename1 = (char *) malloc(strlen(filename) + 1)) == NULL) {
 Err:
 		cxlExcep.flags |= ExcepMem;
 		(void) emsgf(-1, "%s, opening file '%s' with mode '%c'", strerror(errno), filename, mode);
 		return NULL;
 		}
 	pFastFile->fileHandle = handle;
-	pFastFile->filename = filename;
+	pFastFile->filename = strcpy(filename1, filename);
 	pFastFile->dataBufSize = dataBufSize;
 	pFastFile->dataBufCur = pFastFile->dataBuf = (char *)(pFastFile + 1);
 	pFastFile->lineBuf = NULL;
@@ -218,8 +221,8 @@ Err:
 	return pFastFile;
 	}
 
-// Set data-sensitive delimiter type ("cr", "crlf", or "nl") on an input file.  Return status code.
-int ffSetDelim(const char *delimType, FastFile *pFastFile) {
+// Set data-sensitive delimiter type on an input file.  Return status code.
+int ffsetdelim(ushort delimType, FastFile *pFastFile) {
 
 	// Error if output file.
 	if(pFastFile->flags & FFOtpMode)
@@ -227,17 +230,23 @@ int ffSetDelim(const char *delimType, FastFile *pFastFile) {
 
 	// Convert type to actual delimiters.
 	pFastFile->inpDelim2 = -1;
-	if(strcmp(delimType, "cr") == 0)
-		pFastFile->inpDelim1 = '\r';
-	else if(strcmp(delimType, "crlf") == 0) {
-		pFastFile->inpDelim1 = '\r';
-		pFastFile->inpDelim2 = '\n';
+	switch(delimType) {
+		case FFDelimNL:
+			pFastFile->inpDelim1 = '\n';
+			break;
+		case FFDelimCR:
+			pFastFile->inpDelim1 = '\r';
+			break;
+		case FFDelimCRLF:
+			pFastFile->inpDelim1 = '\r';
+			pFastFile->inpDelim2 = '\n';
+			break;
+		case FFDelimNUL:
+			pFastFile->inpDelim1 = '\0';
+			break;
+		default:
+			return emsgf(-1, "Invalid delimiter type %hu for file '%s'", delimType, pFastFile->filename);
 		}
-	else if(strcmp(delimType, "nl") == 0)
-		pFastFile->inpDelim1 = '\n';
-	else
-		return emsgf(-1, "Invalid delimiter type '%s' for file '%s' (must be \"cr\", \"crlf\", or \"nl\")", delimType,
-		 pFastFile->filename);
 	return 0;
 	}
 
@@ -307,7 +316,7 @@ ssize_t ffgets(FastFile *pFastFile) {
 	pFastFile->lineBufCur = pFastFile->lineBuf;
 	if(pFastFile->inpDelim1 == -1) {
 
-		// Line delimiter(s) undefined.  Read bytes until a NL or CR found, or EOF reached.
+		// Line delimiter(s) undefined.  Read bytes until a NL, CR, or NUL found, or EOF reached.
 		for(;;) {
 			switch(c) {
 				case -1:
@@ -315,7 +324,8 @@ ssize_t ffgets(FastFile *pFastFile) {
 				case -2:
 					return -1;
 				case '\n':
-					pFastFile->inpDelim1 = '\n';
+				case '\0':
+					pFastFile->inpDelim1 = c;
 					pFastFile->inpDelim2 = -1;
 					goto WrDelim;
 				case '\r':
@@ -335,7 +345,7 @@ ssize_t ffgets(FastFile *pFastFile) {
 					goto WrDelim;
 				}
 
-			// No NL or CR found yet... onward.
+			// No NL, CR, or NUL found yet... onward.
 			if(lputc(c, pFastFile) != 0)
 				return -1;
 			c = ffgetc(pFastFile);
@@ -391,17 +401,16 @@ EOL:
 	return (lputc('\0', pFastFile) != 0) ? -1 : --pFastFile->lineBufCur - pFastFile->lineBuf;
 	}
 
-// Remove delimiter(s), if any, from an input line.  Return true if any were found; otherwise, false.
+// Remove delimiter(s), if any, from an input line.  Return true if any were found, otherwise false.
 bool ffchomp(FastFile *pFastFile) {
 	char *lineBufCur;
-	bool result = false;
 
 	// Delimiters set and non-null line?
 	if(pFastFile->inpDelim1 != -1 && pFastFile->lineBufCur > pFastFile->lineBuf) {
 		lineBufCur = pFastFile->lineBufCur - 1;		// Last character in line.
 		if(pFastFile->inpDelim2 == -1) {
 
-			// CR or NL delimiter.  Truncate line if delimiter matches.
+			// CR, NL, or NUL delimiter.  Truncate line if delimiter matches.
 			if(*lineBufCur == pFastFile->inpDelim1)
 				goto Trunc;
 			}
@@ -414,12 +423,10 @@ bool ffchomp(FastFile *pFastFile) {
 		}
 
 	// Delimiters not found.
-	goto Keep;
+	return false;
 Trunc:
 	*(pFastFile->lineBufCur = lineBufCur) = '\0';
-	result = true;
-Keep:
-	return result;
+	return true;
 	}
 
 // Read entire data file into line buffer, expanding it as necessary, and append a null byte.  Return number of bytes read
@@ -478,20 +485,20 @@ int ffputs(const char *str, FastFile *pFastFile) {
 	}
 
 // Write a character to a data file in visible form.  Pass "flags" to vizc().  Return status code.
-int ffvizc(short c, ushort flags, FastFile *pFastFile) {
+int ffputvizc(short c, ushort flags, FastFile *pFastFile) {
 	char *str;
 
 	return (str = vizc(c, flags)) == NULL || ffwrite((void *) str, strlen(str), pFastFile) != 0 ? -1 : 0;
 	}
 
-// Write bytes to a data file, exposing all invisible characters.  Pass "flags" to vizc().  If size is zero, assume mem is a
+// Write bytes to a data file, exposing all invisible characters.  Pass "flags" to vizc().  If size is zero, assume memPtr is a
 // null-terminated string; otherwise, write exactly size bytes.  Return status code.
-int ffvizmem(const void *mem, size_t size, ushort flags, FastFile *pFastFile) {
-	char *mem1 = (char *) mem;
-	size_t n = (size == 0) ? strlen(mem1) : size;
+int ffputvizmem(const void *memPtr, size_t size, ushort flags, FastFile *pFastFile) {
+	char *memPtr1 = (char *) memPtr;
+	size_t n = (size == 0) ? strlen(memPtr1) : size;
 
 	for(; n > 0; --n)
-		if(ffvizc(*mem1++, flags, pFastFile) != 0)
+		if(ffputvizc(*memPtr1++, flags, pFastFile) != 0)
 			return -1;
 	return 0;
 	}

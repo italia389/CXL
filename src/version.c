@@ -8,8 +8,8 @@
 #include <stdio.h>
 #include "cxl/lib.h"
 
-// Return library version as a string.
-char *cxlibvers(void) {
+// Return human-readable library version string.
+char *cxlvers(void) {
 	static char libVer[32];
 
 	if(libVer[0] == '\0')

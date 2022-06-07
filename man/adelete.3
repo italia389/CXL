@@ -1,0 +1,26 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ADELETE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBadelete\fR - delete an element from an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBDatum *adelete(Array *pArray, ArraySize index);\fR
+.SH DESCRIPTION
+The \fBadelete\fR() function deletes the element at position \fIindex\fR from the array pointed to by
+\fIpArray\fR.  If the index is negative, the element is selected by counting backward from the end of the
+array, where -1 is the last element; otherwise, the element is selected from the beginning of the array with
+the first being 0.
+.SH RETURN VALUES
+If successful, \fBadelete\fR() returns the contents of the element that was deleted, which is a value of type
+\fBDatum *\fR.  (The pointer should be passed to dfree(3) when the datum is no longer needed to free its
+memory.)  The function returns NULL on failure, and sets an exception code and message in the CXL Exception
+System to indicate the error.
+.SH SEE ALSO
+acompact(3), adeleteif(3), cxl(3), cxl_array(7), cxl_datum(7), dfree(3), excep(3)

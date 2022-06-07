@@ -1,0 +1,23 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DSALLOC 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdsalloc\fR - preallocate space for a string in a datum.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dsalloc(Datum *pDatum, size_t len);\fR
+.SH DESCRIPTION
+The \fBdsalloc\fR() function sets the datum pointed to by \fIpDatum\fR to a string type (releasing any previously used
+memory) and preallocates \fIlen\fR characters for a string value, which includes the terminating null character.  A string
+with a maximum length of \fIlen\fR - 1 may then be copied to the datum using \fIpDatum\fR->\fIstr\fR as the destination.
+.SH RETURN VALUES
+If successful, \fBdsalloc\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), excep(3)

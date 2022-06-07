@@ -1,0 +1,28 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HSET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhset\fR - store a datum in a hash table.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBHashRec *hset(HashTable *pHashTable, const char *key, Datum *pDatum, bool copy);\fR
+.SH DESCRIPTION
+The \fBhset\fR() function stores the Datum object pointed to by \fIpDatum\fR (or a copy of it if \fIcopy\fR is
+true) into the hash table pointed to by \fIpHashTable\fR using string hash key \fIkey\fR.  If \fIpDatum\fR is
+NULL, a nil datum object is created and stored instead.  The hash table pointed to by \fIpHashTable\fR must
+have previously been created by calling \fBhnew\fR().
+.PP
+If the key points to an existing node in the hash table, the Datum object associated with the node is freed
+and overwritten by the new Datum object.
+.SH RETURN VALUES
+If successful, \fBhset\fR() returns a pointer to the node that was created or overwritten (a hash record of
+type \fBHashRec\fR).  It returns NULL on failure, and sets an exception code and message in the
+CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7), excep(3), hnew(3)

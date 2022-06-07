@@ -1,0 +1,78 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH VIZC 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBvizc\fR - convert a character to a string in visible form.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBchar *vizc(short c, ushort flags);\fR
+.SH DESCRIPTION
+The \fBvizc\fR() function converts character \fIc\fR to visible form according to the options in
+\fIflags\fR and stores the result as a string in an internal buffer.  Printable characters not
+including space (ASCII octal values 041 through 176) are converted to the same character in
+string form.  The space character (octal 040) is converted to <SPC> if the \fBVizSpace\fR flag
+is set (discussed below); otherwise, it is converted to a space in string form, just like the
+other printable characters.  Most control characters (ASCII octal values 001 through 032) are
+converted to form ^\fIX\fR, where \fIX\fR is one of the letters A through Z, with a few
+exceptions.  All other ASCII 7-bit characters plus the control character exceptions just noted are
+converted according to the following table:
+.PP
+.RS 4
+.PD 0
+.IP ASCII\ OCTAL\ VALUE 26
+STRING FORM
+.IP --------------------- 26
+-----------
+.IP 000\ (nul) 26
+^@
+.IP 012\ (newline) 26
+<NL>
+.IP 015\ (carriage\ return) 26
+<CR>
+.IP 033\ (escape) 26
+<ESC>
+.IP 034 26
+^\\
+.IP 035 26
+^\]
+.IP 036 26
+^^
+.IP 037 26
+^_
+.IP 177\ (delete) 26
+^?
+.PD
+.RE
+.PP
+All 8-bit characters are converted to form <\fIn\fR>, where \fIn\fR is either a two-digit
+hexadecimal number (default) or three-digit octal number.  The base of this number and the type of
+space conversion that is used are determined by the value of the \fIflags\fR function argument,
+which is the bitwise OR of zero or more of the following flags:
+.PP
+.RS 4
+.PD 0
+.IP VizBaseDef 18
+Use default base (VizBaseHEX).
+.IP VizBaseOctal 18
+Octal base.
+.IP VizBaseHex 18
+Hexadecimal base (lower case letters).
+.IP VizBaseHEX 18
+Hexadecimal base (upper case letters).
+.IP VizSpace 18
+Make space character visible.
+.PD
+.RE
+.PP
+.SH RETURN VALUES
+If successful, \fBvizc\fR() returns a pointer to the string result of the conversion.  It
+returns NULL on failure, and sets an exception code and message in the CXL Exception System to
+indicate the error.
+.SH SEE ALSO
+cxl(3), excep(3)

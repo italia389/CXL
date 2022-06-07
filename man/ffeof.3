@@ -1,0 +1,19 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFEOF 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffeof\fR - check fast file status.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBint ffeof(FastFile *pFastFile);\fR
+.SH DESCRIPTION
+\fBffeof\fR() tests the end-of-file indicator for the fast file pointed to by \fIpFastFile\fR, returning non-zero if it
+is set.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), ffgetc(3)

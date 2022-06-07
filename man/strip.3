@@ -1,0 +1,30 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STRIP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBstrip\fR - remove white space from end(s) of a string.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBchar *strip(char *str, int loc);\fR
+.SH DESCRIPTION
+The \fBstrip\fR() function removes white space (as defined by the \fBisspace\fR() function) from
+the beginning, end, or both ends of string \fIstr\fR, depending on whether \fIloc\fR is less
+than, greater than, or equal to zero, respectively.  It "removes" white space at the beginning
+of the string by locating the first character of \fIstr\fR that is not white space.  It removes
+white space at the end of the string by locating the leftmost white space character found by
+scanning backward from the end of the string to the beginning and replacing it with a null
+character.  Consequently, the string may be modified by this routine if \fIloc\fR is equal to or
+greater than zero.
+.SH RETURN VALUES
+The \fBstrip\fR() function returns a pointer to the "stripped" version of the original string.
+More precisely, it returns a pointer to the first non-white-space character in \fIstr\fR (which
+may be the terminating null) if \fIloc\fR is less than or equal to zero; otherwise, it returns
+\fIstr\fR.
+.SH SEE ALSO
+cxl(3), isspace(3)

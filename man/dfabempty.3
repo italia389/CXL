@@ -1,0 +1,23 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DFABEMPTY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdfabempty\fR - check if a fabrication object is empty.
+and return Boolean result.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBbool dfabempty(const DFab *pFab);\fR
+.SH DESCRIPTION
+The \fBdfabempty\fR() function checks if the opened fabrication object pointed to by \fIpFab\fR contains any data.  If it
+does not ("is empty"), it returns true; otherwise, it returns false.
+.PP
+The function call is only valid after a fabrication object has been opened and has not yet been closed; otherwise, the
+results are undefined.
+.SH SEE ALSO
+cxl(3), cxl_datum(7)

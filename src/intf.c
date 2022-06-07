@@ -3,24 +3,21 @@
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 //
-// intf.c		Routine for converting an integer to a string with embedded commas.
+// intf.c		Routines for converting a signed or unsigned integer to a string with commas in the thousands' places.
 
 #include "stdos.h"
+#include <stdbool.h>
 
-// Convert given long integer to a string (allocated in static storage) with a leading sign if negative and commas every three
-// digits.  Return result.
-char *intf(long i) {
-	bool neg = false;
+static char result[sizeof(ulong) * 4];
+
+// Convert given long integer to a string (allocated in static storage) with a leading sign if "neg" is true, and commas every
+// three digits.  Return result.
+static char *iconv(ulong i, bool neg) {
 	int n = 0;
 	char *str;
-	static char result[sizeof(long) * 4];
 
-	if(i < 0) {
-		neg = true;
-		i = -i;
-		}
-	str = result + sizeof(result);
-	*--str = '\0';
+	str = result + sizeof(result) - 1;
+	*str = '\0';
 	do {
 		if(n++ == 3) {
 			*--str = ',';
@@ -32,4 +29,14 @@ char *intf(long i) {
 		*--str = '-';
 
 	return str;
+	}
+
+char *intf(long i) {
+
+	return iconv(i < 0 ? -i : i, i < 0);
+	}
+
+char *uintf(ulong i) {
+
+	return iconv(i, false);
 	}

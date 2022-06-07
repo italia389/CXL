@@ -1,0 +1,29 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH INTF 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBintf\fR, \fBuintf\fR - format an integer.
+.SH SYNOPSIS
+\fB#include "cxl/lib.h"\fR
+.HP 2
+\fBchar *intf(long i);\fR
+.HP 2
+\fBchar *uintf(ulong i);\fR
+.SH DESCRIPTION
+The \fBintf\fR() and \fBuintf\fR() functions convert respectively, signed and unsigned long integer \fIi\fR to
+a string with a leading sign if negative, and commas inserted in every thousands' place so that large numbers
+are more readable.  This is useful for reporting.  For example, multiple integers can be processed with either
+or both functions and output with a printf(3) specification such as "%24s" to produce a columnar report with
+all of the numbers right justified.
+.PP
+Note that the string that is created by \fBintf\fR() and \fBuintf\fR() is allocated in static storage and
+shared, hence it will be overwritten each time either of the functions is called.
+.SH RETURN VALUES
+The \fBintf\fR() and \fBuintf\fR() functions return a pointer to the formatted string.
+.SH SEE ALSO
+cxl(3), sprintf(3)

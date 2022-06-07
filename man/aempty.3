@@ -1,0 +1,19 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AEMPTY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaempty\fR - test if an array contains any elements.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBbool aempty(const Array *pArray);\fR
+.SH DESCRIPTION
+The \fBaempty\fR() function returns true if the array pointed to by \fIpArray\fR is empty; that is,
+contains no elements; otherwise, it returns false.
+.SH SEE ALSO
+ainclude(3), cxl(3), cxl_array(7)

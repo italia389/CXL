@@ -1,0 +1,28 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH RAND32 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBrand32\fR, \fBrand32Uniform\fR - random number generators.
+.SH SYNOPSIS
+\fB#include "cxl/lib.h"\fR
+.HP 2
+\fBuint32_t rand32(void);\fR
+.HP 2
+\fBuint32_t rand32Uniform(uint32_t upperBound);\fR
+.SH DESCRIPTION
+These routines generate pseudo-random numbers.  Seeding is done automatically the first time either function
+is called.  \fBrand32\fR() and \fBrand32Uniform\fR() are designed to operate like arc4random(3) and
+arc4random_uniform(3) and will call those functions if they are available; otherwise, they mimic their
+behavior using random(3) calls.
+.PP
+The \fBrand32\fR() routine returns an unsigned 32-bit integer in range 0 to UINT32_MAX.
+.PP
+The \fBrand32Uniform\fR() routine returns an unsigned 32-bit integer like \fBrand32\fR(),
+but uniformly distributed over the range 0 to \fIupperBound\fR - 1.
+.SH SEE ALSO
+arc4random(3), cxl(3), random(3)

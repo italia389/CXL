@@ -1,0 +1,47 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CXL_FASTIO 7 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBfastio\fR - fast I/O package.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.SH DESCRIPTION
+The CXL library contains a number of functions that perform fast I/O on files.  These functions use low-level system calls
+and large input and output buffers to minimize disk access, thereby providing for high speed reading and writing, especially
+on large files.  Any named file can be opened for reading or writing.  It is also possible to read from standard input
+or write to standard output by using "-" for the filename.
+.PP
+In addition to performing fast I/O, the functions provide the ability to read lines of any length from a text file, with
+automatic detection of a NL, CR, or CR-LF line delimiter.  It is also possible to "slurp" a file; that is, read an entire
+file at once into memory.
+.PP
+All of the fast I/O functions use a \fBFastFile\fR structure to manage the file that is being processed.  This structure is
+defined to contain at least the following members:
+.sp
+.RS 4
+.PD 0
+typedef struct {
+.RS 4
+.HP 2
+const char *filename;
+.HP 2
+char *lineBuf;
+.HP 2
+} FastFile;
+.RE
+.PD
+.RE
+.PP
+The \fIfilename\fR member is a copy of the filename that is passed to \fBffopen\fR() when a file is opened for input or output.
+The \fIlineBuf\fR member holds the line most recently read from an input file with \fBffgets\fR(), or the contents of an
+entire file read with \fBffslurp\fR().  Buffer space is allocated automatically as needed by the functions.
+.SH SEE ALSO
+cxl(3)
+.PP
+Specific function names (like \fBffopen\fR) listed in cxl(3) under the \fBFAST I/O\fR section
+for detailed routine descriptions.

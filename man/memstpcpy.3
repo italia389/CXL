@@ -1,0 +1,21 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH MEMSTPCPY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBmemstpcpy\fR - copy a byte string.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBvoid *memstpcpy(void *dest, const void *src, size_t len);\fR
+.SH DESCRIPTION
+The \fBmemstpcpy\fR() function copies \fIlen\fR bytes from byte string \fIsrc\fR to byte string \fIdest\fR.
+.SH RETURN VALUES
+The \fBmemstpcpy\fR() function returns a pointer in \fIdest\fR to the byte after the last byte copied; that
+is, \fIdest\fR + \fIlen\fR.
+.SH SEE ALSO
+cxl(3), memcpy(3), stpcpy(3)

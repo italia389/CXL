@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -15,6 +15,7 @@
 #include <ctype.h>
 #include "cxl/getSwitch.h"
 #include "cxl/hash.h"
+#include "cxl/datum.h"
 
 // Local declarations.
 typedef struct {
@@ -23,7 +24,7 @@ typedef struct {
 	} SwitchState;
 
 #define DupHashSize		19		// Initial size of hash table used for duplicate-switch checking.
-#define ssPtr(pHashRec)		((SwitchState *) pHashRec->pValue->u.blob.mem)
+#define ssPtr(pHashRec)		((SwitchState *) pHashRec->pValue->u.mem.ptr)
 //#define GSDebugFile		stderr
 #ifdef GSDebugFile
 extern FILE *GSDebugFile;
@@ -37,13 +38,13 @@ extern FILE *GSDebugFile;
 //	pSwitchTable	Indirect pointer to switch table (an array of Switch descriptors), which contains a descriptor for
 //			each possible switch.
 //	switchCount	Number of switches in switch table.
-//	pResult		Pointer to result record, containing primary switch name and its value, if any.
+//	pResult		Pointer to result record, containing primary switch name and its argument, if any.
 //
 // Notes:
 //  1. Each invocation of this routine returns one switch.  Routine sets *pSwitchTable to NULL after first call to process
 //     subsequent switches.
 //  2. If a switch is found, values in *pResult are set as appropriate and a 1-relative index of switch in the switch table is
-//     returned.  If a numeric switch is found, "name" is set to NULL and "value" is set to the switch that was found, including
+//     returned.  If a numeric switch is found, "name" is set to NULL and "arg" is set to the switch that was found, including
 //     the leading '-' or '+' character.
 //  3. All switch names in the switch table must be unique -- duplicates are not allowed.  Also, a maximum of one -n switch
 //     descriptor (SF_NumericSwitch flag set and SF_PlusType not set) and one +n switch descriptor (both SF_NumericSwitch and
@@ -51,29 +52,31 @@ extern FILE *GSDebugFile;
 //  4. If any of the following occurs, switch scanning stops, *pArgCount is set to the number of arguments remaining, *pArgList
 //     is set to the argument following the last switch found, and zero is returned:
 //		a. *pArgCount arguments have been processed;
-//		b. **pArgList is a NULL pointer;
-//		c. a "--" switch or "-" argument is found;
-//		d. a string is found which does not begin with '-' (or '+' if a switch descriptor of type SF_PlusType exists
+//		b. **pArgList contains a NULL pointer;
+//		c. a "--" (switch) or "-" argument is found;
+//		d. an argument is found which does not begin with '-' (or '+' if a switch descriptor of type SF_PlusType exists
 //		   in the switch table).
-//  5. If a switch requires an argument and an argument is found which begins with '--' or '++', the string following the first
-//     '-' or '+' is returned as the argument.
+//  5. If a switch accepts an argument and an argument is found which begins with '--' or '++' followed by at least one other
+//     character, the string following the first '-' or '+' is returned as the argument.
 //  6. If an error occurs, an exception message is set and -1 is returned.
 int getSwitch(int *pArgCount, char ***pArgList, Switch **pSwitchTable, uint switchCount, SwitchResult *pResult) {
 	static char myName[] = "getSwitch";
 	const char *tableSwitch, **pTableSwitch;
 	char *arg, *argSwitch = NULL, *str0, *str1;
 	int switchIndex = 0;
+	int rtnCode;
 	ushort argType;
 	enum {expectOptionalArg, expectRequiredArg, expectSwitch} stateExpected = expectSwitch;
 	enum {foundArg, foundNoArg, foundNullArg, foundSwitch} stateFound;
 	Switch *pSwitch, *pSwitchEnd;
 	char *digits = "0123456789";
-	Hash *hashTable;
+	HashTable *pHashTable;
 	HashRec *pHashRec;
+	Datum *pDatum;
 	SwitchState *pState;
 	static struct {
 		Switch *pSwitch;		// Pointer to first descriptor in switch table.
-		Hash *hashTable;		// Hash of switches expected and found (for duplicate checking).
+		HashTable *pHashTable;		// Hash of switches expected and found (for duplicate checking).
 		} state;
 
 
@@ -83,14 +86,17 @@ int getSwitch(int *pArgCount, char ***pArgList, Switch **pSwitchTable, uint swit
 #endif
 	// Intialize variables and validate switch table if first call.
 	if(*pSwitchTable != NULL) {
+		bool doFree = true;
 #ifdef GSDebugFile
 		fputs("getSwitch(): Initializing...\n", GSDebugFile);
 #endif
-		if((state.hashTable = hnew(DupHashSize, 0.0, 0.0)) == NULL)
+		if((state.pHashTable = hnew(DupHashSize, 0.0, 0.0)) == NULL)
 			return -1;
 		for(pSwitchEnd = (state.pSwitch = pSwitch = *pSwitchTable) + switchCount; pSwitch < pSwitchEnd; ++pSwitch) {
 
-			// Create one SwitchState object that the primary switch and all its aliases will point to.
+			// Create one SwitchState object that the primary switch and all its aliases will point to.  Object
+			// must be stored in datum as a reference and freed manually however, to avoid multiple calls to
+			// free() for each hash node when hash table is deleted later.
 			if((pState = (SwitchState *) malloc(sizeof(SwitchState))) == NULL) {
 				cxlExcep.flags |= ExcepMem;
 				return emsgsys(-1);
@@ -103,28 +109,47 @@ int getSwitch(int *pArgCount, char ***pArgList, Switch **pSwitchTable, uint swit
 
 				// Numeric switch.  Check if duplicate.
 				tableSwitch = (pSwitch->flags & SF_PlusType) ? NSPlusKey : NSMinusKey;
-				if(hsearch(state.hashTable, tableSwitch) != NULL)
-					return emsgf(-1, "%s(): Multiple numeric (%c) switch descriptors found", myName,
+				if(hsearch(state.pHashTable, tableSwitch) != NULL) {
+					emsgf(-1, "%s(): Multiple numeric (%cn) switch descriptors found", myName,
 					 (pSwitch->flags & SF_PlusType) ? '+' : '-');
-				if((pHashRec = hset(state.hashTable, tableSwitch, NULL, false)) == NULL)
+					goto TableError;
+					}
+				if((pHashRec = hset(state.pHashTable, tableSwitch, NULL, false)) == NULL)
 					return -1;
-				dsetblobref((void *) pState, 0, pHashRec->pValue);
+				dsetmemref((void *) pState, 0, pHashRec->pValue);
 				}
 			else {
 				// Standard switch.  Check if argument type specified.
-				if((pSwitch->flags & SF_ArgMask) == 0)
-					return emsgf(-1, "%s(): Argument type not specified for -%s switch", myName,
+				if((pSwitch->flags & SF_ArgMask) == 0) {
+					emsgf(-1, "%s(): Argument type not specified for -%s switch", myName,
 					 *pSwitch->names);
+					goto TableError;
+					}
+
+				// Check if switch name is missing.
+				pTableSwitch = pSwitch->names;
+				if((tableSwitch = *pTableSwitch) == NULL) {
+					emsgf(-1, "%s(): Missing switch name at table index %d", myName,
+					 (int) (pSwitch - state.pSwitch));
+					goto TableError;
+					}
 
 				// Check switch name plus any aliases for duplicates.
-				for(pTableSwitch = pSwitch->names; (tableSwitch = *pTableSwitch) != NULL; ++pTableSwitch) {
-					if(hsearch(state.hashTable, tableSwitch) != NULL)
-						return emsgf(-1, "%s(): Multiple -%s switch descriptors found",
+				do {
+					if(hsearch(state.pHashTable, tableSwitch) != NULL) {
+						emsgf(-1, "%s(): Duplicate -%s switch found in switch table",
 						 myName, tableSwitch);
-					if((pHashRec = hset(state.hashTable, tableSwitch, NULL, false)) == NULL)
+TableError:
+						rtnCode = -1;
+						if(doFree)
+							free((void *) pState);
+						goto FreeReturn;
+						}
+					if((pHashRec = hset(state.pHashTable, tableSwitch, NULL, false)) == NULL)
 						return -1;
-					dsetblobref((void *) pState, 0, pHashRec->pValue);
-					}
+					dsetmemref((void *) pState, 0, pHashRec->pValue);
+					doFree = false;
+					} while((tableSwitch = *++pTableSwitch) != NULL);
 				}
 			}
 
@@ -180,12 +205,12 @@ BumpArg:
 						break;
 						}
 					if(isdigit(arg[1])) {
-						hashTable = state.hashTable;
-						while((pHashRec = heach(&hashTable)) != NULL) {
+						pHashTable = state.pHashTable;
+						while((pHashRec = heach(&pHashTable)) != NULL) {
 							pSwitch = (pState = ssPtr(pHashRec))->pSwitch;
 							if((pSwitch->flags & (SF_NumericSwitch | SF_PlusType)) ==
 							 (SF_NumericSwitch | SF_PlusType)) {
-								if(*strpspn(arg + 2, digits) == '\0') {
+								if(*strcbrk(arg + 2, digits) == '\0') {
 									stateFound = foundSwitch;
 									goto FoundDone;
 									}
@@ -214,9 +239,9 @@ FoundDone:
 					case expectOptionalArg:
 						goto NoArgReturn;
 					case expectRequiredArg:
-						goto ValueRequired;
+						goto SwitchArgRequired;
 					default:	// expectSwitch
-						pResult->name = pResult->value = NULL;
+						pResult->name = pResult->arg = NULL;
 						goto NoSwitchesLeft;
 					}
 			case foundSwitch:
@@ -226,7 +251,7 @@ FoundDone:
 					case expectOptionalArg:
 						goto NoArgReturn;
 					case expectRequiredArg:
-						goto ValueRequired;
+						goto SwitchArgRequired;
 					default:	// expectSwitch
 						argSwitch = arg + 1;
 						if(*arg == '+') {
@@ -236,13 +261,13 @@ FoundDone:
 					}
 #ifdef GSDebugFile
 				fprintf(GSDebugFile, "*** Checking hash table (size %lu, entries %lu) for '%s'...\n",
-				 state.hashTable->hashSize, state.hashTable->recCount, argSwitch);
+				 state.pHashTable->hashSize, state.pHashTable->recCount, argSwitch);
 				fflush(GSDebugFile);
 #endif
 				// Check hash table for a match.
 				if(pState != NULL)
 					goto SetName;
-				if((pHashRec = hsearch(state.hashTable, argSwitch)) != NULL) {
+				if((pHashRec = hsearch(state.pHashTable, argSwitch)) != NULL) {
 					pState = ssPtr(pHashRec);
 SetName:
 					tableSwitch = *pState->pSwitch->names;
@@ -253,11 +278,11 @@ SetName:
 				fflush(GSDebugFile);
 #endif
 				// No match found.  Check if valid numeric switch (-n type).
-				hashTable = state.hashTable;
-				while((pHashRec = heach(&hashTable)) != NULL) {
+				pHashTable = state.pHashTable;
+				while((pHashRec = heach(&pHashTable)) != NULL) {
 					pSwitch = (pState = ssPtr(pHashRec))->pSwitch;
 					if((pSwitch->flags & (SF_NumericSwitch | SF_PlusType)) == SF_NumericSwitch) {
-						if(*strpspn(argSwitch, digits) == '\0') {
+						if(*strcbrk(argSwitch, digits) == '\0') {
 							tableSwitch = NSMinusKey;
 							goto MatchFound;
 							}
@@ -330,14 +355,14 @@ MatchFound:
 							goto MustBeUnsigned;
 						++str0;
 						}
-					if((str1 = strpspn(str0, digits)) == str0)
+					if((str1 = strcbrk(str0, digits)) == str0)
 						goto MustBeNumeric;
 					if(*str1 != '\0') {
 						if(*str1 != '.')
 							goto MustBeNumeric;
 						if(!(pSwitch->flags & SF_AllowDecimal))
 							goto MustBeInteger;
-						if(*strpspn(str1 + 1, digits) != '\0')
+						if(*strcbrk(str1 + 1, digits) != '\0')
 							goto MustBeNumeric;
 						}
 					}
@@ -350,25 +375,21 @@ MatchFound:
 		}
 
 NoSwitchesLeft:
-
 	// No switch arguments left; check for required switch(es).
-	hashTable = state.hashTable;
-	while((pHashRec = heach(&hashTable)) != NULL) {
+	pHashTable = state.pHashTable;
+	while((pHashRec = heach(&pHashTable)) != NULL) {
 		pSwitch = (pState = ssPtr(pHashRec))->pSwitch;
-		if((pSwitch->flags & SF_RequiredSwitch) && pState->foundCount == 0)
-			return (pSwitch->flags & SF_NumericSwitch) ? emsgf(-1, "Numeric (%c) switch required",
-			 (pSwitch->flags & SF_PlusType) ? '+' : '-') : emsgf(-1, "-%s switch required", pSwitch->names[0]);
+		if((pSwitch->flags & SF_RequiredSwitch) && pState->foundCount == 0) {
+			if(pSwitch->flags & SF_NumericSwitch)
+				emsgf(-1, "Numeric (%cn) switch required", (pSwitch->flags & SF_PlusType) ? '+' : '-');
+			else
+				emsgf(-1, "-%s switch required", pSwitch->names[0]);
+			rtnCode = -1;
+			goto FreeReturn;
+			}
 		}
-
-	// Scan completed.  Delete SwitchState objects from hash, delete hash, reset static pointer, and return result.
-	for(pSwitchEnd = (pSwitch = state.pSwitch) + switchCount; pSwitch < pSwitchEnd; ++pSwitch) {
-		pHashRec = hsearch(state.hashTable, !(pSwitch->flags & SF_NumericSwitch) ? pSwitch->names[0] :
-		 (pSwitch->flags & SF_PlusType) ? NSPlusKey : NSMinusKey);
-		free((void *) ssPtr(pHashRec));
-		}
-	hfree(state.hashTable);
-	state.pSwitch = NULL;
-	return 0;
+	rtnCode = 0;
+	goto FreeReturn;
 
 	// Switch found.
 NumericSwitchReturn:
@@ -376,18 +397,18 @@ NumericSwitchReturn:
 	fprintf(GSDebugFile, "### NumSwRtn: arg '%s'\n", arg);
 	fflush(GSDebugFile);
 #endif
-	pResult->value = arg;
+	pResult->arg = arg;
 	argSwitch = NULL;
 	goto SwitchFound;
 NoArgReturn:
-	pResult->value = NULL;
+	pResult->arg = NULL;
 	goto SwitchFound;
 ArgReturn:
-	pResult->value = arg;
+	pResult->arg = arg;
 SwitchFound:
 	pResult->name = argSwitch;
 #ifdef GSDebugFile
-	fprintf(GSDebugFile, "### RETURNING name '%s', value '%s', index %d...\n", pResult->name, pResult->value, switchIndex);
+	fprintf(GSDebugFile, "### RETURNING name '%s', arg '%s', index %d...\n", pResult->name, pResult->arg, switchIndex);
 	fflush(GSDebugFile);
 #endif
 	return switchIndex;
@@ -402,16 +423,40 @@ MustBeUnsigned:
 MustBeInteger:
 	str0 = "an integer";
 MustBe:
-	return emsgf(-1, "-%s switch value '%s' must be %s", argSwitch, arg, str0);
+	emsgf(rtnCode = -1, "-%s switch argument '%s' must be %s", argSwitch, arg, str0);
+	goto FreeReturn;
 UnknownSwitch:
-	return emsgf(-1, "Unknown switch, -%s", argSwitch);
+	emsgf(rtnCode = -1, "Unknown switch, -%s", argSwitch);
+	goto FreeReturn;
 BadNumericSwitch:
-	return emsgf(-1, "Invalid numeric switch, %s", arg);
+	emsgf(rtnCode = -1, "Invalid numeric switch, %s", arg);
+	goto FreeReturn;
 DupNotAllowed:
-	return (pSwitch->flags & SF_NumericSwitch) ? emsgf(-1, "Duplicate numeric switch, %s", arg) :
-	 emsgf(-1, "Duplicate switch, -%s", argSwitch);
-ValueRequired:
-	return emsgf(-1, "-%s switch requires a value", argSwitch);
+	if(pSwitch->flags & SF_NumericSwitch)
+		emsgf(-1, "Duplicate numeric switch, %s", arg);
+	else
+		emsgf(-1, "Duplicate switch, -%s", argSwitch);
+	rtnCode = -1;
+	goto FreeReturn;
+SwitchArgRequired:
+	emsgf(rtnCode = -1, "-%s switch requires an argument", argSwitch);
+	goto FreeReturn;
 NullNotAllowed:
-	return emsgf(-1, "-%s switch value cannot be null", argSwitch);
+	emsgf(rtnCode = -1, "-%s switch argument cannot be null", argSwitch);
+FreeReturn:
+	// Scan completed.  Delete SwitchState objects from hash, delete hash, reset static pointer, and return result.
+	for(pSwitchEnd = (pSwitch = state.pSwitch) + switchCount; pSwitch < pSwitchEnd; ++pSwitch) {
+		tableSwitch = !(pSwitch->flags & SF_NumericSwitch) ? pSwitch->names[0] :
+		 (pSwitch->flags & SF_PlusType) ? NSPlusKey : NSMinusKey;
+		if(tableSwitch == NULL || (pDatum = hdelete(state.pHashTable, tableSwitch)) == NULL) {
+
+			// Error found when checking integrity of switch table, so no other nodes exist in hash table.
+			break;
+			}
+		free((void *) pDatum->u.mem.ptr);
+		dfree(pDatum);
+		}
+	hfree(state.pHashTable);
+	state.pSwitch = NULL;
+	return rtnCode;
 	}

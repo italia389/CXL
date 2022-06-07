@@ -22,21 +22,21 @@ int join(Datum *pDest, StrArray *pSrc, const char *delim) {
 		char **pStr;
 		DFab fab;
 
-		// Open fabrication object with caller's pDatum object.
-		if(dopenwith(&fab, pDest, false) != 0)
+		// Open fabrication object with caller's Datum object.
+		if(dopenwith(&fab, pDest, FabClear) != 0)
 			return -1;
 
 		// Join array elements.
 		pStr = pSrc->items;
 		do {
-			if(delim != NULL && pStr != pSrc->items && dputs(delim, &fab) != 0)
+			if(delim != NULL && pStr != pSrc->items && bputs(delim, &fab) != 0)
 				return -1;
-			if(dputs(*pStr++, &fab) != 0)
+			if(bputs(*pStr++, &fab) != 0)
 				return -1;
 			} while(*pStr != NULL);
 
 		// Close fabrication object.
-		if(dclose(&fab, Fab_String) != 0)
+		if(dclose(&fab, FabStr) != 0)
 			return -1;
 		}
 

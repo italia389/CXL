@@ -1,0 +1,19 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFFREE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBfffree\fR - free a fast file object.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBvoid fffree(FastFile *pFastFile);\fR
+.SH DESCRIPTION
+The \fBfffree\fR() function frees all memory associated with the \fBFastFile\fR object pointed to by \fIpFastFile\fR.
+This is normally done only on a fast file that was closed with \fBffclosekeep\fR().
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), ffclosekeep(3)

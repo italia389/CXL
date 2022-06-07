@@ -1,0 +1,235 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH GETSWITCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBgetSwitch\fR - get switches and arguments from an array of strings.
+.SH SYNOPSIS
+\fB#include "cxl/getswitch.h"\fR
+.HP 2
+\fBint getSwitch(int *pArgCount, char ***pArgList, Switch **pSwitchTable, uint switchCount, SwitchResult *pResult);\fR
+.SH DESCRIPTION
+The \fBgetSwitch\fR() function processes command-line switches of form -\fIname\fR [\fIarg\fR],
+where \fIname\fR is the name of a switch (which may be multiple characters) and \fIarg\fR is an
+optional argument for the switch.  The function can also process numeric switches of form
+-\fIn\fR or +\fIn\fR, where \fIn\fR is a number.  Named switches may have zero or more alias
+names (for example, -verbose with alias -v) and may have an optional or required argument, or no
+argument.  Numeric switches may not have an argument.
+.PP
+The special switch "--" is used to delimit the end of the switches explicitly, otherwise
+scanning stops at a "-" argument, or the first argument found that does not begin with a '-'
+character (or a '+' character if a +\fIn\fR switch is allowed).  Additionally, a switch argument
+beginning with a '-' or '+' character may be specified by using "--" or "++" respectively at the beginning of
+the argument; the leading '-' or '+' character will be stripped off before the argument is returned.
+.SS Overview
+All possible switches and their properties are specified in an array of "switch descriptors"
+(the "switch table") in any desired order.  The information for a switch descriptor (which
+equates to one switch and all of its aliases, if any) is contained in a \fBSwitch\fR record,
+which is defined as follows:
+.PP
+.nf
+.RS 4
+typedef struct {
+.RS 4
+	const char **names;
+	ushort flags;
+	} Switch;
+.RE
+.RE
+.fi
+.PP
+If a switch is a numeric switch (of form -\fIn\fR or +\fIn\fR), the \fInames\fR member is not
+used and should be set to NULL.  Otherwise, it contains a pointer to an array of switch names,
+each of type \fBconst char *\fR.  The first element of the array is the primary switch name
+(used in exception messages) followed by zero or more alias names.  The last element of the
+array must be set to NULL, indicating end-of-array.
+.PP
+The \fIflags\fR member denotes the properties of the switch, which are the bitwise OR of one or
+more of the following flags:
+.PP
+.RS 4
+.PD 0
+.IP SF_NumericSwitch 22
+Numeric switch, otherwise named.
+.IP SF_RequiredSwitch 22
+Required switch, otherwise optional.
+.IP SF_PlusType 22
+Numeric switch is +\fIn\fR type, otherwise -\fIn\fR.
+.IP SF_NoArg 22
+Switch does not accept an argument.
+.IP SF_OptionalArg 22
+Switch may accept an argument.
+.IP SF_RequiredArg 22
+Switch requires an argument.
+.PP
+.IP SF_NumericArg 22
+Switch argument must be a number.
+.IP SF_AllowSign 22
+Numeric literal argument may have a leading sign (+ or -).
+.IP SF_AllowDecimal 22
+Numeric literal argument may contain a decimal point.
+.IP SF_AllowRepeat 22
+Switch may be repeated.
+.IP SF_AllowNullArg 22
+Switch argument may be null (an empty string).
+.PD
+.RE
+.PP
+If the \fBSF_NumericSwitch\fR flag is specified (indicating a -\fIn\fR or +\fIn\fR switch type),
+the switch may not accept an argument, hence no other flags are applicable except
+\fBSF_RequiredSwitch\fR, \fBSF_PlusType\fR, and \fBSF_AllowRepeat\fR.
+.PP
+If the \fBSF_NumericSwitch\fR flag is not specified, exactly one of \fBSF_NoArg\fR,
+\fBSF_OptionalArg\fR, or \fBSF_RequiredArg\fR must be specified.  All other flags are optional.
+.PP
+All names in the switch table must be unique; duplicates are not allowed.  Also, a maximum of
+one -\fIn\fR type switch (\fBSF_NumericSwitch\fR flag set and \fBSF_PlusType\fR flag not set) and one
++\fIn\fR type switch (both \fBSF_NumericSwitch\fR and \fBSF_PlusType\fR flags set) may be specified.
+.SS Operation
+A pointer to the switch table must be stored in a variable of type \fBSwitch *\fR.  The address
+of this variable is passed to the \fBgetSwitch\fR() function in the \fIpSwitchTable\fR argument
+and the number of switch descriptors in the switch table (that is, the number of elements in
+the array) is passed in the \fIswitchCount\fR argument.
+.PP
+The command-line arguments to be scanned by the function are specified with two variables.  The
+first is a variable containing an argument count, and the second is a variable containing a
+pointer to an array of strings.  (These two variables are typically the \fIargc\fR and
+\fIargv\fR arguments of the \fBmain\fR() function.)  The addresses of these two variables (for
+example, &argc and &argv) are passed to the \fBgetSwitch\fR() function in the \fIpArgCount\fR
+and \fIpArgList\fR arguments, respectively.
+.PP
+The \fBgetSwitch\fR function processes one switch and switch argument, if applicable, from the
+*\fIpArgList\fR array each time that it is called.  The function sets *\fIpSwitchTable\fR to NULL after
+its first invocation in order to process subsequent switches.  It also changes the contents of
+the variables pointed to by \fIpArgCount\fR and \fIpArgList\fR after each invocation to
+maintain its internal scanning state.
+.PP
+If a switch is found, the function returns an integer value greater than zero, which is the
+1-relative index of the matching switch descriptor in the switch table.  The corresponding
+\fBSwitch\fR record thus can be accessed by locating the array element at \fIindex\fR - 1.  The
+function also stores information about the switch that was found and its argument, if any, in a
+variable of type \fBSwitchResult\fR supplied by the caller, the address of which is passed to the
+function in the \fIpResult\fR argument.  A \fBSwitchResult\fR record is defined as follows:
+.PP
+.PD 0
+.RS 4
+.nf
+typedef struct {
+.RS 4
+const char *name;
+char *arg;
+} SwitchResult;
+.fi
+.RE
+.RE
+.PD
+.PP
+The \fIname\fR member is a pointer to the actual switch name that was found in the
+*\fIpArgList\fR array; that is, a pointer to the character immediately following the leading '-'
+character.  The \fIarg\fR member is a pointer to the switch argument in the *\fIpArgList\fR
+array if an argument was found, otherwise NULL.  If a numeric switch is found, \fIname\fR is
+set to NULL and \fIarg\fR is set to the actual switch that was found instead, including the
+leading '-' or '+' character.
+.PP
+If any of the following occurs during argument scanning, scanning stops, *\fIpArgCount\fR
+is set to the number of arguments remaining, *\fIpArgList\fR is set to the argument following
+the last switch found, and zero is returned:
+.PP
+.PD 0
+.RS 4
+.IP 1. 4
+*\fIpArgCount\fR arguments have been processed.
+.IP 2. 4
+**\fIpArgList\fR contains a NULL pointer.
+.IP 3. 4
+A "--" or "-" argument is found.
+.IP 4. 4
+An argument is found which does not begin with "-" (or "+" if a switch descriptor of type \fBSF_PlusType\fR exists
+in the switch table).
+.RE
+.PD
+.SH EXAMPLES
+The following program illustrates how four switches (-animal, -num, -usage, and a numeric switch) are parsed
+from the command line, and how excep(3) is typically used to display a CXL exception message and exit the program.
+.nf
+.ta 4 8 12 16 20 24 28 32 36 40
+.sp
+#include <stdio.h>
+#include "cxl/getSwitch.h"
+#include "cxl/excep.h"
+.sp
+int main(int argc, char **argv) {
+	static const char					// Switch names.
+		*sw_animal[] = {"animal", "a", NULL},
+		*sw_num[] = {"num", NULL},
+		*sw_usage[] = {"usage", "?", NULL};
+	static Switch switchTable[] = { 		// Switch table.
+		{NULL, SF_NumericSwitch},
+		{sw_animal, SF_RequiredSwitch | SF_RequiredArg | SF_AllowRepeat},
+		{sw_num, SF_OptionalArg | SF_NumericArg | SF_AllowSign},
+		{sw_usage, SF_NoArg}};
+	SwitchResult result;
+	Switch *pSwitch = switchTable;
+	int rtnCode;
+	char *null = "NULL";
+.sp
+	// Check if any arguments given.
+	if(argc == 1)
+		return 0;
+.sp
+	// Have argument(s).  Skip past program name.
+	++argv; --argc;
+.sp
+	// Get and display command-line switches.
+	while((rtnCode = getSwitch(&argc, &argv, &pSwitch, 4, &result)) > 0) {
+		printf("Found switch: name '%s' (%s), arg '%s'\en",
+		 result.name != NULL ? result.name : null,
+		 result.name != NULL ? switchTable[rtnCode - 1].names[0] : null,
+		 result.arg != NULL ? result.arg : null);
+.sp
+		// Process switch.
+		switch(rtnCode) {
+			case 1: 	// numeric switch.
+				...
+				break;
+			case 2: 	// -animal
+				...
+				break;
+			case 3: 	// -num
+				...
+				break;
+			case 4: 	// -usage
+				...
+				break;
+			}
+		}
+.sp
+	// Error return?
+	if(rtnCode < 0) {
+.sp
+		// Display exception message and exit.
+		excep(ExError | ExMessage);
+		}
+	else {
+		// Display remaining arguments, if any.
+		printf("%d remaining argument(s):", argc);
+		while(argc > 0) {
+			printf(" '%s'", *argv);
+			++argv; --argc;
+			}
+		fputc('\en', stdout);
+		}
+
+	return 0;
+	}
+.fi
+.SH RETURN VALUES
+If successful, \fBgetSwitch\fR() returns an integer equal to or greater than zero (as explained
+in the \fBOperation\fR subsection above).  It returns a negative integer on failure, and sets an
+exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), excep(3)

@@ -27,9 +27,9 @@ typedef struct {
 #define ExAbort		4		// Display "Abort".
 #define ExSeverityMask	0x0007		// Severity bit mask.
 
-#define ExErrNo		0x0008		// 'errno' variable contains exception code.
-#define ExMessage	0x0010		// 'cxlExcep.msg' variable contains exception message.
-#define	ExCustom	0x0020		// Display custom, formatted message.
+#define ExMessage	0x0008		// 'cxlExcep.msg' variable contains exception message.
+#define ExErrNo		0x0010		// 'errno' variable contains exception code.
+#define ExCustom	0x0020		// Display custom, formatted message.
 
 #define ExExit		0x0040		// Force exit() call.
 #define ExNoExit	0x0080		// Skip exit() call.

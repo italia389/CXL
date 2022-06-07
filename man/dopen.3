@@ -1,0 +1,48 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DOPEN 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdopen\fR, \fBdopentrack\fR, \fBdopenwith\fR - open a fabrication object for writing.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dopen(DFab *pFab);\fR
+.HP 2
+\fBint dopentrack(DFab *pFab);\fR
+.HP 2
+\fBint dopenwith(DFab *pFab, Datum *pDatum, ushort mode);\fR
+.SH DESCRIPTION
+These functions associate a datum with a \fBDFab\fR object (or "fabrication object") and open the latter for data
+storage using any of the \fBdput*\fR() functions such as \fBdputs\fR().  See cxl_datum(7) for an explanation of
+fabrication objects and how they are used.
+.PP
+\fBdopen\fR() and \fBdopentrack\fR() open the fabrication object pointed to by \fIpFab\fR and associate it with a new
+datum internally allocated in memory.  Additionally, the latter function pushes the datum onto the garbage collection stack.
+.PP
+\fBdopenwith\fR() opens the fabrication object pointed to by \fIpFab\fR and associates it with the existing \fBDatum\fR
+object pointed to by \fIpDatum\fR with mode \fImode\fR, which must be one of the following:
+.sp
+.RS 4
+.PD 0
+.IP FabClear 16
+Clear data in existing datum (default).
+.IP FabAppend 16
+Append to existing datum.
+.IP FabPrepend 16
+Prepend to existing datum.
+.PD
+.RE
+.PP
+If \fBFabAppend\fR or \fBFabPrepend\fR is specified for \fImode\fR and the datum contains a string, it will be
+appended to or prepended to respectively; otherwise, if \fImode\fR is \fBFabClear\fR or an invalid value, the
+datum will be overwritten as if \fBFabClear\fR was specified.
+.SH RETURN VALUES
+If successful, all of these functions return zero.  They return a negative integer on failure, and set an exception code
+and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), dclose(7), excep(3)

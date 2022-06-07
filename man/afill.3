@@ -1,0 +1,31 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AFILL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBafill\fR - fill a slice of an array with a value.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBint afill(Array *pArray, const Datum *pVal, ArraySize index, ArraySize len, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBafill\fR() function replaces \fIlen\fR elements beginning at position \fIindex\fR in the array
+pointed to by \fIpArray\fR with copies of the datum pointed to by \fIpVal\fR, subject to the operation flag in
+\fIaflags\fR.  The \fIaflags\fR argument is either \fBAOpGrow\fR or zero.
+.PP
+If the index is negative, the starting position is determined by counting backward from the end of the array,
+where -1 is the last element; otherwise, the starting position is relative to the beginning of the array with
+the first being 0.
+.PP
+If the length is negative, the slice is adjusted to end at the last element.  If the length specifies a slice
+that extends beyond the end of the array, the array is auto-extended if the \fBAOpGrow\fR flag is specified;
+otherwise, it is an error.
+.SH RETURN VALUES
+If successful, \fBafill\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+aget(3), ainsert(3), apush(3), aunshift(3), cxl(3), excep(3)

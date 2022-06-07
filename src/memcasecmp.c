@@ -9,7 +9,7 @@
 
 #define lowCase(c)	((c >= 'A' && c <= 'Z') ? c + ('a' - 'A') : c)
 
-// Compare two strings, folding lower-case letters to upper case.  Return an integer less than zero (str1 < str2),
+// Compare two byte strings, folding upper-case letters to lower case.  Return an integer less than zero (str1 < str2),
 // zero (str1 == str2), or greater than zero (str1 > str2).
 int memcasecmp(const void *str1, const void *str2, size_t len) {
 	short c1, c2;

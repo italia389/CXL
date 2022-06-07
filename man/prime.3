@@ -1,0 +1,21 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH PRIME 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBprime\fR - find a prime number.
+.SH SYNOPSIS
+\fB#include "cxl/lib.h"\fR
+.HP 2
+\fBuint prime(uint n);\fR
+.SH DESCRIPTION
+The \fBprime\fR() function finds the first prime number that is equal to or greater than integer \fIn\fR and returns it.
+If UINT_MAX is reached before a prime number is found, the function returns zero.
+.PP
+The algorithm that is used is trial division, which is fast for a 32-bit unsigned integer.
+.SH SEE ALSO
+cxl(3)

@@ -1,0 +1,41 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STRFIT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBstrfit\fR - fit a string into a buffer.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBchar *strfit(char *dest, size_t maxLen, const char *src, size_t srcLen);\fR
+.SH DESCRIPTION
+The \fBstrfit\fR() function copies string \fIsrc\fR to string \fIdest\fR, shrinking it in the
+process by inserting an ellipsis in the middle, if necessary (and immediately following a space
+or tab character, if possible) so that the "whole" string fits into \fIdest\fR and the beginning segment
+and ending segment of the original string remain intact.  \fImaxLen\fR is the maximum number of
+characters to store in \fIdest\fR, excluding the terminating null character.  Hence, the
+destination buffer is assumed to be at least \fImaxLen\fR + 1 characters in length.
+\fIsrcLen\fR is the length of source string \fIsrc\fR, excluding the terminating null character,
+if any.  If \fIsrcLen\fR is zero, the source string is assumed to be null terminated, and its
+length will be determined by calling \fBstrlen\fR().
+.SH EXAMPLES
+The following shows a sample of strings that are shortened to 32 characters by \fBstrfit\fR():
+.PP
+.RS 4
+.nf
+Now it's time for some Rock 'n Roll.     ->  Now it's time ...e Rock 'n Roll.
+This is a test of the strfit() function  ->  This is a test ...fit() function
+Short strings remain intact.             ->  Short strings remain intact.
+.fi
+.RE
+.PP
+Note that the ellipsis will be two dots (..) instead of three if the size of the destination buffer is less
+than 30 characters (in order to salvage an additional character from the source string).
+.SH RETURN VALUES
+The \fBstrfit\fR() function returns \fIdest\fR.
+.SH SEE ALSO
+cxl(3), strcpy(3), strip(3)

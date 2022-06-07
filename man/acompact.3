@@ -1,0 +1,28 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ACOMPACT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBacompact\fR - remove nil elements from an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *acompact(Array *pArray, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBacompact\fR() function deletes all nil elements from an array (that is, any element whose datum
+contains a nil value), subject to the operation flag in \fIaflags\fR, which is either \fBAOpInPlace\fR or zero.
+.PP
+If the \fBAOpInPlace\fR flag is specified, all nil elements in the array pointed to by \fIpArray\fR are
+deleted, and the size of the array is reduced by the number of elements deleted.  If the \fBAOpInPlace\fR flag
+is not specified, the function copies all non-nil elements (possibly zero) from the array pointed to by
+\fIpArray\fR to a new array and returns it.  In this case, the array pointed to by \fIpArray\fR remains unchanged.
+.SH RETURN VALUES
+If successful, the \fBacompact\fR() function returns either \fIpArray\fR, if the \fBAOpInPlace\fR flag was
+specified, or a pointer to the array that was created.  It returns NULL on failure, and sets an exception code
+and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+adelete(3), adeleteif(3), cxl(3), cxl_datum(7), excep(3)

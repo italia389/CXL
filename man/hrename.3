@@ -1,0 +1,37 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HRENAME 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhrename\fR - rename a hash key.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBint hrename(HashTable *pHashTable, const char *oldKey, const char *newKey, int *pResult);\fR
+.SH DESCRIPTION
+The \fBhrename\fR() function attempts to rename the string key \fIoldKey\fR pointing to an existing node in
+the hash table pointed to by \fIpHashTable\fR to string key \fInewKey\fR.  If \fIpResult\fR is not NULL, the
+result will be returned in *\fIpResult\fR as follows:
+.PP
+.RS 3
+.PD 0
+.IP \fB\-1\fR 4
+Old key does not exist.
+.IP \fB\ 0\fR 4
+Key was renamed successfully.
+.IP \fB\ 1\fR 4
+New key already exists.
+.PD
+.RE
+.PP
+Note that if \fIpResult\fR is NULL and the key is not renamed (because of a non-zero result as explained
+above), the caller will have no way to verify this.
+.SH RETURN VALUES
+If successful, \fBhrename\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7), excep(3)

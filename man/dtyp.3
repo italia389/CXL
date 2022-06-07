@@ -1,0 +1,29 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DTYP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdtyparray\fR, \fBdtypbool\fR, \fBdtypmem\fR, \fBdtypstr\fR - test a datum for a generic type and return Boolean result.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBbool dtyparray(const Datum *pDatum);\fR
+.HP 2
+\fBbool dtypbool(const Datum *pDatum);\fR
+.HP 2
+\fBbool dtypmem(const Datum *pDatum);\fR
+.HP 2
+\fBbool dtypstr(const Datum *pDatum);\fR
+.SH DESCRIPTION
+These functions perform type tests on the datum pointed to by \fIpDatum\fR and return true if the datum is one of the
+indicated types, otherwise false.
+.PP
+\fBdtyparay\fR() tests if the datum is an array type; \fBdtypbool\fR() tests if the datum is a Boolean (true or
+false) type; \fBdtypmem\fR() tests if the datum is byte string type; and \fBdtypstr\fR() tests if datum is a
+string type.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), disval(3)

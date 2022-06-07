@@ -1,0 +1,82 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CXL_HASH 7 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhash\fR - hash table package.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.SH DESCRIPTION
+The CXL library contains a number of functions that create and manage hash tables.  Each node in a hash table has a string
+key and a datum as a value, as explained in cxl_datum(7), which allows for virtually any type of data to be stored.
+.PP
+One of the important features of the hash library is automatic table optimization.  Control structures are rebuilt on
+the fly as nodes are added to improve performance.  Parameters for controlling this process are specified when a hash
+table is created.
+.PP
+\fBHashRec\fR and \fBHashTable\fR structures are used to manage the hash table and nodes.  The first
+structure is used for a hash node and is defined to contain at least the following members:
+.sp
+.RS 4
+.PD 0
+.HP 2
+typedef struct HashRec {
+.RS 4
+.HP 2
+char *key;
+.HP 2
+Datum *pValue;
+.HP 2
+} HashRec;
+.RE
+.PD
+.RE
+.PP
+The \fIpValue\fR member points to the datum holding the node value and \fIkey\fR points to the string key.
+.PP
+The second structure is the hash table itself and is defined to contain at least the following members:
+.sp
+.RS 4
+.PD 0
+.HP 2
+typedef size_t HashSize;
+.sp
+.HP 2
+typedef struct {
+.RS 4
+.HP 2
+HashSize hashSize;
+.HP 2
+size_t recCount;
+.HP 2
+float loadFactor;
+.HP 2
+float rebuildTrig;
+.HP 2
+} HashTable;
+.RE
+.PD
+.RE
+.PP
+The \fIrecCount\fR member is the current number of nodes in the table.  \fIhashSize\fR,
+\fIloadFactor\fR, and \fIrebuildTrig\fR are respectively, the initial hash size to use when the
+table is built, the initial load factor to use when the table is rebuilt, and the minimum load
+factor that triggers a rebuild.  Any or all of these can be zero for the default.  See hnew(3)
+for details.
+.PP
+All of the hash functions are listed in cxl(3) with a brief description of each.
+.SS Memory Management
+When a hash table is no longer needed, its memory should be freed.  This is done by passing a pointer to the
+hash table to either hfree(3), if the hash table was created by a library function such as hnew(3) (and
+thus, the \fBHashTable\fR object is allocated in memory), or hclear(3), if the \fBHashTable\fR object exists
+in a local variable on the stack.  In the latter case, the memory used by the contents of the hash table will
+be released, but the \fBHashTable\fR object itself will not be freed.
+.SH SEE ALSO
+cxl(3), cxl_datum(7)
+.PP
+Specific function names (like \fBhset\fR) listed in cxl(3) under the \fBHASH TABLES\fR section
+for detailed routine descriptions.

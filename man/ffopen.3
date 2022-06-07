@@ -1,0 +1,37 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFOPEN 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffopen\fR - open a file for fast I/O.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBFastFile *ffopen(const char *filename, short mode);\fR
+.SH DESCRIPTION
+The \fBffopen\fR() function opens file \fIfilename\fR for input or output, and associates it with a \fBFastFile\fR object.
+If \fIfilename\fR is NULL or the string "-", standard input or standard output is opened, depending on the mode (see below).
+.PP
+The \fImode\fR argument must be one of the following character values:
+.sp
+.PD 0
+.RS 4
+.IP 'r' 6
+Attach file object to standard input if \fIfilename\fR is NULL or "-"; otherwise, open file for input.
+.IP 'w' 6
+Attach file object to standard output if \fIfilename\fR is NULL or "-"; otherwise, truncate existing file to zero length
+or create file for output.
+.IP 'a' 6
+Attach file object to standard output if \fIfilename\fR is NULL or "-"; otherwise, create file if it does not
+exist and open file for appending.
+.RE
+.PD
+.SH RETURN VALUES
+If successful, \fBffopen\fR() returns a pointer to a \fBFastFile\fR object.  It returns NULL on failure, and sets an
+exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3), ffclose(3), ffclosekeep(3), fffree(3)

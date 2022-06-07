@@ -1,0 +1,32 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ACAT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBacat\fR - concatenate one array with another.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *acat(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBacat\fR() function concatenates two arrays, subject to the operation flag in \fIaflags\fR, which is either
+\fBAOpInPlace\fR  or zero.
+.PP
+If the \fBAOpInPlace\fR flag is specified, the function appends the contents of the array pointed to by
+\fIpArray2\fR to the array pointed to by \fIpArray1\fR by copying all elements from the second array to the
+end of the first in order.  The length of the first array is thereby increased by the length of the second
+array.  The second array remains unchanged.
+.PP
+If the \fBAOpInPlace\fR flag is not specified, the function creates and returns an array that contains copies
+of all the elements from the array pointed to by \fIpArray1\fR in order followed by all the elements from
+the array pointed to by \fIpArray2\fR in order.  The two source arrays remain unchanged.
+.SH RETURN VALUES
+If successful, \fBacat\fR() returns either \fIpArray1\fR, if the \fBAOpInPlace\fR flag was specified, or a
+pointer to the array that was created.  It returns NULL on failure, and sets an exception code and message in
+the CXL Exception System to indicate the error.
+.SH SEE ALSO
+apush(3), aunshift(3), cxl(3), excep(3)

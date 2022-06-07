@@ -1,0 +1,64 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HNEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhnew\fR, \fBhinit\fR, \fBhclear\fR - create, initialize, or clear a hash table.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBHashTable *hnew(HashSize hashSize, float loadFactor, float rebuildTrig);\fR
+.HP 2
+\fBint hinit(HashTable *pHashTable, HashSize hashSize, float loadFactor, float rebuildTrig);\fR
+.HP 2
+\fBvoid hclear(HashTable *pHashTable);\fR
+.SH DESCRIPTION
+These functions either create a hash table by allocating a \fBHashTable\fR object in memory, or prepare an
+existing \fBHashTable\fR object for use.
+.PP
+The \fBhnew\fR() function allocates a \fBHashTable\fR object in memory, subject to the parameters given by its
+arguments (explained below).
+.PP
+The \fBhinit\fR() function initializes the existing hash table pointed to by \fIpHashTable\fR (e.g., a local
+variable on the stack) to an empty hash table, subject to the parameters given by its arguments (explained
+below).  The pointer to the hash table should be passed to \fBhclear\fR() when the hash table is no longer needed.
+.PP
+The \fBhclear\fR() function releases all memory used by the hash table pointed to by \fIpHashTable\fR, with
+the exception of the \fBHashTable\fR object itself.  It deletes all nodes and releases their memory, leaving
+the hash table empty, as if it were just created.  After \fBhclear\fR() is called, the hash table may be
+reused.  Alternatively, a hash table can be cleared and freed in one step by calling hfree(3), but only if it
+was allocated in memory.  See cxl_hash(7) for details.
+.PP
+The \fBhnew\fR() and \fBhinit\fR() functions use their parameter arguments \fIhashSize\fR, \fIloadFactor\fR, and
+\fIrebuildTrig\fR to control the hash table size and when and how the table should be rebuilt when it becomes
+too large.  These parameters are explained in the next section.
+.SS Hash Table Parameters
+A hash table contains an internal array that is used to hold pointers to its hash keys.  The length of this
+array is known as the "hash size".  The initial target hash size is specified by the integer
+\fIhashSize\fR.  The actual hash size is then determined by finding the first prime number that is equal
+to or greater than this target value.
+.PP
+The hash table also holds parameters that control when and how the table should be rebuilt when it becomes too
+large.  The size of the table (i.e., the total number of nodes it contains) is monitored by tracking the table's "load
+factor", which is a floating-point value calculated by dividing the current number of nodes in the table by
+the hash size.  When the load factor reaches a certain value (the "rebuild trigger"), the table is rebuilt
+with a larger array so that its load factor is reduced to a more reasonable level.  The target value for the
+new load factor is specified by \fIloadFactor\fR, which must be less than or equal to 1.0.  Additionally,
+\fIrebuildTrig\fR must be greater than \fIloadFactor\fR.
+.PP
+If any of the three parameter arguments specified for \fBhnew\fR() or \fBhinit\fR() is zero, a default value
+is used.  These are 67, 0.5, and 1.65, respectively.
+.SH RETURN VALUES
+If successful, \fBhnew\fR() returns a pointer to the hash table that was created.  It returns NULL on
+failure, and sets an exception code and message in the CXL Exception System to indicate the error.
+.PP
+If successful, \fBhinit\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.PP
+The \fBhclear\fR() function does not return a value.
+.SH SEE ALSO
+cxl(3), excep(3), hfree(3), hset(3)

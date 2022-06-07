@@ -1,0 +1,98 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CXL_ARRAY 7 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBarray\fR - dynamic array creation and manipulation package.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.SH DESCRIPTION
+The CXL library contains a number of functions that create and manipulate dynamic arrays, which are arrays
+that contain a variable number of elements.  These arrays can grow or shrink on the fly, depending on the
+operations performed on them.
+.PP
+A dynamic array is contained in an \fBArray\fR object, which is a structure that holds an array of zero or
+more pointers to \fBDatum\fR objects.  (See cxl_datum(7) for a description of \fBDatum\fR objects and how they
+are used.)  An \fBArray\fR structure is defined to contain at least the following members and have a maximum
+size indicated by the \fBArraySizeMax\fR macro:
+.sp
+.RS 4
+.PD 0
+#define ArraySizeMax LONG_MAX
+.sp
+typedef ssize_t ArraySize;
+.sp
+typedef struct Array {
+.RS 4
+.HP 2
+struct Array *next;
+.HP 2
+bool tagged;
+.HP 2
+ArraySize used;
+.HP 2
+Datum **elements;
+.HP 2
+} Array;
+.RE
+.PD
+.RE
+.PP
+The \fIused\fR member of the \fBArray\fR structure is the number of elements currently in use and should not
+be modified.  The \fIelements\fR member is the actual array, allocated in memory.  If the array is empty,
+\fIused\fR will be zero and \fIelements\fR will be a NULL pointer; otherwise, \fIelements\fR will be a pointer
+to an array of \fIused\fR elements of type \fBDatum *\fR.  The \fBDatum\fR object that each element points to
+may be changed via datum-manipulation functions; however, the pointer itself should not be modified.
+.PP
+The first two members of the \fBArray\fR structure are available for external use to manage arrays.  The
+\fInext\fR member provides the ability to keep multiple arrays in a linked list, and \fItagged\fR can be used
+to tag arrays on the list for some purpose (for example, to do "garbage collection").  These two members are
+set to NULL and false, respectively, when an array is created or initialized and ignored by the array routines
+thereafter.
+.PP
+Arrays are usually created with the \fBanew\fR() function; however, they can be created with other functions
+as well, such as \fBaclone\fR(), \fBaslice\fR(), and \fBasplit\fR().  It is not necessary to preallocate
+elements when an array is created; however, a small performance gain can be achieved by setting the array
+length at creation time if the maximum length of the array is known.  Once an array is created, there are
+various routines which can be used to create and manipulate elements and manipulate the array as a whole.
+.PP
+When an array is no longer needed, its memory should be freed.  This is done by passing the array pointer to
+either afree(3), if the array was created by a library function such as anew(3) (and thus, the \fBArray\fR
+object is allocated in memory), or aclear(3), if the \fBArray\fR object exists in a local variable on the
+stack.  In the latter case, the memory used by the elements will be released, but the \fBArray\fR object
+itself will not be freed.
+.PP
+All of the array functions are listed in cxl(3) with a brief description of each.
+.SS Operation Flags
+Many of the array functions use an \fIaflags\fR argument to control optional behavior, which is the bitwise
+OR of zero or more of the following:
+.sp
+.RS 4
+.PD 0
+.IP AOpIgnore 18
+Ignore case in string comparisons.
+.IP AOpCopy 18
+Copy datum into array; otherwise, store a pointer to it.
+.IP AOpCut 18
+Delete array elements after operation is completed.
+.IP AOpGrow 18
+Expand array as needed to complete operation.
+.IP AOpInPlace 18
+Perform operation in place; that is, on first array argument; otherwise, make new array.
+.IP AOpLast 18
+Find last occurrence, otherwise first.
+.IP AOpNonMatching 18
+Return non-matching elements, otherwise matching.
+.PD
+.RE
+.PP
+Note that in most cases, only one or two of these flags apply to a particular function.  Any other flags will
+be ignored.  Note also that the \fBAOpIgnore\fR flag is identical to the \fBDOpIgnore\fR flag that is used for
+datum operations; that is, they are defined to be the same value and thus, can be used interchangeably.
+.SH SEE ALSO
+Specific function names (like \fBanew\fR) listed in cxl(3) under the \fBARRAY PROCESSING\fR section
+for detailed routine descriptions.

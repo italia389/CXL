@@ -1,0 +1,40 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFSETDELIM 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffsetdelim\fR - set a line delimiter type on a fast file.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBint ffsetdelim(ushort delimType, FastFile *pFastFile);\fR
+.SH DESCRIPTION
+The \fBffsetdelim\fR() function sets the type of line delimiter to use on the fast file pointed to by \fIpFastFile\fR,
+which must have been previously opened for input.  The type is specified by setting \fIdelimType\fR to one of the
+following values:
+.sp
+.PD 0
+.RS 4
+.IP FFDelimNUL 16
+Use a null character ('\e0').
+.IP FFDelimCR 16
+Use a single carriage return ('\er').
+.IP FFDelimCRLF 16
+Use a carriage return, line feed sequence ("\er\en").
+.IP FFDelimNL 16
+Use a single newline ('\en').
+.RE
+.PD
+.PP
+This routine is normally called immediately after a file is opened with \fBffopen\fR().  It provides a means to explicity
+set a line delimiter for an input file being read from with \fBffgets\fR() instead of allowing \fBffgets\fR() to
+auto-detect the delimiter, which is its default behavior.
+.SH RETURN VALUES
+If successful, \fBffsetdelim\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3), ffgets(3), ffopen(3)

@@ -1,6 +1,6 @@
 Introduction
 ============
-CXL is the "C eXtensions Library".  It is a lightweight and robust package of routines that provide additional
+CXL is the "C eXtensions Library", a lightweight and robust package of routines that provide additional
 functionality and features (or "extensions") to the Standard C Library.  The CXL library's API consists of several
 functions, which are summarized in the "Features" section below.
 
@@ -9,12 +9,12 @@ Installation
 Installation is very straightforward.  Change to the root of the source directory and do one of the following:
 
     On Linux:
-        $ sudo ./cxl-1.0.0.sh
+        $ sudo ./cxl-1.1.0.sh
 
     On macOS:
-        $ open cxl-1.0.0.pkg
+        $ open cxl-1.1.0.pkg
 
-This will install the CXL (static) library and C headers into `/usr/local`.
+This will install the CXL static library and C headers into `/usr/local`.
 
 Features
 ========
@@ -39,10 +39,10 @@ begin with a dash or plus sign.
 Datum Objects
 -------------
 The library introduces the concept of a *Datum* object, which is an entity that can hold any type of data, including
-strings of any length.  A large number of routines are included which define and manipulate these objects.  Strings can
-be built or "fabricated" in pieces via an associated *DFab* object, in the same manner as a file; that is, you open a
-*DFab* object with an associated *Datum* object, write text to it, and close it.  There is also a garbage collection
-mechanism available for releasing heap memory in bulk that is used by the objects.
+strings of any length and arrays.  A large number of routines are included which define and manipulate these objects.
+Strings can be built or "fabricated" in pieces via an associated *DFab* object, in the same manner as a file; that is,
+you open a *DFab* object with an associated *Datum* object, write text to it, and close it.  There is also a garbage
+collection mechanism available for releasing heap memory in bulk that is used by the objects.
 
 Dynamic Arrays
 --------------
@@ -60,8 +60,8 @@ Fast I/O
 --------
 The library also includes a set of fast I/O routines which use large buffers and low level system calls to improve
 performance.  One of the input functions is **ffgets()**, which can be used to read a line of any length from a file
-with automatic detection of a CR, NL, or CR-LF line delimiter.  You can also "slurp" a file; that is, read an entire
-file at once as a single "line".
+with automatic detection of a CR, NL, CR-LF, or NUL line delimiter.  You can also "slurp" a file; that is, read an
+entire file at once as a single "line".
 
 Runs On macOS and Linux
 -----------------------
@@ -74,12 +74,8 @@ CXL is released under the GNU General Public License (GPLv3).  See the file `Lic
 
 Documentation
 =============
-This initial release of the CXL library is an undocumented version intended for use by other projects on GitHub, most
-notably *MightEMacs*.  Documenation ("man" pages) will be included in a future release.
-
-If you would like to use the library in your own project now, please refer to the
-[MightEMacs](https://github.com/italia389/MightEMacs.git) source code.  For example, the `main.c` source file in that
-project can be examined to see how to use the **getSwitch()** function.
+The project includes detailed installation instructions, and a full set of man pages for every library function,
+including pages for each of the major packages (datum, array, fast I/O, and hash table).
 
 Distribution
 ============
@@ -94,12 +90,12 @@ GitHub page.
 
 Notes
 =====
-This distribution of the CXL library is version 1.0.0.  Installer packages containing 64-bit binaries are included for
-Linux platforms and macOS ver. 10.10 and later.  The sources can be compiled instead if desired; however, the build
+This distribution of the CXL library is version 1.1.0.  Installer packages containing 64-bit binaries are included for
+Linux platforms and macOS ver. 10.12 and later.  The sources can be compiled instead if desired; however, the build
 process has not been tested on other Unix platforms and there may be some (hopefully minor) issues which will need to be
 resolved.  If you are compiling the sources and encounter any problems, please contact the author with the details.
 
 Credits
 =======
-The CXL library (c) Copyright 2020 Richard W. Marinelli is all original code written by
+The CXL library (c) Copyright 2022 Richard W. Marinelli is all original code written by
 Rick Marinelli <italian389@yahoo.com>.

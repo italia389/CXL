@@ -1,0 +1,155 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DSET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdconvchr\fR, \fBdsetchr\fR, \fBdsetnil\fR, \fBdsetnull\fR,
+\fBdsetarray\fR, \fBdsetstr\fR, \fBdsetsubstr\fR, \fBdsetint\fR,
+\fBdsetuint\fR, \fBdsetreal\fR, \fBdsetbool\fR, \fBdsetmem\fR,
+\fBdsetarrayref\fR, \fBdsetmemref\fR, \fBdsetstrref\fR,
+\fBdadoptarray\fR, \fBdadoptmem\fR, \fBdadoptstr\fR - set a datum to a value.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBvoid dconvchr(short c, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetchr(short c, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetnil(Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetnull(Datum *pDatum);\fR
+.HP 2
+\fBint dsetarray(const Array *pArray, Datum *pDatum);\fR
+.HP 2
+\fBint dsetstr(const char *str, Datum *pDatum);\fR
+.HP 2
+\fBint dsetsubstr(const char *str, size_t len, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetint(long i, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetuint(ulong u, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetreal(double d, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetbool(bool b, Datum *pDatum);\fR
+.HP 2
+\fBint dsetmem(const void *memPtr, size_t size, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetarrayref(Array *pArray, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetmemref(void *memPtr, size_t size, Datum *pDatum);\fR
+.HP 2
+\fBvoid dsetstrref(char *str, Datum *pDatum);\fR
+.HP 2
+\fBvoid dadoptarray(Array *pArray, Datum *pDatum);\fR
+.HP 2
+\fBvoid dadoptmem(void *memPtr, size_t size, Datum *pDatum);\fR
+.HP 2
+\fBvoid dadoptstr(char *str, Datum *pDatum);\fR
+.SH DESCRIPTION
+These functions provide the ability to set the datum pointed to by \fIpDatum\fR to various values.  The datum
+is automatically cleared with dclear(3) before the value is set.
+.SS Datum Memory Management
+As discussed in cxl_datum(7), datums can hold several types of values, some of which require memory to be allocated
+with malloc(3) to hold the data in addition to the memory allocated for the \fBDatum\fR object itself.  When a
+datum is reused or deleted, the memory allocated for its contents, if any, is released with free(3).  This is done
+by dclear(3).  The dclear(3) function examines the datum type to determine whether the datum has memory allocated for its
+contents and, if so, calls free(3) to release it.  Hence, it is imperative that the datum type be set correctly for
+a datum.  To accommodate this, there are three groups of functions in the datum package for setting values and types.
+.PP
+The first group of functions copy data into a datum and allocate memory to hold the copy if needed.  These
+functions are described in the \fBData Copy Functions\fR section below.  Most of the functions in this group
+store a copy of the data directly in the datum, but a few require malloc(3) to be called.  The datum types that
+require allocated memory are \fBdat_longStr\fR, \fBdat_byteStr\fR, and \fBdat_array\fR.
+.PP
+The second group of functions store a reference to a data object in the datum.  Thus, the data in the datum is
+not freed when the datum is cleared.  These functions are described in the \fBObject Reference Functions\fR
+section below.  The datum types that denote an object reference are \fBdat_longStrRef\fR,
+\fBdat_byteStrRef\fR, and \fBdat_arrayRef\fR.
+.PP
+The third and last group of functions also store a reference to a data object in the datum.  However, the data
+object is "adopted" in this case and consequently freed when the datum is cleared, just like the datums in
+the first group that require allocated memory (and hence, are the same datum types as well).  The functions that set
+datums in this manner are described in the \fBObject Adoption Functions\fR section below.
+.SS Data Copy Functions
+\fBdconvchr\fR() stores 8-bit character \fIc\fR into the datum as a string; that is, character \fIc\fR
+followed by a null terminator.  \fBdsetchr\fR() stores 8-bit character \fIc\fR into the datum as a character.
+\fBdsetnil\fR() and \fBdsetnull\fR() set the datum to a nil value and null string, respectively.
+.PP
+\fBdsetarray\fR() copies the array pointed to by \fIpArray\fR via aclone(3) to the datum.
+.PP
+\fBdsetstr\fR() copies the null-terminated string \fIstr\fR to the datum, and \fBdsetsubstr\fR() copies up to
+\fIlen\fR characters (stopping at the null terminator if encountered before \fIlen\fR characters have been
+copied) from \fIstr\fR, then adds a terminating null character.  Both routines allow the source string to be
+within the destination string so that a substring of the existing string in the datum can replace the whole
+string.
+.PP
+\fBdsetint\fR(), \fBdsetuint\fR(), \fBdsetreal\fR(), and \fBdsetbool\fR() store long integer \fIi\fR, unsigned
+long integer \fIu\fR, real number \fId\fR (of type \fBdouble\fR), and Boolean value \fIb\fR, respectively into the datum.
+.PP
+\fBdsetmem\fR() copies \fIsize\fR bytes beginning at memory location \fImemPtr\fR to the datum.
+.SS Object Reference Functions
+\fBdsetarrayref\fR() stores pointer \fIpArray\fR in the datum; \fBdsetmemref\fR() stores pointer \fImemPtr\fR
+and size \fIsize\fR in the datum; and \fBdsetstrref\fR() stores pointer \fIstr\fR in the datum.  All three
+functions mark the datum as a reference type and thus, memory for the object \fBwill not\fR be released with free(3)
+when the datum is cleared or deleted, as described previously.
+.SS Object Adoption Functions
+\fBdadoptarray\fR() stores pointer \fIpArray\fR in the datum; \fBdadoptmem\fR() stores pointer \fImemPtr\fR
+and size \fIsize\fR in the datum; and \fBdadoptstr\fR() stores pointer \fIstr\fR in the datum.  All three
+functions mark the datum as a non-reference type and thus, memory for the object \fBwill\fR be released with
+free(3) when the datum is cleared or deleted, as described previously.
+.SS Datum Result Types
+The following table shows the resultant type of the datum for each function after the value is set:
+.sp
+.RS 8
+.PD 0
+.IP dadoptarray() 20
+dat_array
+.IP dadoptmem() 20
+dat_byteStr
+.IP dadoptstr() 20
+dat_longStr
+.IP dconvchr() 20
+dat_miniStr
+.IP dsetarray() 20
+dat_array
+.IP dsetarrayref() 20
+dat_arrayRef
+.IP dsetbool() 20
+dat_true or dat_false
+.IP dsetchr() 20
+dat_char
+.IP dsetint() 20
+dat_int
+.IP dsetmem() 20
+dat_byteStr
+.IP dsetmemref() 20
+dat_byteStrRef
+.IP dsetnil() 20
+dat_nil
+.IP dsetnull() 20
+dat_miniStr
+.IP dsetreal() 20
+dat_real
+.IP dsetstr() 20
+dat_miniStr or dat_longStr
+.IP dsetstrref() 20
+dat_longStrRef
+.IP dsetsubstr() 20
+dat_miniStr or dat_longStr
+.IP dsetuint() 20
+dat_uint
+.PD
+.RE
+.SH RETURN VALUES
+If successful, \fBdsetarray\fR(), \fBdsetstr\fR(), \fBdsetsubstr\fR(), and \fBdsetmem\fR() return zero.  They
+return a negative integer on failure, and set an exception code and message in the CXL Exception System to
+indicate the error.
+.PP
+None of the other functions return a value.
+.SH SEE ALSO
+aclone(3), cxl(3), cxl_array(7), dclear(3), excep(3), free(3)

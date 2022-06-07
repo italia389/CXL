@@ -1,0 +1,21 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFFLUSH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffflush\fR - flush a fast file.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBint ffflush(FastFile *pFastFile);\fR
+.SH DESCRIPTION
+The \fBffflush\fR() function forces a write of all buffered data for the fast file pointed to by \fIpFastFile\fR.
+.SH RETURN VALUES
+If successful, \fBffflush\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3)

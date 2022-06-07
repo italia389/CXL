@@ -1,0 +1,22 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HDELETE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhdelete\fR - delete a hash table node.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBDatum *hdelete(HashTable *pHashTable, const char *key);\fR
+.SH DESCRIPTION
+The \fBhdelete\fR() function attempts to delete the node in the hash table pointed to by
+\fIpHashTable\fR having string key \fIkey\fR.
+.SH RETURN VALUES
+If successful, \fBhdelete\fR() returns a pointer to datum object that was in the node that was deleted, otherwise NULL,
+indicating that the key was not found.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7)

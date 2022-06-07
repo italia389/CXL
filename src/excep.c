@@ -66,7 +66,7 @@ int emsgf(int code, const char *fmt, ...) {
 //
 //   ExErrNo		errno variable contains exception code.
 //   ExMessage		cxlExcep.msg variable contains exception message.
-//   ExCustom		Formatted message (no prefix), do not call exit(), return non-zero.
+//   ExCustom		Formatted message.
 //
 //   ExExit		Force exit() call.
 //   ExNoExit		Skip exit() call, return non-zero.
@@ -77,11 +77,10 @@ int emsgf(int code, const char *fmt, ...) {
 //  3. Arguments are processed as follows:
 //	1. Print message prefix per severity flag in first argument, if specified.
 //	2. If ExMessage flag is set, print cxlExcep.msg; otherwise, if ExErrNo flag is set, print strerror(errno) message.
-//	3. If ExErrNo flag is set and errno is non-zero, use errno for exit code; otherwise, use DefExitCode.
-//	4. If ExCustom flag is set, call printf with remaining arguments.
-//	5. Call exit, if applicable; otherwise, return DefExitCode.
+//	3. If ExCustom flag is set, call printf() with remaining arguments.
+//	4. If ExErrNo flag is set and errno is non-zero, use errno for exit code; otherwise, use EXIT_FAILURE.
+//	5. Call exit() if applicable; otherwise, return DefExitCode.
 int excep(uint flags, ...) {
-	va_list varArgList;
 	static struct {
 		bool callExit;
 		char *severityPrefix;
@@ -92,41 +91,42 @@ int excep(uint flags, ...) {
 			{true, "Error"},
 			{true, "Abort"}
 			};
-	int exitCode;
-	uint f;
-	bool callExit, needComma = false;
+	uint severityIndex;
+	bool callExit;
+	bool needComma = false;
 
-	va_start(varArgList, flags);
+	// Print severity prefix if requested and not out of range.
+	if((severityIndex = flags & ExSeverityMask) != 0) {
+		if(severityIndex < elementsof(severityTable))
+			fprintf(stderr, "%s: ", severityTable[severityIndex].severityPrefix);
+		else
+			severityIndex = 0;
+		}
 
-	// Print severity prefix and set default exit action.
-	if((f = flags & ExSeverityMask))
-		fprintf(stderr, "%s: ", severityTable[f].severityPrefix);
-	callExit = severityTable[f].callExit;
-
-	// Check geek message and errno and print message.
+	// Check for library or errno message and print it if requested.
 	if(flags & (ExMessage | ExErrNo)) {
 		fputs((flags & ExMessage) ? cxlExcep.msg : strerror(errno), stderr);
 		needComma = true;
 		}
 
-	// Check errno and set exit code.
-	exitCode = ((flags & ExErrNo) && errno) ? errno : DefExitCode;
-
 	// Print formatted message, if requested.
 	if(flags & ExCustom) {
+		va_list varArgList;
 		char *fmt;
 
+		va_start(varArgList, flags);
 		if(needComma)
 			fputs(", ", stderr);
 		fmt = va_arg(varArgList, char *);
 		vfprintf(stderr, fmt, varArgList);
+		va_end(varArgList);
 		}
 
 	// Finish up.
 	fputc('\n', stderr);
-	va_end(varArgList);
 
 	// Call exit(), if applicable.
+	callExit = severityTable[severityIndex].callExit;
 	switch(flags & ExExitMask) {
 	case ExExit:
 		callExit = true;
@@ -135,7 +135,7 @@ int excep(uint flags, ...) {
 		callExit = false;
 	}
 	if(callExit)
-		exit(exitCode);
+		exit((flags & ExErrNo) && errno ? errno : EXIT_FAILURE);
 
 	return DefExitCode;
 	}

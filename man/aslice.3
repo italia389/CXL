@@ -1,0 +1,32 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ASLICE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaslice\fR - create an array from a slice of another array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *aslice(Array *pArray, ArraySize index, ArraySize len, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBaslice\fR() function creates an array from a "slice" of another array, subject to the operation flag
+in \fIaflags\fR, which is either \fBAOpCut\fR or zero.  More
+precisely, it moves or copies \fIlen\fR elements beginning at position \fIindex\fR from the array pointed to
+by \fIpArray\fR to a new array and returns a pointer to it.  If the \fIaflags\fR argument is \fBAOpCut\fR, the
+element(s) are moved to the new array, and any elements beyond the slice in \fIpArray\fR are shifted left to
+fill the gap.  If \fIaflags\fR is zero, the element(s) are copied instead.  In this case, the array pointed to
+by \fIpArray\fR remains unchanged.
+.PP
+If the index is negative, the starting position is determined by counting backward from the end of the array,
+where -1 is the last element; otherwise, the starting position is relative to the beginning of the array with
+the first being 0.  If the length is negative or specifies a slice that extends beyond the end of the array,
+the slice is adjusted to end at the last element.
+.SH RETURN VALUES
+If successful, \fBaslice\fR() returns a pointer to the array that is created.  It returns NULL on failure, and sets an
+exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_array(7), excep(3)

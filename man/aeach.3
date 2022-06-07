@@ -1,0 +1,42 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AEACH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaeach\fR - step through an array, returning each element in sequence.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBDatum *aeach(Array **ppArray);\fR
+.SH DESCRIPTION
+The \fBaeach\fR() routine provides a means to access each element of an array in sequence, beginning at
+the first.  The function returns the contents of the next element (a \fBDatum *\fR) each time it is called.  When no
+elements remain, it returns NULL.
+.PP
+The caller must provide the address of a variable of type \fBArray *\fR to the function in \fIppArray\fR for each call,
+which is an indirect pointer to the array to be stepped through.  This variable is used to maintain state information,
+and is modified by this routine.
+.SH EXAMPLES
+The following code fragment illustrates how \fBaeach\fR() is typically used to step through an array:
+.nf
+.ta 4 8 12
+.sp
+	// Loop through array pointed to by "pArray".
+	Array *pArray1 = pArray;
+	Datum *pDatum;
+.sp
+	while((pDatum = aeach(&pArray1)) != NULL) {
+.sp
+		// Do something with pDatum.
+		...
+		}
+.fi
+.PP
+Note that the array is not modified by stepping through it; however, the element values may be changed if desired; that is,
+the contents of the datums that \fIpDatum\fR points to.
+.SH SEE ALSO
+aget(3), cxl(3), cxl_array(7), cxl_datum(7)

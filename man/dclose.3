@@ -1,0 +1,52 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DCLOSE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdclose\fR - close a fabrication object.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dclose(DFab *pFab, ushort type);\fR
+.SH DESCRIPTION
+The \fBdclose\fR() function ends the datum-build process in the \fBDFab\fR object pointed to by \fIpFab\fR and
+closes the fabrication object.  The \fItype\fR argument specifies the type of close to perform, which must be
+one of the following:
+.PP
+.RS 4
+.PD 0
+.IP "FabStr, FabStrRef" 12
+The contents of the datum associated with the fabrication object will be converted to a null-terminated string
+of type \fBdat_miniStr\fR or \fBdat_longStr\fR (if FabStr specified), or \fBdat_longStrRef\fR (if FabStrRef specified).
+If the data contains any null bytes, it is considered an error.
+.sp
+.IP "FabMem, FabMemRef" 12
+The contents of the datum associated with the fabrication object will be converted to a byte string of type
+\fBdat_byteStr\fR (if FabMem specified) or \fBdat_byteStrRef\fR (if FabMemRef specified), which may contain null bytes.
+The length of the byte string is set in the datum; that is, in \fIpFab->pDatum->u.mem.size\fR.
+.sp
+.IP FabAuto 12
+The contents of the datum associated with the fabrication object will be converted to either a null-terminated
+string or a byte string automatically, depending on whether the data contains any null bytes.  If no null
+bytes are found, it is converted to a string (type \fBdat_miniStr\fR or \fBdat_longStr\fR), otherwise a byte
+string (type \fBdat_byteStr\fR).
+.PD
+.RE
+.PP
+After the fabrication object is closed by this function, its associated datum can be accessed via the
+\fIpDatum\fR member of the \fBDFab\fR structure.  The datum exists independently of the fabrication object at
+this point.  Additionally, any memory that was allocated during the build process is contained within the
+datum, so nothing needs to be freed in the fabrication object.
+.PP
+Note that if the close type is FabStrRef or FabMemRef, the contents of the datum will not be freed when the datum
+is freed, thus the pointer to the contents (\fIpFab->pDatum->str\fR or \fIpFab->pDatum->u.mem.ptr\fR, respectively)
+should be passed to free(3) by the caller when the datum is no longer needed, and before the datum is freed.
+.SH RETURN VALUES
+If successful, \fBdclose\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), dopen(3), dopentrack(3), excep(3)

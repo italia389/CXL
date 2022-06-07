@@ -1,0 +1,24 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DSHQUOTE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdshquote\fR - copy a string to a datum in shell-quoted form.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dshquote(const char *str, Datum *pDatum);\fR
+.SH DESCRIPTION
+The \fBdshquote\fR() function copies the null-terminated string \fIstr\fR to the datum pointed to by \fIpDatum\fR in a
+quoted form so that the string can be used verbatim as a shell argument and will evaluate to the original string.  To
+accomplish this, the function adds a single quote (') at the beginning and end of the string, and converts all single
+quotes within the string to \fI'\e''\fR.
+.SH RETURN VALUES
+If successful, \fBdshquote\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), excep(3)

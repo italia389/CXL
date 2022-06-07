@@ -1,0 +1,24 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DTRACK 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdtrack\fR, \fBduntrack\fR - start or stop tracking a datum.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBvoid dtrack(Datum *pDatum);\fR
+.HP 2
+\fBvoid duntrack(Datum *pDatum);\fR
+.SH DESCRIPTION
+The \fBdtrack\fR() function starts tracking the datum pointed to by \fIpDatum\fR by adding it to the garbage
+collection stack, if not already present.
+.PP
+The \fBduntrack\fR() function stops tracking the datum pointed to by \fIpDatum\fR by removing it from the garbage
+collection stack, if present.
+.SH SEE ALSO
+cxl(3), cxl_datum(7)

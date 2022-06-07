@@ -1,0 +1,32 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FPUTVIZ 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBfputvizc\fR, \fBfputvizmem\fR - write data to a stream in visible form.
+.SH SYNOPSIS
+\fB#include "cxl/ioext.h"\fR
+.HP 2
+\fBint fputvizc(short c, ushort flags, FILE *stream);\fR
+.HP 2
+\fBint fputvizmem(const void *memPtr, size_t size, ushort flags, FILE *stream);\fR
+.SH DESCRIPTION
+The \fBfputvizc\fR() function writes character \fIc\fR to the output stream pointed
+to by \fIstream\fR in visible form by passing the character and the \fIflags\fR argument
+to \fBvizc\fR() and outputting the string result of the conversion.
+.PP
+The \fBfputvizmem\fR() function writes zero or more bytes to the output stream pointed to by
+\fIstream\fR in visible form by passing each byte to \fBvizc\fR() and outputting the string
+result of the conversion.  If \fIsize\fR is greater than zero, \fIsize\fR bytes from the memory
+area pointed to by \fImemPtr\fR are converted and written.  If size is equal to zero, \fImemPtr\fR is
+assumed to point to a null-terminated string.  In this case, each character in the string is
+converted and written.
+.SH RETURN VALUES
+If successful, \fBfputvizc\fR() and \fBfputvizmem\fR() return zero.  They return a negative integer on failure,
+and set an exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), excep(3), vizc(3)

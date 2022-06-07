@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -26,11 +26,22 @@ typedef struct {
 	short inpDelim1, inpDelim2;	// Input line delimiters (chars), or -1 if not defined.
 	} FastFile;
 
-#define FFOtpMode	0x0001		// File is opened for output; otherwise, input.
+// Input file delimiter types.
+#define FFDelimNUL	0		// Null byte.
+#define FFDelimCR	1		// Carriage return.
+#define FFDelimCRLF	2		// Carriage return + line feed.
+#define FFDelimNL	3		// Newline.
+#define FFDelimMask	0x3
+
+// For internal use.
+#define FFOtpMode	0x0001		// File is opened for output, otherwise input.
 #define FFStdInp	0x0002		// File handle is standard input.
 #define FFStdOtp	0x0004		// File handle is standard output.
 #define FFSlurp		0x0008		// Slurping input file.
 #define FFEOF		0x0010		// Input file is at EOF.
+
+// Return non-zero (true) if given fast file is at EOF.
+#define ffeof(pFastFile)	(pFastFile->flags & FFEOF)
 
 // Function declarations.
 extern bool ffchomp(FastFile *pFastFile);
@@ -45,9 +56,9 @@ extern int ffprintf(FastFile *pFastFile, const char *fmt, ...);
 extern int ffputc(short c, FastFile *pFastFile);
 extern int ffputs(const char *str, FastFile *pFastFile);
 extern ssize_t ffread(void *buf, ssize_t len, FastFile *pFastFile);
-extern int ffSetDelim(const char *delimType, FastFile *pFastFile);
+extern int ffsetdelim(ushort delimType, FastFile *pFastFile);
 extern ssize_t ffslurp(FastFile *pFastFile);
-extern int ffvizc(short c, ushort flags, FastFile *pFastFile);
-extern int ffvizmem(const void *mem, size_t size, ushort flags, FastFile *pFastFile);
+extern int ffputvizc(short c, ushort flags, FastFile *pFastFile);
+extern int ffputvizmem(const void *memPtr, size_t size, ushort flags, FastFile *pFastFile);
 extern int ffwrite(void *buf, size_t len, FastFile *pFastFile);
 #endif

@@ -1,0 +1,21 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HSEARCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhsearch\fR - search for a key in a hash table.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBHashRec *hsearch(HashTable *pHashTable, const char *key);\fR
+.SH DESCRIPTION
+The \fBhsearch\fR() function searches the hash table pointed to by \fIpHashTable\fR for string key \fIkey\fR.
+.SH RETURN VALUES
+If successful, \fBhsearch\fR() returns a pointer to the node that was found (a hash record of
+type \fBHashRec\fR), otherwise NULL, indicating that the key was not found.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7)

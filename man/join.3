@@ -1,0 +1,24 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH JOIN 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBjoin\fR - join substrings with a delimiter to produce a string.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBint join(Datum *pDest, StrArray *pSrc, const char *delim);\fR
+.SH DESCRIPTION
+The \fBjoin\fR() function concatenates all substrings of the \fBStrArray\fR object pointed to by
+\fIpSrc\fR into the \fBDatum\fR object pointed to by \fIpDest\fR with the string \fIdelim\fR
+(which may be empty) inserted between each pair of substrings.  The \fBStrArray\fR object is assumed
+to have been previously created with split(3).
+.SH RETURN VALUES
+If successful, \fBjoin\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+ajoin(3), asplit(3), cxl(3), cxl_datum(7), excep(3), split(3)

@@ -1,0 +1,69 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STRCONV 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBstrconv\fR - copy a string, with escape sequences converted to single characters.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBint strconv(char *dest, const char *src, const char **pSrcEnd, short termChar);\fR
+.SH DESCRIPTION
+The \fBstrconv\fR() function copies string \fIsrc\fR to string \fIdest\fR, converting escape
+sequences to single characters in the process, and null-terminates the result.  String \fIdest\fR is
+assumed to be at least as long as string \fIsrc\fR, including the null terminator.
+.PP
+The following table shows the escape sequences that are recognized by the function, the octal value of the ASCII character they
+represent, and a brief description:
+.PP
+.RS 4
+.PD 0
+.IP \et\ \ \ \ 011 20
+Horizontal tab.
+.IP \en\ \ \ \ 012 20
+Newline.
+.IP \ev\ \ \ \ 013 20
+Vertical tab.
+.IP \ef\ \ \ \ 014 20
+Form feed.
+.IP \er\ \ \ \ 015 20
+Carriage return.
+.IP \ee\ \ \ \ 033 20
+Escape.
+.IP \es\ \ \ \ 040 20
+Space.
+.IP \e\e \ \ \ 134 20
+Backslash.
+.IP \e\fIn\fR,\ \ex\fIn\fR,\ \eX\fIn\fR 20
+Ordinal value of an 8-bit character in octal (\fIn\fR is a maximum of three digits) or
+hexadecimal (\fIn\fR is a maximum of two digits).  Forms \e0\fIn\fR and \e\fIn\fR are processed
+as octal; forms \e0x\fIn\fR, \ex\fIn\fR, and \eX\fIn\fR are processed as hexadecimal.
+.IP \e\fIc\fR 20
+Character \fIc\fR itself, if not any of the above and not the null terminator.
+.PD
+.RE
+.PP
+The \fBstrconv\fR() function stops scanning the source string when a null
+character is found, or character \fItermChar\fR (which may also be a null character) is found.  If
+\fIpSrcEnd\fR is not NULL, a pointer to this character is then stored in *\fIpSrcEnd\fR.
+.SH EXAMPLES
+The \fBstrconv\fR() function is typically used to process a command line argument where a string needs to be specified
+that may contain newline(s) or other control characters.  For example, if string 'This is as\eneasy\esas\ex0A123!\e12'
+was entered and processed by \fBstrconv\fR(), it would produce the following:
+.PP
+.RS 4
+.nf
+This is as
+easy as
+123!
+.fi
+.RE
+.SH RETURN VALUES
+If successful, \fBstrconv\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
+message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), excep(3)

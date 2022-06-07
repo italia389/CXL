@@ -1,0 +1,34 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AINDEX 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBadeleteif\fR, \fBainclude\fR, \fBaindex\fR - locate element(s) in an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArraySize adeleteif(Array *pArray, const Datum *pVal, ushort aflags);\fR
+.HP 2
+\fBbool ainclude(const Array *pArray, const Datum *pVal, ushort aflags);\fR
+.HP 2
+\fBArraySize aindex(const Array *pArray, const Datum *pVal, ushort aflags);\fR
+.SH DESCRIPTION
+These functions locate element(s) in the array pointed to by \fIpArray\fR that match the datum pointed to by
+\fIpVal\fR, subject to the operation flag(s) in \fIaflags\fR, and optionally, perform an operation on the matching
+element(s).  The \fIaflags\fR argument is the bitwise OR of zero or more of the flag(s) \fBAOpIgnore\fR and
+\fBAOpLast\fR.
+.PP
+The \fBadeleteif\fR() function deletes all matching elements from the array and returns the number of elements deleted.
+.PP
+The \fBainclude\fR() function returns true if at least one match is found, otherwise false.
+.PP
+The \fBaindex\fR() function returns the index of the first (or last if the \fBAOpLast\fR flag is specified)
+matching element, or -1 if no match is found.
+.PP
+All of the functions ignore case in string comparisons when searching for matches if the \fBAOpIgnore\fR flag is specified.
+.SH SEE ALSO
+adelete(3), cxl(3)

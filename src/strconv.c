@@ -7,7 +7,6 @@
 
 #include "stdos.h"
 #include "cxl/excep.h"
-#include "cxl/datum.h"
 #include "cxl/string.h"
 
 // Copy src to dest, converting escape sequences to single characters and return status code.  The following escape sequences
@@ -38,7 +37,7 @@ int strconv(char *dest, const char *src, const char **pSrcEnd, short termChar) {
 			if(*++src == '\0')
 				goto BadSeq;
 
-			// Initialize variables for \nn parsing, if any.  \0[xX]... and \[xX]... are hex; otherwise, octal.
+			// Initialize variables for \nn parsing, if any.  \0[xX]... and \[xX]... are hex, otherwise octal.
 			short c2;
 			int base = 8;
 			int maxLen = 3;

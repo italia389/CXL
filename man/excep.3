@@ -1,0 +1,129 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH EXCEP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBemsg\fR, \fBemsgf\fR, \fBemsgsys\fR, \fBexcep\fR - CXL Library Exception System.
+.SH SYNOPSIS
+\fB#include "cxl/excep.h"\fR
+.HP 2
+\fBint emsg(int code, const char *msg);\fR
+.HP 2
+\fBint emsgf(int code, const char *fmt, ...);\fR
+.HP 2
+\fBint emsgsys(int code);\fR
+.HP 2
+\fBint excep(uint flags, ...);\fR
+.SH DESCRIPTION
+These routines provide a means to manage exceptions in C code, supplementing the \fIerrno\fR facility and functions such
+as \fBperror\fR() in the Standard C Library.
+.SS Setting an Exception State
+The \fBemsg\fR(), \fBemsgf\fR(), and \fBemsgsys\fR() functions set an exception code and message in a global variable
+and return the code.  They are called by many of the functions in the CXL library to set a non-zero exception code
+(usually -1) and error message when some type of unexpected or abnormal event occurs; for example, an invalid function
+argument.  They can also be used by user-written functions for the same purpose.  The exception code and message that
+are set can subsequently be accessed and used by a function farther up the call chain (like the \fBmain\fR() routine) to
+handle the exception by taking some type of action; for example, display the (error) message to the user and exit the
+program.
+.PP
+The exception code and message are saved in a global variable called \fIcxlExcep\fR of type \fBCXLExcep\fR, which is a structure
+that is defined to contain at least the following members:
+.sp
+.PD 0
+.RS 4
+.HP 2
+typedef struct {
+.RS 4
+.HP 2
+int code;
+.HP 2
+char *msg;
+.HP 2
+} CXLExcep;
+.RE
+.RE
+.PD
+.PP
+Each time an exception code and message are set by one of these functions, they overwrite previous values.  Hence, only
+the most-recently set exception code and message are available in \fIcxlExcep\fR.\fIcode\fR and
+\fIcxlExcep\fR.\fImsg\fR.
+.PP
+The functions operate as follows: \fBemsg\fR(), \fBemsgf\fR(), and \fBemsgsys\fR() all set \fIcxlExcep\fR.\fIcode\fR to
+\fIcode\fR (and return it), but provide different methods for setting the exception message.  \fBemsg\fR() sets
+\fIcxlExcep\fR.\fImsg\fR to \fImsg\fR directly; \fBemsgsys\fR() calls the \fBstrerror\fR() function with argument
+\fIerrno\fR, and stores the returned value in \fIcxlExcep\fR.\fImsg\fR; and \fBemsgf\fR() builds a string in memory
+according to format string \fIfmt\fR and corresponding conversions on subsequent arguments in the same manner as the
+\fBprintf\fR() function and stores a pointer to the resultant string in \fIcxlExcep\fR.\fImsg\fR (see printf(3) for an
+explanation of the available formatting specifications).
+.SS Displaying an Exception Message
+In addition to setting an exception code and message when an error is detected, it may be desirable to write an
+informative message to standard error and optionally, exit the program.  The \fBexcep\fR() function provides this
+capability.  It operates in a similar manner to the \fBperror\fR() function, but provides more options for
+constructing the message that is displayed, and the source of the base message.
+.PP
+The \fBexcep\fR() function builds an exception message and prints it to standard error according to \fIflags\fR,
+which is the bitwise OR of from one to four of the following flags:
+.sp
+.PD 0
+.nf
+.ta 4 18
+	ExNotice	Prepend "Notice: ".
+	ExWarning	Prepend "Warning: ".
+	ExError		Prepend "Error: ".
+	ExAbort		Prepend "Abort: ".
+.sp
+	ExMessage	\fIcxlExcep\fR.\fImsg\fR variable contains exception message.
+	ExErrNo		\fIerrno\fR variable contains exception code.
+.sp
+	ExCustom	Display custom, formatted message.
+.sp
+	ExExit		Force \fBexit\fR() call.
+	ExNoExit	Skip \fBexit\fR() call.
+.fi
+.PD
+.PP
+The message that is displayed is constructed as follows, depending on the flag(s) that are specified:
+.sp
+.PD 0
+.RS 4
+.IP 1. 4
+If \fBExNotice\fR, \fBExWarning\fR, \fBExError\fR, or \fBExAbort\fR is specified, text corresponding to the name of the
+flag is printed, followed by a colon and a space; for example, "Error: " is printed if the \fBExError\fR flag is
+specified.  The flags in this group are optional and mutually exclusive.
+.IP 2. 4
+If \fBExMessage\fR is specified, global variable \fIcxlExcep\fR.\fImsg\fR is printed; otherwise, if \fBExErrNo\fR is
+specified, the string returned by the \fBstrerror\fR() function with argument \fIerrno\fR is printed.  These two flags
+are optional and mutually exclusive.
+.IP 3. 4
+If \fBExCustom\fR is specified, a custom message is generated and printed by passing all arguments that follow
+\fIflags\fR to a variable argument function in the \fBprintf\fR() family, where the first argument must be the format
+string.  This flag is optional.
+.IP 4. 4
+After the message is displayed, the \fBexit\fR() function is called with a non-zero argument (see below) if either of
+the following is true:
+.sp
+.RS 8
+.IP \- 2
+\fBExExit\fR is specified.
+.IP \- 2
+\fBExError\fR or \fBExAbort\fR is specified and \fBExNoExit\fR is not specified.
+.sp
+.RE
+.IP
+If \fBexit\fR() is called, it is called with \fIerrno\fR as its argument if \fIerrno\fR is non-zero and \fBExErrNo\fR is
+specified, otherwise EXIT_FAILURE (as discussed in exit(3)).
+.IP 5. 4
+If \fBexit\fR() was not called in the previous step, \fBexcep\fR() returns -1.
+.RE
+.PD
+.PP
+Note that the \fBExMessage\fR, \fBExErrNo\fR, and \fBExCustom\fR flags are all optional, but it is necessary to specify
+at least one in order to generate a meaningful message.  Also note that the \fBExError\fR and \fBExAbort\fR flags cause
+\fBexit\fR() to be called by default; however, program exit can be explicitly controlled by specifying \fBExExit\fR or
+\fBExNoExit\fR.
+.SH SEE ALSO
+cxl(3), perror(3), strerror(3)

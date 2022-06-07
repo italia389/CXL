@@ -1,0 +1,37 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DISVAL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdisnil\fR, \fBdischr\fR, \fBdisnull\fR, \fBdisempty\fR, \fBdistrue\fR, \fBdisfalse\fR - test a datum for
+value(s) and return Boolean result.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBbool disnil(const Datum *pDatum);\fR
+.HP 2
+\fBbool dischr(const Datum *pDatum);\fR
+.HP 2
+\fBbool disnull(const Datum *pDatum);\fR
+.HP 2
+\fBbool disempty(const Datum *pDatum);\fR
+.HP 2
+\fBbool distrue(const Datum *pDatum);\fR
+.HP 2
+\fBbool disfalse(const Datum *pDatum);\fR
+.SH DESCRIPTION
+These functions perform value tests on the datum pointed to by \fIpDatum\fR and return true if the datum
+contains the indicated value, otherwise false.
+.PP
+\fBdisnil\fR() tests if the datum is nil; \fBdischr\fR() tests if the datum is a character; \fBdisnull\fR()
+tests if the datum is a null string; \fBdisempty\fR() tests if the datum is nil, a null string, or an array
+that contains no elements; \fBdisfalse\fR() tests if the datum is nil or false; and \fBdistrue\fR() tests if
+the datum is not nil and not false.
+.PP
+Note that both \fBdistrue\fR() and \fBdisfalse\fR() consider a datum containing a number, including zero, to be true.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), dtyp(3)

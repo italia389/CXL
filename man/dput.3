@@ -1,0 +1,123 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DPUT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdputc\fR, \fBdputs\fR, \fBdputsubstr\fR, \fBdputf\fR, \fBdputmem\fR, \fBdputd\fR - write data to an
+opened fabrication object.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dputc(short c, DFab *pFab, ushort cflags);\fR
+.HP 2
+\fBint dputs(const char *str, DFab *pFab, ushort cflags);\fR
+.HP 2
+\fBint dputsubstr(const char *str, size_t len, DFab *pFab, ushort cflags);\fR
+.HP 2
+\fBint dputf(DFab *pFab, ushort cflags, const char *fmt, ...);\fR
+.HP 2
+\fBint dputmem(const void *memPtr, size_t size, DFab *pFab, ushort cflags);\fR
+.HP 2
+\fBint dputd(const Datum *pDatum, DFab *pFab, ushort cflags);\fR
+.SH DESCRIPTION
+The \fBdput*\fR() family of functions provide various ways of writing data to an opened fabrication object,
+subject to the conversion flags in \fIcflags\fR.  The fabrication object is pointed to by \fIpFab\fR in each routine.
+The available conversion flags are described in the \fBString Conversion\fR section below.
+.PP
+\fBdputc\fR() writes 8-bit character \fIc\fR, and \fBdputs\fR() writes null-terminated string \fIstr\fR.
+\fBdputsubstr\fR() writes up to \fIlen\fR characters from string \fIstr\fR (stopping at the null terminator if
+encountered before \fIlen\fR characters have been written), and \fBdputmem\fR() writes \fIsize\fR bytes
+beginning at memory location \fImemPtr\fR.
+.PP
+\fBdputf\fR() writes data according to format string \fIfmt\fR and corresponding conversions on subsequent arguments in
+the same manner as the \fBprintf\fR() function.  See printf(3) for an explanation of the available formatting
+specifications.
+.PP
+\fBdputd\fR() writes the contents of the datum pointed to by \fIpDatum\fR to the fabrication object in string
+form.  Note that this may include null byte(s) if the datum contains binary data.  Note also that if the datum
+contains an array, and the array contains itself at any nesting level, that element will be output as "..."
+(or "[...]" if the \fBACvtBrkts\fR flag is specified, discussed below) as an indicator of such.
+.SS String Conversion
+The \fIcflags\fR argument in each routine contains the bitwise OR of zero or more "conversion flags".  These
+are of two types.  Flags of the first type apply to datums, and are defined as follows:
+.sp
+.PD 0
+.RS 4
+.IP DCvtShowNil 16
+Output "nil" for a nil value, otherwise a null string.
+.IP DCvtVizChar 16
+Output characters via vizc(3) calls.
+.IP DCvtEscChar 16
+Output characters in escaped (\er, \en, etc.) form.
+.IP DCvtQuote1 16
+Enclose characters and strings in single (') quotes.
+.IP DCvtQuote2 16
+Enclose characters and strings in double (") quotes.
+.IP DCvtQuote 16
+Automatically quote characters and strings depending on datum type and other flags.
+.IP DCvtThouSep 16
+Insert commas in thousands' places in signed and unsigned integers.
+.RE
+.PD
+.PP
+Flags of the second type apply to arrays, and are defined as follows:
+.sp
+.PD 0
+.RS 4
+.IP ACvtBrkts 16
+Wrap array elements in brackets [...].
+.IP ACvtDelim 16
+Insert comma delimiter between array elements.
+.IP ACvtSkipNil 16
+Skip nil arguments in arrays.
+.RE
+.PD
+.PP
+Note that any of these flags may be combined with the flags from the vizc(3) function to further refine the type
+of conversion desired.  However, \fBDCvtVizChar\fR must be specified in place of \fBVizBaseDef\fR.  Also, the following
+shortcut macros are available for specifying common flag combinations:
+.sp
+.PD 0
+.RS 4
+.IP #define\~DCvtLang 24
+(DCvtShowNil | DCvtEscChar | DCvtQuote | ACvtBrkts | ACvtDelim)
+.IP #define\~DCvtVizStr 24
+(DCvtShowNil | DCvtVizChar | DCvtQuote1 | ACvtBrkts | ACvtDelim)
+.RE
+.PD
+.PP
+The \fBDCvtLang\fR macro defines flags for a "programming language" format; that is, a visual format commonly
+used for string literals and other data types in a programming language such as C.  This could be used for
+textual data.  Alternatively, the \fBDCvtVizStr\fR macro defines flags for a "human readable" visual format
+which could be used for binary data.
+.PP
+The conversion process uses the following rules to resolve flag conflicts and determine the type of conversion
+to perform:
+.PD 0
+.RS 4
+.IP 1. 3
+The \fBDCvtEscChar\fR flag overrides \fBDCvtVizChar\fR.
+.IP 2. 3
+The \fBDCvtQuote1\fR flag overrides \fBDCvtQuote2\fR and \fBDCvtQuote\fR, and \fBDCvtQuote2\fR overrides \fBDCvtQuote\fR.
+.IP 3. 3
+If \fBDCvtQuote\fR is specified (and \fBDCvtQuote1\fR and \fBDCvtQuote2\fR are not), characters are always single-quoted,
+and strings are also single-quoted if \fBDCvtVizChar\fR (or any of the vizc(3) flags) is specified; otherwise, strings are
+double-quoted.
+.IP 4. 3
+If no flags are specified, all datums are converted to "raw" string form; that is, without translation to
+visible form, quotation marks, or delimiters between array elements, except that numeric values are always
+output as numeric literals, and Boolean values are always output as "true" and "false".
+.RE
+.PD
+.SH RETURN VALUES
+If successful, all of these functions return zero (but see \fBdputd\fR() variant below).  They return a negative
+integer on failure, and set an exception code and message in the CXL Exception System to indicate the error.
+.PP
+If successful, the \fBdputd\fR() function returns either 0 or 1.  If the array does not contain itself, it
+returns 0, otherwise 1.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), excep(3), vizc(3)

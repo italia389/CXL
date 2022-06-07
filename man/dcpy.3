@@ -1,0 +1,29 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DCPY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdcpy\fR, \fBdxfer\fR - copy or transfer the contents of one datum to another.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBint dcpy(Datum *pDest, const Datum *pSrc);\fR
+.HP 2
+\fBvoid dxfer(Datum *pDest, Datum *pSrc);\fR
+.SH DESCRIPTION
+These functions provide the ability to copy or transfer the contents of one datum to another.  \fBdcpy\fR()
+copies the contents of the \fBDatum\fR object pointed to by \fIpSrc\fR to the \fBDatum\fR object pointed to by
+\fIpDest\fR, including any data allocated in memory that it may contain, whereas \fBdxfer\fR() \fItransfers\fR
+the contents instead, and sets the source \fBDatum\fR object to nil.  In either case, the destination datum is
+cleared prior to the copy or transfer.
+.SH RETURN VALUES
+If successful, \fBdcpy\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.PP
+The \fBdxfer\fR() function does not return a value.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), excep(3)

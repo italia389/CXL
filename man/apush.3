@@ -1,0 +1,42 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH APUSH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBapush\fR, \fBapop\fR, \fBashift\fR, \fBaunshift\fR - push, pop, shift, or unshift an element to or from an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBint apush(Array *pArray, Datum *pVal, ushort aflags);\fR
+.HP 2
+\fBDatum *apop(Array *pArray);\fR
+.HP 2
+\fBDatum *ashift(Array *pArray);\fR
+.HP 2
+\fBint aunshift(Array *pArray, Datum *pVal, ushort aflags);\fR
+.SH DESCRIPTION
+These routines provide a means of using an array as a stack or queue.  Elements can be added to removed from
+either end of an array, one at a time.
+.PP
+The \fBapush\fR() and \fBaunshift\fR() functions respectively, append and prepend the datum pointed to by
+\fIpVal\fR to the array pointed to by \fIpArray\fR subject to operation flag in \fIaflags\fR, thereby
+increasing the length of the array by one.  The \fIaflags\fR argument is either \fBAOpCopy\fR or zero.
+.PP
+If the \fIaflags\fR argument is \fBAOpCopy\fR, the datum pointed to by \fIpVal\fR is copied to the array;
+otherwise, the \fIpVal\fR pointer is stored directly.  In the latter case, the datum pointed to by \fIpVal\fR
+must have been allocated in memory; for example, with a call to dnew(3).
+.PP
+The \fBapop\fR() and \fBashift\fR() functions remove respectively, the last and first element from the array
+pointed to by \fIpArray\fR and return it, thereby decreasing the length of the array by one.
+.SH RETURN VALUES
+If successful, \fBapush\fR() and \fBaunshift\fR() return zero.  They return a negative integer on failure, and
+set an exception code and message in the CXL Exception System to indicate the error.
+.PP
+The \fBapop\fR() and \fBashift\fR() functions return the array element that was removed (a value of type
+\fBDatum *\fR), or NULL if no elements remain.  No error is possible.
+.SH SEE ALSO
+cxl(3), cxl_array(7), cxl_datum(7), dnew(3), excep(3)

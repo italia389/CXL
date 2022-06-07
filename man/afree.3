@@ -1,0 +1,22 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AFREE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBafree\fR - free an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBvoid afree(Array *pArray);\fR
+.SH DESCRIPTION
+The \fBafree\fR() function frees all memory associated with the array pointed to by \fIpArray\fR; that is, it
+deletes the array.  The routine first calls aclear(3) to free all the elements, then calls free(3) on the
+array object itself.
+.PP
+This routine should be called to free memory associated with an array when it is no longer needed.
+.SH SEE ALSO
+adelete(3), cxl(3), cxl_array(7), free(3)

@@ -1,0 +1,44 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HEACH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBheach\fR - walk through a hash table, returning each hash record in sequence.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBHashRec *heach(HashTable **pHashTable);\fR
+.SH DESCRIPTION
+The \fBheach\fR() function provides a means to "walk through" a hash table and access each node in sequence,
+in an unordered fashion.  The function returns a pointer to the next node (a \fBHashRec *\fR) each time it is
+called.  When no nodes remain, it returns NULL.
+.PP
+The caller must provide the address of a variable of type \fBHashTable *\fR to the function in
+\fIpHashTable\fR for each call, which is an indirect pointer to the hash table to be stepped through.  This
+variable is used to maintain state information, and is modified by this routine.
+.SH EXAMPLES
+The following code fragment illustrates how \fBheach\fR() is typically used to walk through a hash table:
+.nf
+.ta 4 8 12
+.sp
+	// Step through nodes of hash table pointed to by "pHashTable".
+	HashTable *pHashTable1 = pHashTable;
+	HashRec *pHashRec;
+	Datum *pValue;
+.sp
+	while((pHashRec = heach(&pHashTable1)) != NULL) {
+		pValue = pHashRec->pValue;
+.sp
+		// Do something with pValue.
+		...
+		}
+.fi
+.PP
+Note that the hash table is not modified by stepping through it; however, the node values may be changed if desired; that is,
+the contents of the \fBDatum\fR objects that \fIpValue\fR points to.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7), hsort(3)

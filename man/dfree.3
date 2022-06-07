@@ -1,0 +1,33 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH DFREE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdfree\fR, \fBdrelease\fR - clear a datum and free its memory, or "release" its contents.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.HP 2
+\fBvoid dfree(Datum *pDatum);\fR
+.HP 2
+\fBint drelease(Datum *pDatum);\fR
+.SH DESCRIPTION
+The \fBdfree\fR() function clears and frees the datum pointed to by \fIpDatum\fR; that is, it releases any
+memory used by the contents of the datum by calling dclear(3), then releases the memory for the datum
+itself by calling free(3).  Note that this routine should not be called for a datum that exists in a local
+variable on the stack (and was initialized with dinit(3)).  Use dclear(3) instead.
+.PP
+The \fBdrelease\fR() function "releases" the contents of the datum pointed to by \fIpDatum\fR so that the data
+will not be freed when the datum is freed.  It accomplishes this by converting any byte string, array, or
+string type which holds data that is allocated in memory to the corresponding reference type; for example,
+type dat_array is converted to dat_arrayRef.  The released contents should be passed to free(3) when no longer needed.
+.SH RETURN VALUES
+If successful, \fBdrelease\fR() returns zero.  It returns a negative integer on failure, and sets an
+exception code and message in the CXL Exception System to indicate the error.
+.PP
+The \fBdfree\fR() function does not return a value.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), dclear(3), dinit(3), dset(3), free(3)

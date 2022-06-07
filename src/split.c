@@ -1,4 +1,4 @@
-// (c) Copyright 2020 Richard W. Marinelli
+// (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -12,7 +12,7 @@
 #include <stdlib.h>
 
 // Split a string into an array of substrings.  Substrings are separated by a single character, white space, or no delimiter, as
-// indicated by integer value "delimChar":
+// indicated by integer value "delim":
 //	VALUE		MEANING
 //	0 or ' '	Delimiter is white space.  One or more of the characters (' ', '\t', '\n', '\r', '\f', '\v') are treated
 //			as a single delimiter.  Additionally, if the delimiter is ' ', leading white space is ignored.
@@ -29,7 +29,7 @@
 // Routine saves results in a new StrArray object containing an additional pointer element set to NULL (to indicate end-of-
 // array), and returns a pointer to the object, or NULL if error.  Delimiters in the source string are replaced by nulls as the
 // string is parsed; hence, the source string will be modified by this routine if any delimiters are found.
-StrArray *split(short delimChar, char *src, int limit) {
+StrArray *split(short delim, char *src, int limit) {
 	uint itemCount;
 	char *str0, *str, **pStr;
 	StrArray *pStrArray;
@@ -40,10 +40,10 @@ StrArray *split(short delimChar, char *src, int limit) {
 	if(*src != '\0') {
 
 		// Set actual delimiter string.
-		if(delimChar > 0xFF)
+		if(delim > 0xFF)
 			delims[0] = '\0';
-		else if(delimChar > 0 && delimChar != ' ') {
-			delims[0] = delimChar;
+		else if(delim > 0 && delim != ' ') {
+			delims[0] = delim;
 			delims[1] = '\0';
 			}
 		else
@@ -51,7 +51,7 @@ StrArray *split(short delimChar, char *src, int limit) {
 
 		// Skip leading white space if requested.
 		str = src;
-		if(delimChar == ' ')
+		if(delim == ' ')
 			for(;;) {
 				if(strchr(delims, *str) == NULL)
 					break;
@@ -103,7 +103,7 @@ Done:
 	pStr = pStrArray->items;
 	if(itemCount > 0) {
 		str = src;
-		if(delimChar == ' ')
+		if(delim == ' ')
 			while(strchr(delims, *str) != NULL)
 				++str;
 		for(;;) {

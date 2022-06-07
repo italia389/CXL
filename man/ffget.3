@@ -1,0 +1,46 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFGET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffgetc\fR, \fBffgets\fR, \fBffread\fR, \fBffslurp\fR - read data from a fast file.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBshort ffgetc(FastFile *pFastFile);\fR
+.HP 2
+\fBssize_t ffgets(FastFile *pFastFile);\fR
+.HP 2
+\fBssize_t ffread(void *buf, ssize_t len, FastFile *pFastFile);\fR
+.HP 2
+\fBssize_t ffslurp(FastFile *pFastFile);\fR
+.SH DESCRIPTION
+These functions read data from the fast file pointed to by \fIpFastFile\fR.
+.PP
+\fBffgetc\fR() obtains the next input character, which is returned as an \fBunsigned char\fR converted to \fBshort int\fR.
+.PP
+\fBffgets\fR() reads the next line into the file's line buffer, expanding the buffer as necessary to hold the entire
+line and delimiter, if any, and a null terminator.  If a line delimiter has not yet been established for
+the file and a delimiter is found (CR-LF, CR, or NL), the delimiter is remembered and used for subsequent calls.
+.PP
+\fBffread\fR() reads at most \fIlen\fR bytes into the buffer pointed to by \fIbuf\fR.  Fewer than \fIlen\fR bytes
+may be read if end-of-file is reached during the read.
+.PP
+\fBffslurp\fR() reads all remaining bytes from the file into the file's line buffer, expanding the buffer as
+necessary to hold all bytes read plus a null terminator.  If no prior input operation was
+performed, the line buffer will contain the entire file.
+.SH RETURN VALUES
+If successful, \fBffgetc\fR() returns the character read (including zero for a null character) or -1 if end-of-file
+is reached.  It returns -2 on failure, and sets an exception code and message in the CXL Exception System to indicate
+the error.
+.PP
+\fBffgets\fR() returns the number of characters read, or zero if end-of-file is reached.
+\fBffread\fR() and \fBffslurp\fR() return the number of bytes read, or zero if end-of-file is reached.
+They all return a negative integer on failure, and set an exception code and message in the CXL Exception System
+to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3), ffeof(3)

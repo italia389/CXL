@@ -1,0 +1,40 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH FFPUT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBffputc\fR, \fBffputs\fR, \fBffwrite\fR, \fBffputvizc\fR, \fBffputvizmem\fR - write data to a fast file.
+.SH SYNOPSIS
+\fB#include "cxl/fastio.h"\fR
+.HP 2
+\fBint ffputc(short c, FastFile *pFastFile);\fR
+.HP 2
+\fBint ffputs(const char *str, FastFile *pFastFile);\fR
+.HP 2
+\fBint ffwrite(void *buf, size_t len, FastFile *pFastFile);\fR
+.HP 2
+\fBint ffputvizc(short c, ushort flags, FastFile *pFastFile);\fR
+.HP 2
+\fBint ffputvizmem(const void *memPtr, size_t size, ushort flags, FastFile *pFastFile);\fR
+.SH DESCRIPTION
+These functions write data to the fast file pointed to by \fIpFastFile\fR.
+.PP
+\fBffputc\fR() writes character \fIc\fR, converted to an \fBunsigned char\fR.
+.PP
+\fBffputs\fR() writes the null-terminated string \fIstr\fR.
+.PP
+\fBffwrite\fR() writes \fIlen\fR bytes from the buffer pointed to by \fIbuf\fR.
+.PP
+\fBffputvizc\fR() writes character \fIc\fR converted to an \fBunsigned char\fR in visible string form, and
+\fBffputvizmem\fR() writes \fIsize\fR bytes beginning at memory location \fImemPtr\fR (or the null-terminated
+string at \fImemPtr\fR if \fIsize\fR is zero) in visible string form.  Both functions call \fBvizc\fR() with the
+\fIflags\fR argument to convert the character(s).  See vizc(3) for details.
+.SH RETURN VALUES
+If successful, all of the functions return zero.  They return a negative integer on failure, and set an
+exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), cxl_fastio(7), excep(3)

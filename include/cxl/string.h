@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -20,6 +20,7 @@
 #define VizBaseMax	VizBaseHEX
 
 #define VizSpace	0x0004		// Make space character visible.
+#define VizMask		0x000F
 
 // Definitions for split() and join() routines.
 typedef struct {
@@ -31,11 +32,11 @@ typedef struct {
 extern int join(Datum *pDest, StrArray *pSrc, const char *delim);
 extern int memcasecmp(const void *str1, const void *str2, size_t len);
 extern void *memstpcpy(void *dest, const void *src, size_t len);
-extern StrArray *split(short delimChar, char *src, int limit);
+extern StrArray *split(short delim, char *src, int limit);
 extern char *stplcpy(char *dest, const char *src, size_t len);
+extern char *strcbrk(const char *str, const char *charset);
 extern int strconv(char *dest, const char *src, const char **pSrcEnd, short termChar);
 extern char *strfit(char *dest, size_t maxLen, const char *src, size_t srcLen);
 extern char *strip(char *str, int loc);
-extern char *strpspn(const char *str1, const char *str2);
 extern char *vizc(short c, ushort flags);
 #endif

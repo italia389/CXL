@@ -1,0 +1,32 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ESTRTOL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBestrtol\fR, \fBestrtoul\fR - convert a string to a long integer with exception handling.
+.SH SYNOPSIS
+\fB#include "cxl/lib.h"\fR
+.HP 2
+\fBint estrtol(const char *str, int base, long *pResult);\fR
+.HP 2
+\fBint estrtoul(const char *str, int base, ulong *pResult);\fR
+.SH DESCRIPTION
+These functions convert a string to a long integer like strtol(3) and strtoul(3), however they use a
+simplified interface and the CXL Exception System for error reporting.
+.PP
+The \fBestrtol\fR() and \fBestrtoul\fR() functions convert the string \fIstr\fR to a
+signed or unsigned long integer and save the result in the signed or unsigned long integer
+pointed to by \fIpResult\fR, respectively.  The functions pass the \fIstr\fR and \fIbase\fR
+arguments to strtol(3) or strtoul(3), respectively, to do the conversion.
+.PP
+If the input string contains any non-whitespace characters (as defined by the isspace(3)
+function) following the string, it is considered an error.
+.SH RETURN VALUES
+If successful, \fBestrtol\fR() and \fBestrtoul\fR() return zero.  They return a negative integer
+on failure, and set an exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+cxl(3), excep(3), isspace(3), strtol(3), strtoul(3)

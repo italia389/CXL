@@ -1,0 +1,35 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH AINSERT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBainsert\fR - insert an element into an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBint ainsert(Array *pArray, Datum *pVal, ArraySize index, ushort aflags);\fR
+.SH DESCRIPTION
+The \fBainsert\fR() function inserts the datum pointed to by \fIpVal\fR into the array pointed to by
+\fIpArray\fR at position \fIindex\fR, subject to the operation flag in \fIaflags\fR.  The \fIaflags\fR argument is
+either \fBAOpCopy\fR or zero.
+.PP
+If the index is negative, the insertion position is determined by counting backward from the end of the array,
+where -1 is the last element.  The datum is then inserted after the referenced position (and thus, the datum
+will be appended to the array if the index is -1).
+.PP
+If the index is non-negative, the position is relative to the beginning of the array with the first being 0.
+In this case, the datum is inserted before the referenced position (and thus, the datum will be prepended to
+the array if the index is 0)
+.PP
+If the \fBAOpCopy\fR flag is specified, the datum pointed to by \fIpVal\fR is copied into the array with
+dcpy(3); otherwise, the \fIpVal\fR pointer is stored directly.  In the latter case, the datum pointed to by
+\fIpVal\fR must have been allocated in memory; for example, with a call to dnew(3).
+.SH RETURN VALUES
+If successful, \fBainsert\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+apush(3), aunshift(3), cxl(3), cxl_datum(7), dnew(3), excep(3)

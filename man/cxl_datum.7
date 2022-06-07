@@ -1,0 +1,191 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH CXL_DATUM 7 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBdatum\fR - dynamic data manipulation package.
+.SH SYNOPSIS
+\fB#include "cxl/datum.h"\fR
+.SH DESCRIPTION
+The CXL library contains a package of routines which create and manipulate \fBDatum\fR objects (or "datums"),
+which are structures that can contain various types of data, including strings of any length.  These objects
+are intended to be used as generic "data containers" which allow for abstraction of data types in various
+applications, such as the nodes of a hash table or elements of an array (both of which are included in the CXL library).
+.PP
+An important feature of a datum is its ability to hold variable-length strings.  A number of functions are
+available which allow for a string (or character) that is either null-terminated or fixed length to be stored
+directly into the object.  Another set of functions provide the ability to build a string in pieces, in a
+manner similar to writing to a file.  This is accomplished by using a \fBDFab\fR object (for "Datum
+Fabrication") which is an object associated with a datum that acts like a file.  The \fBDFab\fR object is
+opened, written to zero more times, then closed, which produces a null-terminated string or fixed length byte
+sequence (a "byte string") in the datum.  In addition, the \fBDFab\fR object can be associated with an
+existing \fBDatum\fR object already holding string data and then opened for appending or prepending to it.
+.PP
+A datum may also contain an array, which in turn, contains datums for its elements.  Thus, arrays may be
+nested to any depth.  (See cxl_array(7) for details.)
+.PP
+All of the datum functions are listed in cxl(3) with a brief description of each.
+.SS Datum Object
+A byte string is held in a \fBDMem\fR structure, which is defined as follows:
+.sp
+.PD 0
+.RS 4
+.HP 2
+typedef struct {
+.RS 4
+.HP 2
+size_t size;
+.HP 2
+void *ptr;
+.HP 2
+} DMem;
+.RE
+.RE
+.PD
+.PP
+This structure is contained within a \fBDatum\fR structure, which is defined to contain at least the following members:
+.sp
+.PD 0
+.RS 4
+.HP 2
+typedef ushort DatumType;
+.sp
+.HP 2
+typedef struct Datum {
+.RS 4
+.HP 2
+DatumType type;
+.HP 2
+char *str;
+.HP 2
+union {
+.RS 4
+.HP 2
+short c;
+.HP 2
+long intNum;
+.HP 2
+ulong uintNum;
+.HP 2
+double realNum;
+.HP 2
+DMem mem;
+.HP 2
+struct Array *pArray;
+.HP 2
+} u;
+.RE
+.HP 2
+} Datum;
+.RE
+.RE
+.PD
+.PP
+The \fItype\fR member identifies the type of data contained within the structure, which can be any of the following
+macro "flags":
+.sp
+.PD 0
+.nf
+.ta 4 28
+	dat_nil	// Nil value.
+	dat_false	// False value.
+	dat_true	// True value.
+	dat_char	// Character (int) value.
+	dat_int	// Signed integer type.
+	dat_uint	// Unsigned integer type.
+	dat_real	// Real number (double) type.
+	dat_miniStr	// Mini string.
+	dat_longStr	// String by value.
+	dat_longStrRef	// String by reference.
+	dat_byteStr	// Byte string by value.
+	dat_byteStrRef	// Byte string by reference.
+	dat_array	// Array by value.
+	dat_arrayRef	// Array by reference.
+.fi
+.PD
+.PP
+Additionally, the following masks are defined:
+.sp
+.PD 0
+.nf
+	#define DBoolMask	(dat_false | dat_true)
+	#define DStrMask	(dat_miniStr | dat_longStr | dat_longStrRef)
+	#define DMemMask	(dat_byteStr | dat_byteStrRef)
+	#define DArrayMask	(dat_array | dat_arrayRef)
+.fi
+.PD
+.PP
+Note that the design of the \fBDatum\fR structure is optimized to hold string data as efficiently as possible;
+hence, there are three distinct string types.  However, these can generally be ignored.  A simple method for
+determining if a datum holds a string is to use the string mask, \fBDStrMask\fR.  For example, if a
+variable \fIpDatum\fR is a pointer to a \fBDatum\fR object, then (pDatum->type & DStrMask) will be true if the
+datum contains a string.  Additionally, the \fIstr\fR member of the structure will always point to the actual
+(null terminated) string for all of the string types.
+.PP
+The \fBDBoolMask\fR, \fBDMemMask\fR, and \fBDArrayMask\fR masks can be used in the same manner as
+\fBDStrMask\fR to test for a Boolean, byte string, or array value, respectively.  Alternatively, the
+dtypbool(3), dtypmem(3), dtypstr(3), and dtyparray(3) macros may be used as well.
+.PP
+Note also that when a datum is created, either directly or indirectly, it's initial type is \fBdat_nil\fR.
+.SS Fabrication Object
+A \fBDFab\fR structure (or "fabrication object") is defined to contain at least the following members:
+.sp
+.PD 0
+.RS 4
+.HP 2
+typedef struct {
+.RS 4
+.HP 2
+Datum *pDatum;
+.HP 2
+} DFab;
+.RE
+.RE
+.PD
+.PP
+The \fIpDatum\fR member will contain a pointer to the "finalized" datum after the fabrication object is
+closed.  If the fabrication object was opened with \fBdopenwith\fR(), this will be the same pointer that was passed to
+that function.  If the fabrication object was opened with \fBdopen\fR() or \fBdopentrack\fR() instead, this will be a
+pointer to the datum that was created during the string fabrication process.  In either case, the contents
+of the datum that \fIpDatum\fR points to are considered undefined while the fabrication object is open.
+.SS String Conversion
+Another feature of the datum package is the ability to easily convert datums to string form in various formats.  For
+example, a string datum containing a tab and a newline could be converted to "Foo\etbar\en" (with double quotation
+marks), a byte string containing binary data could be converted to 'Yakkety^Iyak<NL>^@<8A>' (with single quotation marks),
+and a nested array could be converted to [nil, true, "red", [0, 3.4], "foobar\er\en"].
+.PP
+The conversion process is controlled by specifying flag(s) in the \fIcflags\fR argument of the \fBdput*\fR()
+family of functions, which write data to a fabrication object.  See dput(3) for details.
+.SS Memory Management
+When a datum is no longer needed, its memory should be freed.  This is done by passing a pointer to the datum
+to either dfree(3), if the datum was created by a library function such as dnew(3) (and thus, the
+\fBDatum\fR object is allocated in memory), or dclear(3), if the \fBDatum\fR object exists in a local variable
+on the stack.  In the latter case, the memory used by the contents of the datum will be released, but the
+\fBDatum\fR object itself will not be freed.
+.SS Garbage Collection
+A final feature of the datum package that is worth noting is automatic garbage collection.  A special global
+variable and function are available which provide a simple means for managing the memory used by datums.  If
+the \fBdnewtrack\fR() and \fBdopentrack\fR() functions are used to create \fBDatum\fR objects and open
+\fBDFab\fR objects, the associated \fBDatum\fR objects will be pushed onto an interal stack as they are
+created.  The head of this stack is defined as follows:
+.sp
+.nf
+.ta 4 28 36
+	extern Datum *datGarbHead;
+.fi
+.PP
+The stack can be popped back to a known point at any time with the \fBdgarbpop\fR() function.  Thus for example, if
+the \fIdatGarbHead\fR pointer is saved in a local variable prior to calling the \fBdnewtrack\fR() and/or
+\fBdopentrack\fR() functions one or more times to create several temporary datums to process data, all of
+those objects and the memory they use can be disposed of all at once by passing the saved stack pointer to
+\fBdgarbpop\fR().  This function pops datums off the stack one by one and deletes them until it reaches the
+stack position passed to it as an argument (thereby doing "garbage collection").
+.SH SEE ALSO
+cxl(3)
+.PP
+Specific function names (like \fBdnew\fR) listed in cxl(3) under the \fBDATUM OBJECTS\fR section
+for detailed routine descriptions.

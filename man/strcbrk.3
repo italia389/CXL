@@ -1,0 +1,22 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STRCBRK 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBstrcbrk\fR - locate multiple characters in a string.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBchar *strcbrk(const char *str, const char *charset);\fR
+.SH DESCRIPTION
+The \fBstrcbrk\fR() function finds the first character in string \fIstr\fR that does not occur
+in string \fIcharset\fR (that is, the first character in \fIstr\fR that is in the complement of
+\fIcharset\fR) and returns a pointer to it.  If all characters in \fIstr\fR occur in
+\fIcharset\fR, the function returns a pointer to the terminating null of \fIstr\fR.  If
+\fIcharset\fR is empty, \fIstr\fR is returned.
+.SH SEE ALSO
+cxl(3), strchr(3), strrchr(3), strpbrk(3)

@@ -1,0 +1,19 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HCMP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhcmp\fR - compare keys of two hash records.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBint hcmp(const void *ppHashRec1, const void *ppHashRec2);\fR
+.SH DESCRIPTION
+The \fBhcmp\fR() function is a helper function for \fBhsort\fR() which is used to sort the keys in a hash
+table in ascending order.  See hsort(3) for details.
+.SH SEE ALSO
+cxl(3), cxl_datum(7), cxl_hash(7)

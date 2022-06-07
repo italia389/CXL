@@ -1,0 +1,19 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH HEMPTY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBhempty\fR - test if a hash table contains any nodes.
+.SH SYNOPSIS
+\fB#include "cxl/hash.h"\fR
+.HP 2
+\fBbool hempty(const HashTable *pHashTable);\fR
+.SH DESCRIPTION
+The \fBhempty\fR() function returns true if the hash table pointed to by \fIpHashTable\fR is empty; that is,
+contains no nodes; otherwise, it returns false.
+.SH SEE ALSO
+cxl(3), cxl_hash(7), hsearch(3)

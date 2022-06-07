@@ -1,0 +1,23 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH ACLONE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBaclone\fR - clone an array.
+.SH SYNOPSIS
+\fB#include "cxl/array.h"\fR
+.HP 2
+\fBArray *aclone(Array *pArray);\fR
+.SH DESCRIPTION
+The \fBaclone\fR() function makes an exact copy of the array pointed to by \fIpArray\fR; that is, it allocates a new
+array, a new \fBDatum\fR object for each array element, and copies each elements' contents to the new elements'
+contents.
+.SH RETURN VALUES
+If successful, \fBaclone\fR() returns a pointer to the new array.  It returns NULL on failure, and sets an
+exception code and message in the CXL Exception System to indicate the error.
+.SH SEE ALSO
+anew(3), cxl(3), cxl_array(7), cxl_datum(7), excep(3)
