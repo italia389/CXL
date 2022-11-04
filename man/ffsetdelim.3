@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH FFSETDELIM 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH FFSETDELIM 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBffsetdelim\fR - set a line delimiter type on a fast file.
 .SH SYNOPSIS
 \fB#include "cxl/fastio.h"\fR
 .HP 2
-\fBint ffsetdelim(ushort delimType, FastFile *pFastFile);\fR
+\fBint ffsetdelim(ushort \fIdelimType\fB, FastFile *\fIpFastFile\fB);\fR
 .SH DESCRIPTION
 The \fBffsetdelim\fR() function sets the type of line delimiter to use on the fast file pointed to by \fIpFastFile\fR,
 which must have been previously opened for input.  The type is specified by setting \fIdelimType\fR to one of the
@@ -20,13 +20,13 @@ following values:
 .PD 0
 .RS 4
 .IP FFDelimNUL 16
-Use a null character ('\e0').
+Use a null character (\(aq\e0\(aq).
 .IP FFDelimCR 16
-Use a single carriage return ('\er').
+Use a single carriage return (\(aq\er\(aq).
 .IP FFDelimCRLF 16
 Use a carriage return, line feed sequence ("\er\en").
 .IP FFDelimNL 16
-Use a single newline ('\en').
+Use a single newline (\(aq\en\(aq).
 .RE
 .PD
 .PP

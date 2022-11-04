@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH FPUTVIZ 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH FPUTVIZ 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBfputvizc\fR, \fBfputvizmem\fR - write data to a stream in visible form.
 .SH SYNOPSIS
 \fB#include "cxl/ioext.h"\fR
 .HP 2
-\fBint fputvizc(short c, ushort flags, FILE *stream);\fR
+\fBint fputvizc(short \fIc\fB, ushort \fIflags\fB, FILE *\fIstream\fB);\fR
 .HP 2
-\fBint fputvizmem(const void *memPtr, size_t size, ushort flags, FILE *stream);\fR
+\fBint fputvizmem(const void *\fImemPtr\fB, size_t \fIsize\fB, ushort \fIflags\fB, FILE *\fIstream\fB);\fR
 .SH DESCRIPTION
 The \fBfputvizc\fR() function writes character \fIc\fR to the output stream pointed
 to by \fIstream\fR in visible form by passing the character and the \fIflags\fR argument

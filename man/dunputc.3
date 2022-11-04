@@ -4,19 +4,19 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DUNPUTC 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DUNPUTC 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdunputc\fR - un\-put a character from a fabrication object.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dunputc(DFab *pFab);\fR
+\fBint dunputc(DFab *\fIpFab\fB);\fR
 .SH DESCRIPTION
 The \fBdunputc\fR() function removes the last character written to the fabrication object pointed to by \fIpFab\fR and
 returns it.  Only one character is guaranteed to be removed, as long as at least one character was previously written.
 .PP
-If no characters exist in the fabrication object's current input buffer, it is an error.  Note that this can occur even
+If no characters exist in the fabrication object\(aqs current input buffer, it is an error.  Note that this can occur even
 when the fabrication object contains data; thus, if the function is called more than once without an intervening write,
 results are unpredictable (and it makes no sense to do so).
 .SH RETURN VALUES

@@ -4,20 +4,20 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DNEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DNEW 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdnew\fR, \fBdnewtrack\fR, \fBdinit\fR, \fBdclear\fR - create, initialize, or clear a datum.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dnew(Datum **ppDatum);\fR
+\fBint dnew(Datum **\fIppDatum\fB);\fR
 .HP 2
-\fBint dnewtrack(Datum **ppDatum);\fR
+\fBint dnewtrack(Datum **\fIppDatum\fB);\fR
 .HP 2
-\fBvoid dinit(Datum *pDatum);\fR
+\fBvoid dinit(Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dclear(Datum *pDatum);\fR
+\fBvoid dclear(Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 These functions prepare a datum for subsequent manipulation by the routines that store data into the object.
 .PP

@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH AMATCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH AMATCH 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBamatch\fR, \fBauniq\fR - perform set operations on arrays.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *amatch(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+\fBArray *amatch(Array *\fIpArray1\fB, const Array *\fIpArray2\fB, ushort \fIaflags\fB);\fR
 .HP 2
-\fBArray *auniq(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+\fBArray *auniq(Array *\fIpArray1\fB, const Array *\fIpArray2\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 These functions perform set operations on the two arrays pointed to by \fIpArray1\fR and \fIpArray2\fR,
 subject to the operation flag(s) in \fIaflags\fR, which is the bitwise OR of zero or more of the flag(s)

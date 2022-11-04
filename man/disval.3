@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DISVAL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DISVAL 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdisnil\fR, \fBdischr\fR, \fBdisnull\fR, \fBdisempty\fR, \fBdistrue\fR, \fBdisfalse\fR - test a datum for
@@ -12,17 +12,17 @@ value(s) and return Boolean result.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBbool disnil(const Datum *pDatum);\fR
+\fBbool disnil(const Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBbool dischr(const Datum *pDatum);\fR
+\fBbool dischr(const Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBbool disnull(const Datum *pDatum);\fR
+\fBbool disnull(const Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBbool disempty(const Datum *pDatum);\fR
+\fBbool disempty(const Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBbool distrue(const Datum *pDatum);\fR
+\fBbool distrue(const Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBbool disfalse(const Datum *pDatum);\fR
+\fBbool disfalse(const Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 These functions perform value tests on the datum pointed to by \fIpDatum\fR and return true if the datum
 contains the indicated value, otherwise false.

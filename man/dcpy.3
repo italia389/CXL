@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DCPY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DCPY 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdcpy\fR, \fBdxfer\fR - copy or transfer the contents of one datum to another.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dcpy(Datum *pDest, const Datum *pSrc);\fR
+\fBint dcpy(Datum *\fIpDest\fB, const Datum *\fIpSrc\fB);\fR
 .HP 2
-\fBvoid dxfer(Datum *pDest, Datum *pSrc);\fR
+\fBvoid dxfer(Datum *\fIpDest\fB, Datum *\fIpSrc\fB);\fR
 .SH DESCRIPTION
 These functions provide the ability to copy or transfer the contents of one datum to another.  \fBdcpy\fR()
 copies the contents of the \fBDatum\fR object pointed to by \fIpSrc\fR to the \fBDatum\fR object pointed to by

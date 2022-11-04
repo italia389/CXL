@@ -1,9 +1,9 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 //
-// vizc.c		Routines for converting characters to visible form.
+// vizc.c		Routine for converting characters to visible form.
 
 #include "stdos.h"
 #include "cxl/excep.h"

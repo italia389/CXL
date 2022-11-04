@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -13,18 +13,26 @@
 #include <stdarg.h>
 #include <errno.h>
 
-#define	DefExitCode	-1		// Value to use for exit() call if not available elsewhere.
+#define	ExcepExitCode	-1		// excep() function return Value if exit() not called.
 
 // Global variables.
-CXLExcep cxlExcep = {0, 0, ""};
+CXLExcep cxlExcep = {0, 0, NULL};
 
 // Free exception message allocated from heap, if applicable.
 static void freeMsg(void) {
 
-	if(cxlExcep.flags & ExcepHeap) {
+	if(cxlExcep.msg != NULL && (cxlExcep.flags & ExcepHeap)) {
 		(void) free((void *) cxlExcep.msg);
+		cxlExcep.msg = NULL;
 		cxlExcep.flags &= ~ExcepHeap;
 		}
+	}
+
+// Clear any exception condition.
+void eclear(void) {
+
+	freeMsg();
+	cxlExcep = (CXLExcep) {0, 0, NULL};
 	}
 
 // Set an exception code and message, freeing old message if it was allocated from heap.  Return status code.
@@ -79,7 +87,7 @@ int emsgf(int code, const char *fmt, ...) {
 //	2. If ExMessage flag is set, print cxlExcep.msg; otherwise, if ExErrNo flag is set, print strerror(errno) message.
 //	3. If ExCustom flag is set, call printf() with remaining arguments.
 //	4. If ExErrNo flag is set and errno is non-zero, use errno for exit code; otherwise, use EXIT_FAILURE.
-//	5. Call exit() if applicable; otherwise, return DefExitCode.
+//	5. Call exit() if applicable; otherwise, return ExcepExitCode.
 int excep(uint flags, ...) {
 	static struct {
 		bool callExit;
@@ -104,7 +112,7 @@ int excep(uint flags, ...) {
 		}
 
 	// Check for library or errno message and print it if requested.
-	if(flags & (ExMessage | ExErrNo)) {
+	if((flags & ExErrNo) || ((flags & ExMessage) && cxlExcep.msg != NULL)) {
 		fputs((flags & ExMessage) ? cxlExcep.msg : strerror(errno), stderr);
 		needComma = true;
 		}
@@ -137,5 +145,5 @@ int excep(uint flags, ...) {
 	if(callExit)
 		exit((flags & ExErrNo) && errno ? errno : EXIT_FAILURE);
 
-	return DefExitCode;
+	return ExcepExitCode;
 	}

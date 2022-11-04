@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH STPLCPY 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH STPLCPY 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBstplcpy\fR - copy a string with length restrictions and "stop" at null terminator.
 .SH SYNOPSIS
 \fB#include "cxl/string.h"\fR
 .HP 2
-\fBchar *stplcpy(char *dest, const char *src, size_t len);\fR
+\fBchar *stplcpy(char *\fIdest\fB, const char *\fIsrc\fB, size_t \fIlen\fB);\fR
 .SH DESCRIPTION
 The \fBstplcpy\fR() function copies up to \fIlen\fR - 1 characters from string \fIsrc\fR to
 string \fIdest\fR.  If \fIlen\fR is zero, nothing is copied and \fIdest\fR remains unchanged;
@@ -21,4 +21,4 @@ copied to \fIdest\fR.
 If \fIlen\fR is zero, \fBstplcpy\fR() returns \fIdest\fR; otherwise, it returns a pointer to the
 terminating null character of \fIdest\fR.
 .SH SEE ALSO
-cxl(3), stpcpy(3), strlcpy(3)
+cxl(3), stpcpy(3), stplvizcpy(3), strlcpy(3)

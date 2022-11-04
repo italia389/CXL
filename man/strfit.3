@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH STRFIT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH STRFIT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBstrfit\fR - fit a string into a buffer.
 .SH SYNOPSIS
 \fB#include "cxl/string.h"\fR
 .HP 2
-\fBchar *strfit(char *dest, size_t maxLen, const char *src, size_t srcLen);\fR
+\fBchar *strfit(char *\fIdest\fB, size_t \fImaxLen\fB, const char *\fIsrc\fB, size_t \fIsrcLen\fB);\fR
 .SH DESCRIPTION
 The \fBstrfit\fR() function copies string \fIsrc\fR to string \fIdest\fR, shrinking it in the
 process by inserting an ellipsis in the middle, if necessary (and immediately following a space

@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH FFCHOMP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH FFCHOMP 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBffchomp\fR - remove delimiter from a fast I/O input line.
 .SH SYNOPSIS
 \fB#include "cxl/fastio.h"\fR
 .HP 2
-\fBbool ffchomp(FastFile *pFastFile);\fR
+\fBbool ffchomp(FastFile *\fIpFastFile\fB);\fR
 .SH DESCRIPTION
 The \fBffchomp\fR() function removes any NL, CR, or CR-LF line delimiter from a line that was read with \fBffgets\fR()
 or a file that was read with \fBffslurp\fR().  It accomplishes this by truncating the line (or file contents) in the

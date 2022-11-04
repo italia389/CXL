@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH FFEOF 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH FFEOF 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBffeof\fR - check fast file status.
 .SH SYNOPSIS
 \fB#include "cxl/fastio.h"\fR
 .HP 2
-\fBint ffeof(FastFile *pFastFile);\fR
+\fBint ffeof(FastFile *\fIpFastFile\fB);\fR
 .SH DESCRIPTION
 \fBffeof\fR() tests the end-of-file indicator for the fast file pointed to by \fIpFastFile\fR, returning non-zero if it
 is set.

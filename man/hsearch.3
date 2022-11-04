@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HSEARCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HSEARCH 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhsearch\fR - search for a key in a hash table.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBHashRec *hsearch(HashTable *pHashTable, const char *key);\fR
+\fBHashRec *hsearch(HashTable *\fIpHashTable\fB, const char *\fIkey\fB);\fR
 .SH DESCRIPTION
 The \fBhsearch\fR() function searches the hash table pointed to by \fIpHashTable\fR for string key \fIkey\fR.
 .SH RETURN VALUES

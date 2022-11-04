@@ -4,18 +4,18 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH AINDEX 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH AINDEX 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBadeleteif\fR, \fBainclude\fR, \fBaindex\fR - locate element(s) in an array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArraySize adeleteif(Array *pArray, const Datum *pVal, ushort aflags);\fR
+\fBArraySize adeleteif(Array *\fIpArray\fB, const Datum *\fIpVal\fB, ushort \fIaflags\fB);\fR
 .HP 2
-\fBbool ainclude(const Array *pArray, const Datum *pVal, ushort aflags);\fR
+\fBbool ainclude(const Array *\fIpArray\fB, const Datum *\fIpVal\fB, ushort \fIaflags\fB);\fR
 .HP 2
-\fBArraySize aindex(const Array *pArray, const Datum *pVal, ushort aflags);\fR
+\fBArraySize aindex(const Array *\fIpArray\fB, const Datum *\fIpVal\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 These functions locate element(s) in the array pointed to by \fIpArray\fR that match the datum pointed to by
 \fIpVal\fR, subject to the operation flag(s) in \fIaflags\fR, and optionally, perform an operation on the matching

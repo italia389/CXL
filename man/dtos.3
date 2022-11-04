@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DTOS 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DTOS 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdtos\fR - convert the contents of a datum to a string.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dtos(Datum *pDest, const Datum *pSrc, const char *delim, ushort cflags);\fR
+\fBint dtos(Datum *\fIpDest\fB, const Datum *\fIpSrc\fB, const char *\fIdelim\fB, ushort \fIcflags\fB);\fR
 .SH DESCRIPTION
 The \fBdtos\fR() function ("datum to string") converts the contents of the datum pointed to by \fIpSrc\fR to a
 string, if possible, and stores the result in the datum pointed to by \fIpDest\fR, subject to the conversion flags in

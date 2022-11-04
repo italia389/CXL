@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DFREE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DFREE 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdfree\fR, \fBdrelease\fR - clear a datum and free its memory, or "release" its contents.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBvoid dfree(Datum *pDatum);\fR
+\fBvoid dfree(Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBint drelease(Datum *pDatum);\fR
+\fBint drelease(Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 The \fBdfree\fR() function clears and frees the datum pointed to by \fIpDatum\fR; that is, it releases any
 memory used by the contents of the datum by calling dclear(3), then releases the memory for the datum

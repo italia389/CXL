@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HSORT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HSORT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhsort\fR - sort keys in a hash table.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBint hsort(const HashTable *pHashTable, int (*cmp)(const void *pHashRec1, const void *pHashRec2), HashRec ***pTable);\fR
+\fBint hsort(const HashTable *\fIpHashTable\fB, int (*\fIcmp\fB)(const void *pHashRec1, const void *pHashRec2), HashRec ***pTable);\fR
 .SH DESCRIPTION
 The \fBhsort\fR() function sorts the keys in the hash table pointed to by \fIpHashTable\fR using
 the string key comparison function pointed to by \fIcmp\fR and saves the results in an array pointed to by
@@ -24,7 +24,7 @@ set it to a value (discussed below), and pass its address in the \fIpTable\fR ar
 returns.  No other action is taken.  If \fIpHashTable\fR->recCount is not zero, \fBhsort\fR()
 next examines the value of *\fIpTable\fR.  If it is NULL, the function allocates an array of
 type \fBHashRec *[]\fR containing \fIpHashTable\fR->recCount elements and returns the address of
-the array in *\fIpTable\fR (and it is the caller's responsibility to dispose of the array by
+the array in *\fIpTable\fR (and it is the caller\(aqs responsibility to dispose of the array by
 calling free(3) when it is no longer needed).  If *\fIpTable\fR is not NULL, it is assumed
 to be the address of an existing array of the same type provided by the caller that contains at
 least \fIpHashTable\fR->recCount elements.  In either case, \fBhsort\fR() will then store a
@@ -36,9 +36,9 @@ The CXL library contains a \fBqsort\fR() helper function called \fBhcmp\fR() whi
 keys such that they will be sorted into ascending order.  To use this function with
 \fBhsort\fR(), simply pass its name as the \fIcmp\fR function argument.  Alternatively, you can
 write your own comparison function and pass it to \fBhsort\fR().  For information on this
-function's arguments and operation, see the helper function description in qsort(3).
+function\(aqs arguments and operation, see the helper function description in qsort(3).
 .SH RETURN VALUES
-If successful, \fBhsort\fR() returns zero.  It returns a negative integer on failure, and sets an exception code and
-message in the CXL Exception System to indicate the error.
+If successful, \fBhsort\fR() returns zero.  It returns a negative integer on failure, and sets an exception
+code and message in the CXL Exception System to indicate the error.
 .SH SEE ALSO
 cxl(3), cxl_datum(7), cxl_hash(7), excep(3), free(3), qsort(3)

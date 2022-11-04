@@ -9,7 +9,7 @@
 #define lib_h
 
 // CXL version.
-#define CXL_Version		"1.1.0"
+#define CXL_Version		"1.2.0"
 
 #include <stdint.h>
 #include "stdos.h"

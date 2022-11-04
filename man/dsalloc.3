@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DSALLOC 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DSALLOC 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdsalloc\fR - preallocate space for a string in a datum.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dsalloc(Datum *pDatum, size_t len);\fR
+\fBint dsalloc(Datum *\fIpDatum\fB, size_t \fIlen\fB);\fR
 .SH DESCRIPTION
 The \fBdsalloc\fR() function sets the datum pointed to by \fIpDatum\fR to a string type (releasing any previously used
 memory) and preallocates \fIlen\fR characters for a string value, which includes the terminating null character.  A string

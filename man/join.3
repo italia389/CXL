@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH JOIN 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH JOIN 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBjoin\fR - join substrings with a delimiter to produce a string.
 .SH SYNOPSIS
 \fB#include "cxl/string.h"\fR
 .HP 2
-\fBint join(Datum *pDest, StrArray *pSrc, const char *delim);\fR
+\fBint join(Datum *\fIpDest\fB, StrArray *\fIpSrc\fB, const char *\fIdelim\fB);\fR
 .SH DESCRIPTION
 The \fBjoin\fR() function concatenates all substrings of the \fBStrArray\fR object pointed to by
 \fIpSrc\fR into the \fBDatum\fR object pointed to by \fIpDest\fR with the string \fIdelim\fR

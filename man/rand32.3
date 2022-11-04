@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH RAND32 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH RAND32 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBrand32\fR, \fBrand32Uniform\fR - random number generators.
@@ -13,7 +13,7 @@
 .HP 2
 \fBuint32_t rand32(void);\fR
 .HP 2
-\fBuint32_t rand32Uniform(uint32_t upperBound);\fR
+\fBuint32_t rand32Uniform(uint32_t \fIupperBound\fB);\fR
 .SH DESCRIPTION
 These routines generate pseudo-random numbers.  Seeding is done automatically the first time either function
 is called.  \fBrand32\fR() and \fBrand32Uniform\fR() are designed to operate like arc4random(3) and

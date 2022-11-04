@@ -4,18 +4,18 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH APUT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH APUT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBajoin\fR, \fBatos\fR, \fBaput\fR - convert an array to a string.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBint ajoin(Datum *pDatum, const Array *pArray, const char *delim, ushort cflags);\fR
+\fBint ajoin(Datum *\fIpDatum\fB, const Array *\fIpArray\fB, const char *\fIdelim\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint atos(Datum *pDatum, const Array *pArray, const char *delim, ushort cflags);\fR
+\fBint atos(Datum *\fIpDatum\fB, const Array *\fIpArray\fB, const char *\fIdelim\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint aput(const Array *pArray, DFab *pFab, const char *delim, ushort cflags);\fR
+\fBint aput(const Array *\fIpArray\fB, DFab *\fIpFab\fB, const char *\fIdelim\fB, ushort \fIcflags\fB);\fR
 .SH DESCRIPTION
 The \fBajoin\fR(), \fBatos\fR() ("array to string"), and \fBaput\fR() functions convert the array pointed to
 by \fIpArray\fR to a string, if possible, subject to the conversion flag(s) in \fIcflags\fR.  The

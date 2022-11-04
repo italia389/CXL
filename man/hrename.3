@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HRENAME 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HRENAME 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhrename\fR - rename a hash key.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBint hrename(HashTable *pHashTable, const char *oldKey, const char *newKey, int *pResult);\fR
+\fBint hrename(HashTable *\fIpHashTable\fB, const char *\fIoldKey\fB, const char *\fInewKey\fB, int *\fIpResult\fB);\fR
 .SH DESCRIPTION
 The \fBhrename\fR() function attempts to rename the string key \fIoldKey\fR pointing to an existing node in
 the hash table pointed to by \fIpHashTable\fR to string key \fInewKey\fR.  If \fIpResult\fR is not NULL, the
@@ -19,11 +19,11 @@ result will be returned in *\fIpResult\fR as follows:
 .PP
 .RS 3
 .PD 0
-.IP \fB\-1\fR 4
+.IP \fB\-1\fR 6
 Old key does not exist.
-.IP \fB\ 0\fR 4
+.IP "\fB 0\fR" 6
 Key was renamed successfully.
-.IP \fB\ 1\fR 4
+.IP "\fB 1\fR" 6
 New key already exists.
 .PD
 .RE

@@ -4,18 +4,18 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DOPEN 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DOPEN 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdopen\fR, \fBdopentrack\fR, \fBdopenwith\fR - open a fabrication object for writing.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dopen(DFab *pFab);\fR
+\fBint dopen(DFab *\fIpFab\fB);\fR
 .HP 2
-\fBint dopentrack(DFab *pFab);\fR
+\fBint dopentrack(DFab *\fIpFab\fB);\fR
 .HP 2
-\fBint dopenwith(DFab *pFab, Datum *pDatum, ushort mode);\fR
+\fBint dopenwith(DFab *\fIpFab\fB, Datum *\fIpDatum\fB, ushort \fImode\fB);\fR
 .SH DESCRIPTION
 These functions associate a datum with a \fBDFab\fR object (or "fabrication object") and open the latter for data
 storage using any of the \fBdput*\fR() functions such as \fBdputs\fR().  See cxl_datum(7) for an explanation of
@@ -45,4 +45,4 @@ datum will be overwritten as if \fBFabClear\fR was specified.
 If successful, all of these functions return zero.  They return a negative integer on failure, and set an exception code
 and message in the CXL Exception System to indicate the error.
 .SH SEE ALSO
-cxl(3), dclose(7), excep(3)
+cxl(3), cxl_datum(7), dclose(7), excep(3)

@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH CXL_DATUM 7 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH CXL_DATUM 7 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdatum\fR - dynamic data manipulation package.
@@ -130,7 +130,7 @@ The \fBDBoolMask\fR, \fBDMemMask\fR, and \fBDArrayMask\fR masks can be used in t
 \fBDStrMask\fR to test for a Boolean, byte string, or array value, respectively.  Alternatively, the
 dtypbool(3), dtypmem(3), dtypstr(3), and dtyparray(3) macros may be used as well.
 .PP
-Note also that when a datum is created, either directly or indirectly, it's initial type is \fBdat_nil\fR.
+Note also that when a datum is created, either directly or indirectly, it\(aqs initial type is \fBdat_nil\fR.
 .SS Fabrication Object
 A \fBDFab\fR structure (or "fabrication object") is defined to contain at least the following members:
 .sp
@@ -147,16 +147,18 @@ Datum *pDatum;
 .RE
 .PD
 .PP
-The \fIpDatum\fR member will contain a pointer to the "finalized" datum after the fabrication object is
-closed.  If the fabrication object was opened with \fBdopenwith\fR(), this will be the same pointer that was passed to
-that function.  If the fabrication object was opened with \fBdopen\fR() or \fBdopentrack\fR() instead, this will be a
-pointer to the datum that was created during the string fabrication process.  In either case, the contents
-of the datum that \fIpDatum\fR points to are considered undefined while the fabrication object is open.
+The \fIpDatum\fR member will contain a pointer to the finalized datum after the fabrication object is
+closed.  If the fabrication object was opened with \fBdopenwith\fR(), this will be the same pointer that was
+passed to that function.  If the fabrication object was opened with \fBdopen\fR() or \fBdopentrack\fR()
+instead, this will be a pointer to the datum that was created during the string fabrication process.  In
+either case, the contents of the datum that \fIpDatum\fR points to are considered to be undefined while the
+fabrication object is open.
 .SS String Conversion
-Another feature of the datum package is the ability to easily convert datums to string form in various formats.  For
-example, a string datum containing a tab and a newline could be converted to "Foo\etbar\en" (with double quotation
-marks), a byte string containing binary data could be converted to 'Yakkety^Iyak<NL>^@<8A>' (with single quotation marks),
-and a nested array could be converted to [nil, true, "red", [0, 3.4], "foobar\er\en"].
+Another feature of the datum package is the ability to easily convert datums to string form in various
+formats.  For example, a string datum containing a tab and a newline could be converted to "Foo\etbar\en"
+(with double quotation marks), a byte string containing binary data could be converted to
+\(aqYakkety^Iyak<NL>^@<8A>\(aq (with single quotation marks), and a nested array could be converted to [nil,
+true, "red", [0, 3.4], "foobar\er\en"].
 .PP
 The conversion process is controlled by specifying flag(s) in the \fIcflags\fR argument of the \fBdput*\fR()
 family of functions, which write data to a fabrication object.  See dput(3) for details.

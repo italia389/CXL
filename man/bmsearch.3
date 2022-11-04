@@ -1,0 +1,133 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH BMSEARCH 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBbmcomp\fR, \fBbmncomp\fR, \fBbmexec\fR, \fBbmnexec\fR, \fBbmuexec\fR,
+\fBbmfree\fR - Boyer-Moore search routines.
+.SH SYNOPSIS
+\fB#include "cxl/bmsearch.h"\fR
+.HP 2
+\fBint bmcomp(BMPat *\fIpPat\fB, const char *\fIpat\fB, unsigned \fIcflags\fB);\fR
+.HP 2
+\fBint bmncomp(BMPat *\fIpPat\fB, const char *\fIpat\fB, CharOffset \fIlen\fB, unsigned \fIcflags\fB);\fR
+.HP 2
+\fBconst char *bmexec(const BMPat *\fIpPat\fB, const char *\fIstring\fB);\fR
+.HP 2
+\fBconst char *bmnexec(const BMPat *\fIpPat\fB, const char *\fIstring\fB, size_t \fIlen\fB);\fR
+.HP 2
+\fBCharOffset bmuexec(const BMPat *\fIpPat\fB, bool (*\fInextChar\fB)(short *\fIpc\fB, void *\fIcontext\fB),
+void *\fIcontext\fB);\fR
+.HP 2
+\fBvoid bmfree(BMPat *\fIpPat\fB);\fR
+.SH DESCRIPTION
+These routines perform string matching on 8-bit characters using the Apostolico-Giancarlo variant of the
+Boyer-Moore search algorithm.  Searches may be performed forward or backward and optionally, ignoring
+case.  The string to match can also be located in a user-defined data context and supplied to the matching
+engine character by character via a callback routine.
+.PP
+The Apostolico-Giancarlo algorithm uses \fIO(m+256)\fR time and space complexity during the preprocessing
+(compilation) phase and \fIO(n)\fR time complexity during the searching phase, where \fIm\fR is the length of
+the pattern and \fIn\fR is the length of the text being searched.  It performs \fI3n/2\fR comparisons in the
+worst case, which is probably very rare in practice.
+.SS Overview
+The \fBbmcomp\fR() and \fBbmncomp\fR() functions compile a string pattern into an internal form.  The
+\fBbmexec\fR(), \fBbmnexec\fR(), and \fBbmuexec\fR() functions match the internal form against a string and
+report results.  \fBbmfree\fR() releases all dynamic memory associated with the internal form of a pattern.
+.PP
+The "bmsearch.h" header includes declarations of a structure type, \fBBMPat\fR, for holding the compiled
+pattern, a signed arithmetic type, \fBCharOffset\fR, for specifying pattern lengths and match offsets, and
+declares constants which are used to provide options to the complilation routines.  The \fBBMPat\fR structure
+has at least the following members:
+.sp
+.nf
+.ta 4 8 28
+	type struct {
+		unsigned cflags;	// Compilation flags.
+		CharOffset len;		// Pattern length.
+		} BMPat;
+.fi
+.SS Compilation
+\fBbmcomp\fR() compiles string pattern \fIpat\fR, subject to the flags in \fIcflags\fR, and places the results
+in the \fBBMPat\fR structure pointed to by \fIpPat\fR.  \fBbmncomp\fR() compiles a string pattern like
+\fBbmcomp\fR(), but the length is specified, allowing a string pattern that is not null terminated and/or
+contains null characters.
+.PP
+The \fIcflags\fR argument is the bitwise OR of zero or more of the following flags:
+.IP PatIgnoreCase 18
+Compile for matching that ignores case.
+.IP PatReverse 18
+Compile for matching in a backward direction instead of forward.  When this flag is set, the string pattern is
+reversed during compilation and the text is scanned backward by the execution routines, from the end to the beginning.
+.PP
+When successful, \fBbmcomp\fR() and \fBbmncomp\fR() fill in the structure pointed to by \fIpPat\fR and return zero.
+They return -1 on failure, and set an exception code and message in the CXL Exception System to indicate the error.
+.SS Execution
+The \fBbmexec\fR() function matches the compiled pattern pointed to by \fIpPat\fR against the text pointed to
+by \fIstring\fR and returns the result.  The pattern must have been compiled by a previous call to
+\fBbmcomp\fR() or \fBbmncomp\fR().  If \fBbmexec\fR() finds a match, it returns a pointer to the first
+character of the matched substring in \fIstring\fR; otherwise, it returns NULL indicating no match was found.
+The compiled form of the pattern is not altered during execution, so a single compiled pattern can be used
+simultaneously by multiple threads or can be matched against multiple strings.
+.PP
+The \fBbmnexec\fR() routine is like \fBbmexec\fR(), but the length of the string to match is specified,
+allowing a string that is not null terminated and/or contains null characters.
+.PP
+Note that if the \fBPatReverse\fR compilation flag was specified, the text pointed to by the \fIstring\fR
+argument is scanned backward from the end to the beginning; therefore, the first match found (if any) will be
+the rightmost occurrence.  Additionally, if the \fBPatIgnoreCase\fR compilation flag was specified, case is
+ignored in string comparisons.
+.SS Arbitrary String Matching
+The Boyer-Moore search library provides a special routine, \fBbmuexec\fR(), which operates like \fBbmexec\fR()
+except that the string to match can be located in any user-defined data context, and an offset is returned
+instead of a pointer to indicate the match result.  The user data must contain a sequence of characters to be
+matched (not necessarily contiguous) which are supplied by the caller via a callback function.  A pointer to
+this function is specified in the \fInextChar\fR argument.  The callback function returns the next character
+from the input stream.  If a character is available, \fI*pc\fR is set to the character and false is returned.
+If the end of the string is reached, true is returned (and \fI*pc\fR is ignored).
+.PP
+If the \fBPatReverse\fR compilation flag was specified, the callback routine needs to return characters in
+reverse order; that is, from the end of the input stream to the beginning.
+.PP
+The \fIcontext\fR argument of the \fBbmuexec\fR() function is provided as a generic pointer to a user-defined
+structure that can be used to maintain state information about the input stream.  It is passed as the second
+argument to the \fInextChar\fR callback function so that the state information is available to that function.
+It can be set to NULL if it is not being used.
+.PP
+If the \fBbmuexec\fR() function does not find a match, it returns -1; otherwise, it returns a non-negative
+value, which is either the offset to the first character of the matched substring in the input stream or, if
+scanning was backward (\fBPatReverse\fR compilation flag set), the offset from the end of the input stream to
+the last character of the matched substring.  (Hence, if scanning was backward and, for example, the first
+character returned by the callback function was the last character of the matched substring, zero would be returned.)
+.SS Disposal
+The \fBbmfree\fR() function frees any dynamically-allocated memory associated with the compiled pattern pointed
+to by \fIpPat\fR.  The remaining \fBBMPat\fR object is no longer a valid compiled pattern and the effect of supplying
+it to \fBbmexec\fR(), \fBbmnexec\fR(), or \fBbmuexec\fR() is undefined.
+.SH EXAMPLES
+The following function demonstrates the basics of how a pattern can be matched against a string:
+.nf
+.ta 5 10 25
+.sp
+#include "cxl/bmsearch.h"
+.sp
+// Match given string against the null-terminated pattern in
+// pat.  Return 1 for match, 0 for no match, and -1 for an error.
+int match(const char *string, char *pat) {
+	const char *result;
+	BMPat forwPat;
+.sp
+	if(bmcomp(&forwPat, pat, 0) != 0)
+		return -1;	// Error.
+	result = bmexec(&forwPat, string);
+	bmfree(&forwPat);
+	if(result != NULL)
+		return 1;	// Match.
+	return 0;		// No match.
+	}
+.fi
+.SH SEE ALSO
+cxl(3), strstr(3)

@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DSET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DSET 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdconvchr\fR, \fBdsetchr\fR, \fBdsetnil\fR, \fBdsetnull\fR,
@@ -15,41 +15,41 @@
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBvoid dconvchr(short c, Datum *pDatum);\fR
+\fBvoid dconvchr(short \fIc\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetchr(short c, Datum *pDatum);\fR
+\fBvoid dsetchr(short \fIc\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetnil(Datum *pDatum);\fR
+\fBvoid dsetnil(Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetnull(Datum *pDatum);\fR
+\fBvoid dsetnull(Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBint dsetarray(const Array *pArray, Datum *pDatum);\fR
+\fBint dsetarray(const Array *\fIpArray\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBint dsetstr(const char *str, Datum *pDatum);\fR
+\fBint dsetstr(const char *\fIstr\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBint dsetsubstr(const char *str, size_t len, Datum *pDatum);\fR
+\fBint dsetsubstr(const char *\fIstr\fB, size_t \fIlen\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetint(long i, Datum *pDatum);\fR
+\fBvoid dsetint(long \fIi\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetuint(ulong u, Datum *pDatum);\fR
+\fBvoid dsetuint(ulong \fIu\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetreal(double d, Datum *pDatum);\fR
+\fBvoid dsetreal(double \fId\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetbool(bool b, Datum *pDatum);\fR
+\fBvoid dsetbool(bool \fIb\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBint dsetmem(const void *memPtr, size_t size, Datum *pDatum);\fR
+\fBint dsetmem(const void *\fImemPtr\fB, size_t \fIsize\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetarrayref(Array *pArray, Datum *pDatum);\fR
+\fBvoid dsetarrayref(Array *\fIpArray\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetmemref(void *memPtr, size_t size, Datum *pDatum);\fR
+\fBvoid dsetmemref(void *\fImemPtr\fB, size_t \fIsize\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dsetstrref(char *str, Datum *pDatum);\fR
+\fBvoid dsetstrref(char *\fIstr\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dadoptarray(Array *pArray, Datum *pDatum);\fR
+\fBvoid dadoptarray(Array *\fIpArray\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dadoptmem(void *memPtr, size_t size, Datum *pDatum);\fR
+\fBvoid dadoptmem(void *\fImemPtr\fB, size_t \fIsize\fB, Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid dadoptstr(char *str, Datum *pDatum);\fR
+\fBvoid dadoptstr(char *\fIstr\fB, Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 These functions provide the ability to set the datum pointed to by \fIpDatum\fR to various values.  The datum
 is automatically cleared with dclear(3) before the value is set.
@@ -152,4 +152,4 @@ indicate the error.
 .PP
 None of the other functions return a value.
 .SH SEE ALSO
-aclone(3), cxl(3), cxl_array(7), dclear(3), excep(3), free(3)
+aclone(3), cxl(3), cxl_array(7), cxl_datum(7), dclear(3), excep(3), free(3)

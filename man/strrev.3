@@ -1,0 +1,35 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STRREV 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBmbrev\fR, \fBmemrev\fR, \fBstrrev\fR - reverse string in place.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBint mbrev(char *\fIstr\fB, size_t \fIlen\fB);\fR
+.HP 2
+\fBvoid *memrev(void *\fIstr\fB, size_t \fIlen\fB);\fR
+.HP 2
+\fBchar *strrev(char *\fIstr\fB);\fR
+.SH DESCRIPTION
+The \fBmbrev\fR(), \fBmemrev\fR(), and \fBstrrev\fR() functions respectively reverse a multibyte string, byte
+string, and C string in place; that is, they reorder the characters in the string so that the first character
+becomes the last, the second character becomes the second to last, and so on, continuing until the last character
+becomes the first.  Additionally, the \fBmbrev\fR() function does this in a manner that preserves the byte
+order of multibyte characters -- all characters in a sequence are moved as one unit without reversal.
+.PP
+\fBmbrev\fR() and \fBmemrev\fR() reverse string \fIstr\fR of length \fIlen\fR.  \fBstrrev\fR() reverses
+null-terminated string \fIstr\fR.
+.SH RETURN VALUES
+If successful, \fBmbrev\fR() returns zero.  It returns a negative integer on failure, and sets an exception code
+and message in the CXL Exception System to indicate the error.
+.PP
+\fBmemrev\fR() and \fBstrrev\fR() return \fIstr\fR, which is a pointer to the reversed
+string.  No error is possible.
+.SH SEE ALSO
+cxl(3)

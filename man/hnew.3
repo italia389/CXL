@@ -4,18 +4,18 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HNEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HNEW 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhnew\fR, \fBhinit\fR, \fBhclear\fR - create, initialize, or clear a hash table.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBHashTable *hnew(HashSize hashSize, float loadFactor, float rebuildTrig);\fR
+\fBHashTable *hnew(HashSize \fIhashSize\fB, float \fIloadFactor\fB, float \fIrebuildTrig\fB);\fR
 .HP 2
-\fBint hinit(HashTable *pHashTable, HashSize hashSize, float loadFactor, float rebuildTrig);\fR
+\fBint hinit(HashTable *\fIpHashTable\fB, HashSize \fIhashSize\fB, float \fIloadFactor\fB, float \fIrebuildTrig\fB);\fR
 .HP 2
-\fBvoid hclear(HashTable *pHashTable);\fR
+\fBvoid hclear(HashTable *\fIpHashTable\fB);\fR
 .SH DESCRIPTION
 These functions either create a hash table by allocating a \fBHashTable\fR object in memory, or prepare an
 existing \fBHashTable\fR object for use.
@@ -43,12 +43,12 @@ array is known as the "hash size".  The initial target hash size is specified by
 to or greater than this target value.
 .PP
 The hash table also holds parameters that control when and how the table should be rebuilt when it becomes too
-large.  The size of the table (i.e., the total number of nodes it contains) is monitored by tracking the table's "load
-factor", which is a floating-point value calculated by dividing the current number of nodes in the table by
-the hash size.  When the load factor reaches a certain value (the "rebuild trigger"), the table is rebuilt
-with a larger array so that its load factor is reduced to a more reasonable level.  The target value for the
-new load factor is specified by \fIloadFactor\fR, which must be less than or equal to 1.0.  Additionally,
-\fIrebuildTrig\fR must be greater than \fIloadFactor\fR.
+large.  The size of the table (i.e., the total number of nodes it contains) is monitored by tracking the
+table\(aqs "load factor", which is a floating-point value calculated by dividing the current number of nodes
+in the table by the hash size.  When the load factor reaches a certain value (the "rebuild trigger"), the
+table is rebuilt with a larger array so that its load factor is reduced to a more reasonable level.  The
+target value for the new load factor is specified by \fIloadFactor\fR, which must be less than or equal to
+1.0.  Additionally, \fIrebuildTrig\fR must be greater than \fIloadFactor\fR.
 .PP
 If any of the three parameter arguments specified for \fBhnew\fR() or \fBhinit\fR() is zero, a default value
 is used.  These are 67, 0.5, and 1.65, respectively.

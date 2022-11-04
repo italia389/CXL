@@ -1,0 +1,27 @@
+.\" (c) Copyright 2022 Richard W. Marinelli
+.\"
+.\" This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
+.\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
+.\"
+.ad l
+.TH STPLVIZCPY 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
+.nh \" Turn off hyphenation.
+.SH NAME
+\fBstplvizcpy\fR - copy a byte string in visible form.
+.SH SYNOPSIS
+\fB#include "cxl/string.h"\fR
+.HP 2
+\fBchar *stplvizcpy(char *\fIdest\fB, size_t \fIdestLen\fB, const void *\fIsrc\fB, size_t \fIsrcLen\fB, ushort \fIflags\fB);\fR
+.SH DESCRIPTION
+The \fBstplvizcpy\fR() function copies at most \fIsrcLen\fR bytes from memory area \fIsrc\fR to string buffer
+\fIdest\fR of size \fIdestLen\fR, after converting each byte to a substring which represents the visible form of the byte.
+The string in \fIdest\fR is null-terminated if \fIdestLen\fR is greater than zero.
+.PP
+Each byte in \fIsrc\fR is passed to vizc.3 with the \fIflags\fR argument.  The string result is then stored in
+\fIdest\fR if room is available.  Copying stops when \fIdestLen\fR - 1 characters have been saved in \fIdest\fR or
+\fIsrcLen\fR bytes have been converted from \fIsrc\fR.
+.SH RETURN VALUES
+The \fBstplvizcpy\fR() function returns a pointer to the terminating null in \fIdest\fR if \fIdestLen\fR is
+greater than zero, otherwise \fIdest\fR.  In the latter case, the string buffer pointed to by \fIdest\fR is not changed.
+.SH SEE ALSO
+cxl(3), memcpy(3), memstpcpy(3), stpcpy(3), stplcpy(3)

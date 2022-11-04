@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HFREE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HFREE 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhfree\fR - free a hash table.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBvoid hfree(HashTable *pHashTable);\fR
+\fBvoid hfree(HashTable *\fIpHashTable\fB);\fR
 .SH DESCRIPTION
 The \fBhfree\fR() function frees all memory associated with the hash table pointed to by \fIpHashTable\fR; that
 is, it deletes the hash table.  The routine first calls hclear(3) to free all the nodes, then calls free(3) on

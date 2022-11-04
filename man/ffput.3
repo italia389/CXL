@@ -4,22 +4,22 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH FFPUT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH FFPUT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBffputc\fR, \fBffputs\fR, \fBffwrite\fR, \fBffputvizc\fR, \fBffputvizmem\fR - write data to a fast file.
 .SH SYNOPSIS
 \fB#include "cxl/fastio.h"\fR
 .HP 2
-\fBint ffputc(short c, FastFile *pFastFile);\fR
+\fBint ffputc(short \fIc\fB, FastFile *\fIpFastFile\fB);\fR
 .HP 2
-\fBint ffputs(const char *str, FastFile *pFastFile);\fR
+\fBint ffputs(const char *\fIstr\fB, FastFile *\fIpFastFile\fB);\fR
 .HP 2
-\fBint ffwrite(void *buf, size_t len, FastFile *pFastFile);\fR
+\fBint ffwrite(void *\fIbuf\fB, size_t \fIlen\fB, FastFile *\fIpFastFile\fB);\fR
 .HP 2
-\fBint ffputvizc(short c, ushort flags, FastFile *pFastFile);\fR
+\fBint ffputvizc(short \fIc\fB, ushort \fIflags\fB, FastFile *\fIpFastFile\fB);\fR
 .HP 2
-\fBint ffputvizmem(const void *memPtr, size_t size, ushort flags, FastFile *pFastFile);\fR
+\fBint ffputvizmem(const void *\fImemPtr\fB, size_t \fIsize\fB, ushort \fIflags\fB, FastFile *\fIpFastFile\fB);\fR
 .SH DESCRIPTION
 These functions write data to the fast file pointed to by \fIpFastFile\fR.
 .PP

@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH HSET 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH HSET 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBhset\fR - store a datum in a hash table.
 .SH SYNOPSIS
 \fB#include "cxl/hash.h"\fR
 .HP 2
-\fBHashRec *hset(HashTable *pHashTable, const char *key, Datum *pDatum, bool copy);\fR
+\fBHashRec *hset(HashTable *\fIpHashTable\fB, const char *\fIkey\fB, Datum *\fIpDatum\fB, bool \fIcopy\fB);\fR
 .SH DESCRIPTION
 The \fBhset\fR() function stores the Datum object pointed to by \fIpDatum\fR (or a copy of it if \fIcopy\fR is
 true) into the hash table pointed to by \fIpHashTable\fR using string hash key \fIkey\fR.  If \fIpDatum\fR is

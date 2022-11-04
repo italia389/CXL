@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ACAT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ACAT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBacat\fR - concatenate one array with another.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *acat(Array *pArray1, const Array *pArray2, ushort aflags);\fR
+\fBArray *acat(Array *\fIpArray1\fB, const Array *\fIpArray2\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 The \fBacat\fR() function concatenates two arrays, subject to the operation flag in \fIaflags\fR, which is either
 \fBAOpInPlace\fR  or zero.

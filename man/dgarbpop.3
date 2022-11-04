@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DGARBPOP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DGARBPOP 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdgarbpop\fR - pop the garbage collection stack, releasing memory.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBvoid dgarbpop(const Datum *pDatum);\fR
+\fBvoid dgarbpop(const Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 The \fBdgarbpop\fR() function pops the garbage collection stack back to the datum pointed to by \fIpDatum\fR, or
 back to the beginning (releasing the whole stack) if no such datum is found on the stack.  All datums that are popped

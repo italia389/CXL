@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DPUT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DPUT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdputc\fR, \fBdputs\fR, \fBdputsubstr\fR, \fBdputf\fR, \fBdputmem\fR, \fBdputd\fR - write data to an
@@ -12,17 +12,17 @@ opened fabrication object.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dputc(short c, DFab *pFab, ushort cflags);\fR
+\fBint dputc(short \fIc\fB, DFab *\fIpFab\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint dputs(const char *str, DFab *pFab, ushort cflags);\fR
+\fBint dputs(const char *\fIstr\fB, DFab *\fIpFab\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint dputsubstr(const char *str, size_t len, DFab *pFab, ushort cflags);\fR
+\fBint dputsubstr(const char *\fIstr\fB, size_t \fIlen\fB, DFab *\fIpFab\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint dputf(DFab *pFab, ushort cflags, const char *fmt, ...);\fR
+\fBint dputf(DFab *\fIpFab\fB, ushort \fIcflags\fB, const char *\fIfmt\fB, ...);\fR
 .HP 2
-\fBint dputmem(const void *memPtr, size_t size, DFab *pFab, ushort cflags);\fR
+\fBint dputmem(const void *\fImemPtr\fB, size_t \fIsize\fB, DFab *\fIpFab\fB, ushort \fIcflags\fB);\fR
 .HP 2
-\fBint dputd(const Datum *pDatum, DFab *pFab, ushort cflags);\fR
+\fBint dputd(const Datum *\fIpDatum\fB, DFab *\fIpFab\fB, ushort \fIcflags\fB);\fR
 .SH DESCRIPTION
 The \fBdput*\fR() family of functions provide various ways of writing data to an opened fabrication object,
 subject to the conversion flags in \fIcflags\fR.  The fabrication object is pointed to by \fIpFab\fR in each routine.
@@ -33,9 +33,9 @@ The available conversion flags are described in the \fBString Conversion\fR sect
 encountered before \fIlen\fR characters have been written), and \fBdputmem\fR() writes \fIsize\fR bytes
 beginning at memory location \fImemPtr\fR.
 .PP
-\fBdputf\fR() writes data according to format string \fIfmt\fR and corresponding conversions on subsequent arguments in
-the same manner as the \fBprintf\fR() function.  See printf(3) for an explanation of the available formatting
-specifications.
+\fBdputf\fR() writes data according to format string \fIfmt\fR and corresponding conversions on subsequent
+arguments in the same manner as the \fBprintf\fR() function.  See printf(3) for an explanation of the
+available formatting specifications.
 .PP
 \fBdputd\fR() writes the contents of the datum pointed to by \fIpDatum\fR to the fabrication object in string
 form.  Note that this may include null byte(s) if the datum contains binary data.  Note also that if the datum
@@ -60,7 +60,7 @@ Enclose characters and strings in double (") quotes.
 .IP DCvtQuote 16
 Automatically quote characters and strings depending on datum type and other flags.
 .IP DCvtThouSep 16
-Insert commas in thousands' places in signed and unsigned integers.
+Insert commas in thousands\(aq places in signed and unsigned integers.
 .RE
 .PD
 .PP

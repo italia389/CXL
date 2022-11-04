@@ -1,13 +1,30 @@
 CXL Library RELEASE HISTORY
 
 ----------
+1.2.0	4 Nov 2022
+ 1. Created eclear() function in CXL Exception System, which clears any
+    exception condition (error code and message) that is currently set.
+ 2. Created Apostolico-Giancarlo fast-search routines (variant of Boyer-Moore)
+    which provide the ability to perform fast plain text searches on a string of
+    8-bit characters of any length, forward or backward, and optionally ignoring
+    case.  The sequence of characters to search can also be supplied by a
+    user-written callback function.
+ 3. Created strrev(), memrev(), and mbrev() functions, which reverse
+    respectively a string, byte string, and multibyte string in place.
+ 4. Created stplvizcpy() function, which copies a string in visible form with
+    length restrictions.
+ 5. Updated man pages (excep.3, bmsearch.3, stplvizcpy.3, and strrev.3).
+
+----------
 1.1.0	4 Jun 2022
- 1. Created complete set of man pages for CXL library, including informational pages for the library and its packages, and pages
-    for all function names.
- 2. Removed "blob" and "heap" terminology in Datum package (which was confusing) and standardized on "mem" and "byte string" to
-    refer to allocated memory.  Also changed part of the APIs in several packages to make entity names more consistent within
-    the package (for example, same name prefix and letter case) and to better describe the purpose of functions.  Renamed some
-    macro, structure, and function names accordingly:
+ 1. Created complete set of man pages for CXL library, including informational
+    pages for the library and its packages, and pages for all function names.
+ 2. Removed "blob" and "heap" terminology in Datum package (which was confusing)
+    and standardized on "mem" and "byte string" to refer to allocated memory.
+    Also changed part of the APIs in several packages to make entity names more
+    consistent within the package (for example, same name prefix and letter
+    case) and to better describe the purpose of functions.  Renamed some macro,
+    structure, and function names accordingly:
 	DBlob		-> DMem
 	DBlob.mem	-> DMem.ptr
 	Datum.u.blob	-> Datum.u.mem
@@ -38,102 +55,150 @@ CXL Library RELEASE HISTORY
 	strpspn()	-> strcbrk()
 	getDelim()	-> convDelim()
 	cxlibvers()	-> cxlvers()
- 3. Made major enhancements to datum and array libraries, including ability to store an array in a datum, vizc() character-
-    conversions in dput*() functions (with new "flags" argument), and string and array quoting:
-	- renamed dsetastr() function to dadoptstr(), which better describes its purpose, and created dadoptmem() function for
-	  "adopting" a byte string.
-	- changed datum library to allow a character or Array object (or reference) to be stored in a Datum object, in addition
-	  to the existing types:
+ 3. Made major enhancements to datum and array libraries, including ability to
+    store an array in a datum, vizc() character-conversions in dput*()
+    functions (with new "flags" argument), and string and array quoting:
+	- renamed dsetastr() function to dadoptstr(), which better describes its
+	  purpose, and created dadoptmem() function for "adopting" a byte string.
+	- changed datum library to allow a character or Array object (or
+	  reference) to be stored in a Datum object, in addition to the existing
+	  types:
 		. created dat_char, dat_array, and dat_arrayRef datum types.
-		. created dadoptarray(), dsetarray(), and dsetarrayref() functions.
-		. renamed dsetchr() function to dconvchr() (which converts a character to a string and stores it in a datum)
-		  and created new dsetchr() function, which sets a true character (integer value) in a datum.
-	- expanded datum-to-string capabilities:
-		. created DCvt* and ACvt* flags for controlling datum and array conversions, including DCvtLang and DCvtVizStr
-		  shortcuts (masks) for conversion of any datum type to a common form.
-		. added "cflags" argument (which can be combined with Viz* flags used by vizc() function) to all dput*()
+		. created dadoptarray(), dsetarray(), and dsetarrayref()
 		  functions.
-		. created dputsubstr() function for putting a substring (vs. dputmem() for putting a byte string), and added
-		  appropriate validity checking for both functions.
-		. changed dtos() function to take a destination datum and cflags argument, and save result in the datum so that
-		  any datum type (including array) can be converted to string form, per cflags.
-	- eliminated dputvizc(), dputvizmem(), dsetvizc(), and dsetvizmem() functions, which are now redundant, special-case
-	  functions for the most part, and no longer needed.
-	- created aput() and atos() functions, which convert an array to string, per conversion flags, and write result to a
-	  fabrication object, or save result in a datum, respectively.
-	- created scheme for detecting (and stopping) endless array recursion when stepping through an array.
-	- added "cflags" argument to ajoin() function and changed to call aput() so that conversion options can be specified for
-	  a join, and endless array recursion can be detected.
-	- changed disnil(), distrue(), and disfalse() functions to macros (that test the "contents" of a datum), and changed the
-	  latter two to include dat_nil as false.
-	- created dtyparray(), dtypbool(), dtypmem(), and dtypstr() macros, which test the type of a datum.
-	- changed dunputc() function to return the character that is "unput", or -1 if an error occurs (like ungetc() in the
-	  Standard C Library), instead of returning just a status code.
-	- created disempty() function, which returns true if a Datum object is empty (that is, is nil, a null string, or an
-	  empty array).
-	- created dtrack() function, which adds a datum to the garbage collection stack if not already present.
-	- renamed ddelete() function to dfree(), to be consisent with afree() and hfree().
-	- created drelease() function, which changes a datum with allocated data to a reference type.
-	- added ability to create a reference type when closing a fabrication object with dclose().
-    Now a datum may contain an array, arrays may be nested, and datums and arrays can be easily converted to strings in various
-    forms, including quoted byte strings ('^I<CR>...') and "programming language" form for arrays ["abc", 1, nil, false, ...].
+		. renamed dsetchr() function to dconvchr() (which converts a
+		  character to a string and stores it in a datum) and created
+		  new dsetchr() function, which sets a true character (integer
+		  value) in a datum.
+	- expanded datum-to-string capabilities:
+		. created DCvt* and ACvt* flags for controlling datum and array
+		  conversions, including DCvtLang and DCvtVizStr shortcuts
+		  (masks) for conversion of any datum type to a common form.
+		. added "cflags" argument (which can be combined with Viz* flags
+		  used by vizc() function) to all dput*() functions.
+		. created dputsubstr() function for putting a substring (vs.
+		  dputmem() for putting a byte string), and added appropriate
+		  validity checking for both functions.
+		. changed dtos() function to take a destination datum and cflags
+		  argument, and save result in the datum so that any datum type
+		  (including array) can be converted to string form, per cflags.
+	- eliminated dputvizc(), dputvizmem(), dsetvizc(), and dsetvizmem()
+	  functions, which are now redundant, special-case functions for the
+	  most part, and no longer needed.
+	- created aput() and atos() functions, which convert an array to string,
+	  per conversion flags, and write result to a fabrication object, or
+	  save result in a datum, respectively.
+	- created scheme for detecting (and stopping) endless array recursion
+	  when stepping through an array.
+	- added "cflags" argument to ajoin() function and changed to call aput()
+	  so that conversion options can be specified for a join, and endless
+	  array recursion can be detected.
+	- changed disnil(), distrue(), and disfalse() functions to macros (that
+	  test the "contents" of a datum), and changed the latter two to include
+	  dat_nil as false.
+	- created dtyparray(), dtypbool(), dtypmem(), and dtypstr() macros,
+	  which test the type of a datum.
+	- changed dunputc() function to return the character that is "unput", or
+	  -1 if an error occurs (like ungetc() in the Standard C Library),
+	  instead of returning just a status code.
+	- created disempty() function, which returns true if a Datum object is
+	  empty (that is, is nil, a null string, or an empty array).
+	- created dtrack() function, which adds a datum to the garbage
+	  collection stack if not already present.
+	- renamed ddelete() function to dfree(), to be consisent with afree()
+	  and hfree().
+	- created drelease() function, which changes a datum with allocated data
+	  to a reference type.
+	- added ability to create a reference type when closing a fabrication
+	  object with dclose().
+    Now a datum may contain an array, arrays may be nested, and datums and
+    arrays can be easily converted to strings in various forms, including quoted
+    byte strings ('^I<CR>...') and "programming language" form for arrays
+    ["abc", 1, nil, false, ...].
  4. Made further improvements to array library, including several new functions:
-	- Changed asplit() function to split a string into individual characters (subject to a limit value greater than zero) if
-	  the delimiter is '\0', instead of splitting on every occurrence of white space, as previously (which was redundant).
-	- created flags AOpCopy, AOpCut, AOpGrow, AOpIgnore, AOpInPlace, AOpLast, and AOpNonMatching for controlling function
-	  options.
-	- added new functions, all of which except aempty() accept a "flags" argument:
-		acat(), adeleteif(), aempty(), afill(), afree(), ainclude(), aindex(), amatch(), aput(), atos(), auniq()
+	- Changed asplit() function to split a string into individual characters
+	  (subject to a limit value greater than zero) if the delimiter is '\0',
+	  instead of splitting on every occurrence of white space, as previously
+	  (which was redundant).
+	- created flags AOpCopy, AOpCut, AOpGrow, AOpIgnore, AOpInPlace,
+	  AOpLast, and AOpNonMatching for controlling function options.
+	- added new functions, all of which except aempty() accept a "flags"
+	  argument:
+		acat(), adeleteif(), aempty(), afill(), afree(), ainclude(),
+		aindex(), amatch(), aput(), atos(), auniq()
 	- changed return value and/or arguments of selected functions:
-		aclear(), acompact(), aeq(), aget(), ainit(), ainsert(), ajoin(), apush(), aslice(), aunshift()
-	- deleted agraft() function, which is no longer needed (equivalent to acat() with AOpInPlace flag).
-	- created "next" and "tagged" members in Array structure (which are not used by library routines) so that arrays can be
-	  tracked externally; for example, for garbage collection.
-    Now functions use a "flags" argument to control options, which include returning a new array or modifying an existing one,
-    ignoring case in string comparisons, and adding Datum objects directly to an array or making a copy.
+		aclear(), acompact(), aeq(), aget(), ainit(), ainsert(),
+		ajoin(), apush(), aslice(), aunshift()
+	- deleted agraft() function, which is no longer needed (equivalent to
+	  acat() with AOpInPlace flag).
+	- created "next" and "tagged" members in Array structure (which are not
+	  used by library routines) so that arrays can be tracked externally;
+	  for example, for garbage collection.
+    Now functions use a "flags" argument to control options, which include
+    returning a new array or modifying an existing one, ignoring case in string
+    comparisons, and adding Datum objects directly to an array or making a copy.
  5. Enhanced hash table package:
-	- added hempty() macro to hash.h, which returns true if a hash table is empty.
+	- added hempty() macro to hash.h, which returns true if a hash table is
+	  empty.
 	- renamed "Hash" object to "HashTable".
 	- created hinit() function for initializing a HashTable variable.
 	- changed hclear() function to:
 		. free hash array in addition to the nodes.
-		. call hinit() on hash table with default parameters so it is reverted back to a "small" table.
-	- change hfree() function to not call free() on hash array (which is now done by hclear()).
-    Now (1), creation of the array in a hash table is deferred until a node is created, which is cleaner and consistent with how
-    Array objects are initialized; (2), a hash table can be in a local variable and cleared with hclear() when
-    no longer needed (just like an array); and (3), a hash table will revert back to "small" form when it is cleared.
+		. call hinit() on hash table with default parameters so it is
+		  reverted back to a "small" table.
+	- change hfree() function to not call free() on hash array (which is now
+	  done by hclear()).
+    Now (1), creation of the array in a hash table is deferred until a node is
+    created, which is cleaner and consistent with how Array objects are
+    initialized; (2), a hash table can be in a local variable and cleared with
+    hclear() when no longer needed (just like an array); and (3), a hash table
+    will revert back to "small" form when it is cleared.
  6. Enhanced fast-file package:
-	- changed ffopen() function to store a copy of the filename in the FastFile object instead of the storing the filename
-	  pointer directly.
-	- created ffeof() macro in fastio.h, which returns non-zero if a fast file is at EOF.
-	- created FFDelimNUL, FFDelimCR, FFDelimCRLF, and FFDelimNL macros for specifying an input file delimiter.
-	- changed ffsetdelim() function to use delimiter macros instead of strings (like "crlf") to set delimiter.
-	- changed ffgets() function to automatically detect and set a null byte as a line delimiter in addition to NL, CR,
-	  and CR-LF when operating in "auto" mode.
-    Now a null byte is recognized as an input line delimiter, and the funky delimiter codes (like "crlf") have been replaced
-    with flags, which is cleaner.
- 7. Fixed excep() function to ignore severity flags if out of range, and to call exit() with EXIT_FAILURE (1) instead of
-    DefExitCode (-1), which follows established conventions and makes more sense for a return to the shell.
+	- changed ffopen() function to store a copy of the filename in the
+	  FastFile object instead of the storing the filename pointer directly.
+	- created ffeof() macro in fastio.h, which returns non-zero if a fast
+	  file is at EOF.
+	- created FFDelimNUL, FFDelimCR, FFDelimCRLF, and FFDelimNL macros for
+	  specifying an input file delimiter.
+	- changed ffsetdelim() function to use delimiter macros instead of
+	  strings (like "crlf") to set delimiter.
+	- changed ffgets() function to automatically detect and set a null byte
+	  as a line delimiter in addition to NL, CR, and CR-LF when operating in
+	  "auto" mode.
+    Now a null byte is recognized as an input line delimiter, and the funky
+    delimiter codes (like "crlf") have been replaced with flags, which is
+    cleaner.
+ 7. Fixed excep() function to ignore severity flags if out of range, and to call
+    exit() with EXIT_FAILURE (1) instead of DefExitCode (-1), which follows
+    established conventions and makes more sense for a return to the shell.
  8. Changed getSwitch() function:
-	- renamed 'value' member in SwitchResult record to 'arg', which follows the accepted convention of using "switch
-	  argument" to refer to the argument associated with a switch instead of "switch value".
+	- renamed 'value' member in SwitchResult record to 'arg', which follows
+	  the accepted convention of using "switch argument" to refer to the
+	  argument associated with a switch instead of "switch value".
 	- fixed potential memory leaks.
- 9. Created uintf() function for inserting commas in an unsigned long integer (in addition to intf() for signed).
-10. Created rand32() and rand32Uniform() functions, which return a 32-bit unsigned pseudo-random integer and a uniformly-
-    distributed pseudo-random integer respectively, and are automatically seeded.
+ 9. Created uintf() function for inserting commas in an unsigned long integer
+    (in addition to intf() for signed).
+10. Created rand32() and rand32Uniform() functions, which return a 32-bit
+    unsigned pseudo-random integer and a uniformly-distributed pseudo-random
+    integer respectively, and are automatically seeded.
 
 ----------
 1.0.0	6 Jun 2020
 
 *** Changes from ProLib library 2.1.0
 
- 1. Removed 'pl' prefix from headers and moved into new 'include/cxl' subdirectory.
- 2. Created "stdos.h" header, which replaced the former "os.h" and "pldef.h" headers, and modified so that it is no longer
-    necessary to select an OS in an include file (formerly os.h) in order to compile on multiple platforms.
- 3. Created cxlibvers() function, which returns a human-readable version string for the CXL library.
- 4. Renamed agraph() function to agraft() in array.c, which was what it was supposed to be called in the first place.
- 5. Changed all snake case names to camelCase in source code where possible, and removed "x_" prefixes from struct member names.
-    Changes include the following global variables and functions:
+ 1. Removed 'pl' prefix from headers and moved into new 'include/cxl'
+    subdirectory.
+ 2. Created "stdos.h" header, which replaced the former "os.h" and "pldef.h"
+    headers, and modified so that it is no longer necessary to select an OS in
+    an include file (formerly os.h) in order to compile on multiple platforms.
+ 3. Created cxlibvers() function, which returns a human-readable version string
+    for the CXL library.
+ 4. Renamed agraph() function to agraft() in array.c, which was what it was
+    supposed to be called in the first place.
+ 5. Changed all snake case names to camelCase in source code where possible, and
+    removed "x_" prefixes from struct member names.  Changes include the
+    following global variables and functions:
 		datGarb		-> datGarbHead
 		plexcep		-> cxlExcep
 
@@ -149,15 +214,20 @@ CXL Library RELEASE HISTORY
 		getdel()	-> getDelim()
 		getswitch()	-> getSwitch()
  6. Changed getSwitch() function:
-	- added a 'switchCount' argument for specifying the size of the switch table, instead of having a dummy switch at the
-	  end of the table, as previously.
-	- changed so that "++value" can be used (in addition to "--value") to specify a switch argument that begins with a plus
-	  sign (+).
- 7. Created strip() function in new strip.c source file, which removes leading and/or trailing white space from a string.
- 8. Renamed several string-fab-related items in datum.c to clarify that a DStrFab object is not used only for building a
-    null-terminated string:
+	- added a 'switchCount' argument for specifying the size of the switch
+	  table, instead of having a dummy switch at the end of the table, as
+	  previously.
+	- changed so that "++value" can be used (in addition to "--value") to
+	  specify a switch argument that begins with a plus sign (+).
+ 7. Created strip() function in new strip.c source file, which removes leading
+    and/or trailing white space from a string.
+ 8. Renamed several string-fab-related items in datum.c to clarify that a
+    DStrFab object is not used only for building a null-terminated string:
 	- renamed DStrFab object to DFab.
 	- renamed all "SF*" flags to "Fab*".
-    Now it is more obvious that a DFab object can be used to build either a null-terminated string or a DBlob object.
- 9. Moved fvizc() and fvizs() functions from viz.c to new source file, fviz.c, and renamed the latter function to fvizmem().
-10. Added 'const' qualifier to selected library function arguments and dependent local variables where appropriate.
+    Now it is more obvious that a DFab object can be used to build either a
+    null-terminated string or a DBlob object.
+ 9. Moved fvizc() and fvizs() functions from viz.c to new source file, fviz.c,
+    and renamed the latter function to fvizmem().
+10. Added 'const' qualifier to selected library function arguments and dependent
+    local variables where appropriate.

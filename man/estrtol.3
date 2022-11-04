@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ESTRTOL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ESTRTOL 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBestrtol\fR, \fBestrtoul\fR - convert a string to a long integer with exception handling.
 .SH SYNOPSIS
 \fB#include "cxl/lib.h"\fR
 .HP 2
-\fBint estrtol(const char *str, int base, long *pResult);\fR
+\fBint estrtol(const char *\fIstr\fB, int \fIbase\fB, long *\fIpResult\fB);\fR
 .HP 2
-\fBint estrtoul(const char *str, int base, ulong *pResult);\fR
+\fBint estrtoul(const char *\fIstr\fB, int \fIbase\fB, ulong *\fIpResult\fB);\fR
 .SH DESCRIPTION
 These functions convert a string to a long integer like strtol(3) and strtoul(3), however they use a
 simplified interface and the CXL Exception System for error reporting.

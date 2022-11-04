@@ -4,7 +4,7 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH CXL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH CXL 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBCXL\fR - C extensions library.
@@ -12,24 +12,27 @@
 The \fBCXL\fR library is a package of
 routines that provide additional functionality and features (or "extensions") to the Standard C Library.
 .SS Overview
-The library's API consists of several functions, which include the following:
+The library\(aqs API consists of several functions, which include the following:
 .RS 4
 .PD 0
 .IP \fB\-\fR 2
 A set of exception-handling routines that allow a message to be set and a non-zero code to be returned.
 .IP \fB\-\fR 2
-A \fBgetSwitch()\fR function, which can be used to process command-line switches specified as single letters or keywords,
-with or without arguments.
+A \fBgetSwitch()\fR function, which can be used to process command-line switches specified as single letters
+or keywords, with or without arguments.
 .IP \fB\-\fR 2
-A set of routines that define and process "Datum" objects (or "datums"), which can hold any type of data, including
-strings of any length.
+A set of routines that define and process "Datum" objects (or "datums"), which can hold any type of data,
+including strings of any length.
 .IP \fB\-\fR 2
 Routines which create and manipulate dynamic arrays of any length which contain datums as elements.
 .IP \fB\-\fR 2
 Routines which create and manipulate hash tables which contain datums as node values.
 .IP \fB\-\fR 2
-A set of fast I/O routines which use large buffers to improve performance and allow reading data sensitive lines of any
-length from a file with automatic line delimiter detection.
+A set of fast I/O routines which use large buffers to improve performance and allow reading data sensitive
+lines of any length from a file with automatic line delimiter detection.
+.IP \fB\-\fR 2
+A set of routines which perform fast Boyer-Moore matching of a fixed pattern against a string, forward or
+backward, case-sensitive or insensitive.
 .PD
 .RE
 .PP
@@ -213,6 +216,8 @@ Transfer contents of one datum to another.
 .sp
 EXCEPTION HANDLING
 .RS 4
+.IP eclear 16
+Clear any existing exception code and message.
 .IP emsg 16
 Set an exception code and message.
 .IP emsgf 16
@@ -295,18 +300,40 @@ Write a character to a stream in visible form.
 Write bytes to a stream in visible form, given memory pointer and size.
 .RE
 .sp
+BOYER-MOORE MATCHING
+.RS 4
+.IP bmcomp 16
+Compile a null-terminated pattern string.
+.IP bmncomp 16
+Compile a fixed-length pattern string.
+.IP bmexec 16
+Match a compiled pattern against a null-terminated string.
+.IP bmfree 16
+Free memory used by a compiled pattern.
+.IP bmnexec 16
+Match a compiled pattern against a fixed-length string.
+.IP bmuexec 16
+Match a compiled pattern against user data.
+.RE
+.sp
 STRING PROCESSING
 .RS 4
 .IP join 16
 Join all elements of a StrArray object together with a delimiter between the elements and store result in a datum.
+.IP mbrev 16
+Reverse a string that may contain multibyte characters in place.
 .IP memcasecmp 16
 Compare byte strings, ignoring case.
+.IP memrev 16
+Reverse a byte string in place.
 .IP memstpcpy 16
 Copy a byte string and return a pointer in destination buffer to byte after last byte copied.
 .IP split 16
 Split a string into an array of substrings on white space or a character delimiter and save in a StrArray object.
 .IP stplcpy 16
 Copy a string with length restrictions, null-terminated.
+.IP stplvizcpy 16
+Copy a string with length restrictions in visible form, null-terminated.
 .IP strcbrk 16
 Find first character in a string that does not occur in another string and return pointer to it.
 .IP strconv 16
@@ -315,6 +342,8 @@ Copy a string, with escape sequences converted to single characters.
 Fit a string into a buffer.
 .IP strip 16
 Remove white space from beginning, end, or both ends of a string.
+.IP strrev 16
+Reverse a string in place.
 .IP vizc 16
 Convert a character to a string in visible form.
 .RE

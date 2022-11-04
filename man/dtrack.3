@@ -4,16 +4,16 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DTRACK 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DTRACK 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdtrack\fR, \fBduntrack\fR - start or stop tracking a datum.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBvoid dtrack(Datum *pDatum);\fR
+\fBvoid dtrack(Datum *\fIpDatum\fB);\fR
 .HP 2
-\fBvoid duntrack(Datum *pDatum);\fR
+\fBvoid duntrack(Datum *\fIpDatum\fB);\fR
 .SH DESCRIPTION
 The \fBdtrack\fR() function starts tracking the datum pointed to by \fIpDatum\fR by adding it to the garbage
 collection stack, if not already present.

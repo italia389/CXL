@@ -1,4 +1,4 @@
-# Makefile for CXL library.		Ver. 1.1.0
+# Makefile for CXL library.		Ver. 1.2.0
 
 # Definitions.
 MAKEFLAGS = --no-print-directory
@@ -26,6 +26,7 @@ CFLAGS = -std=c99 -funsigned-char -W -Wall -Wextra -Wunused\
 # List of object files.
 ObjFiles =\
  $(ObjDir)/array.o\
+ $(ObjDir)/bmsearch.o\
  $(ObjDir)/convDelim.o\
  $(ObjDir)/datum.o\
  $(ObjDir)/excep.o\
@@ -41,10 +42,12 @@ ObjFiles =\
  $(ObjDir)/rand32.o\
  $(ObjDir)/split.o\
  $(ObjDir)/stplcpy.o\
+ $(ObjDir)/stplvizcpy.o\
  $(ObjDir)/strcbrk.o\
  $(ObjDir)/strconv.o\
  $(ObjDir)/strfit.o\
  $(ObjDir)/strip.o\
+ $(ObjDir)/strrev.o\
  $(ObjDir)/strtoint.o\
  $(ObjDir)/version.o\
  $(ObjDir)/vizc.o
@@ -55,7 +58,7 @@ ObjFiles =\
 all: build-msg $(LibName)
 
 build-msg:
-	@if [ ! -f $(LibName1) ]; then \
+	@if [ ! -f $(LibName) ]; then \
 		echo "Building $(ProjName) library..." 1>&2;\
 	fi
 
@@ -80,6 +83,8 @@ $(ObjDir):
 
 $(ObjDir)/array.o: $(SrcDir)/array.c $(InclPath)/excep.h $(InclPath)/datum.h $(InclPath)/array.h
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/array.c
+$(ObjDir)/bmsearch.o: $(SrcDir)/bmsearch.c $(InclPath)/excep.h $(InclPath)/bmsearch.h
+	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/bmsearch.c
 $(ObjDir)/convDelim.o: $(SrcDir)/convDelim.c $(InclPath)/excep.h
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/convDelim.c
 $(ObjDir)/datum.o: $(SrcDir)/datum.c $(InclPath)/excep.h $(InclPath)/datum.h $(InclPath)/string.h $(InclPath)/ioext.h
@@ -111,6 +116,8 @@ $(ObjDir)/split.o: $(SrcDir)/split.c $(InclPath)/excep.h $(InclPath)/string.h
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/split.c
 $(ObjDir)/stplcpy.o: $(SrcDir)/stplcpy.c
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/stplcpy.c
+$(ObjDir)/stplvizcpy.o: $(SrcDir)/stplvizcpy.c
+	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/stplvizcpy.c
 $(ObjDir)/strcbrk.o: $(SrcDir)/strcbrk.c
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/strcbrk.c
 $(ObjDir)/strconv.o: $(SrcDir)/strconv.c $(InclPath)/excep.h $(InclPath)/string.h
@@ -119,6 +126,8 @@ $(ObjDir)/strfit.o: $(SrcDir)/strfit.c $(InclPath)/string.h
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/strfit.c
 $(ObjDir)/strip.o: $(SrcDir)/strip.c
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/strip.c
+$(ObjDir)/strrev.o: $(SrcDir)/strrev.c
+	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/strrev.c
 $(ObjDir)/strtoint.o: $(SrcDir)/strtoint.c $(InclPath)/excep.h
 	$(CC) -c -o $@ $(CFLAGS) $(SrcDir)/strtoint.c
 $(ObjDir)/version.o: $(SrcDir)/version.c $(InclPath)/lib.h

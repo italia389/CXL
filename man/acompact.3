@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ACOMPACT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ACOMPACT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBacompact\fR - remove nil elements from an array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *acompact(Array *pArray, ushort aflags);\fR
+\fBArray *acompact(Array *\fIpArray\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 The \fBacompact\fR() function deletes all nil elements from an array (that is, any element whose datum
 contains a nil value), subject to the operation flag in \fIaflags\fR, which is either \fBAOpInPlace\fR or zero.

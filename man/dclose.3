@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DCLOSE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DCLOSE 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdclose\fR - close a fabrication object.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBint dclose(DFab *pFab, ushort type);\fR
+\fBint dclose(DFab *\fIpFab\fB, ushort \fItype\fB);\fR
 .SH DESCRIPTION
 The \fBdclose\fR() function ends the datum-build process in the \fBDFab\fR object pointed to by \fIpFab\fR and
 closes the fabrication object.  The \fItype\fR argument specifies the type of close to perform, which must be

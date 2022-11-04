@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ADELETE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ADELETE 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBadelete\fR - delete an element from an array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBDatum *adelete(Array *pArray, ArraySize index);\fR
+\fBDatum *adelete(Array *\fIpArray\fB, ArraySize \fIindex\fB);\fR
 .SH DESCRIPTION
 The \fBadelete\fR() function deletes the element at position \fIindex\fR from the array pointed to by
 \fIpArray\fR.  If the index is negative, the element is selected by counting backward from the end of the

@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH AINSERT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH AINSERT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBainsert\fR - insert an element into an array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBint ainsert(Array *pArray, Datum *pVal, ArraySize index, ushort aflags);\fR
+\fBint ainsert(Array *\fIpArray\fB, Datum *\fIpVal\fB, ArraySize \fIindex\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 The \fBainsert\fR() function inserts the datum pointed to by \fIpVal\fR into the array pointed to by
 \fIpArray\fR at position \fIindex\fR, subject to the operation flag in \fIaflags\fR.  The \fIaflags\fR argument is

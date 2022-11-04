@@ -4,20 +4,22 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH EXCEP 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH EXCEP 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
-\fBemsg\fR, \fBemsgf\fR, \fBemsgsys\fR, \fBexcep\fR - CXL Library Exception System.
+\fBeclear\fR, \fBemsg\fR, \fBemsgf\fR, \fBemsgsys\fR, \fBexcep\fR - CXL Library Exception System.
 .SH SYNOPSIS
 \fB#include "cxl/excep.h"\fR
 .HP 2
-\fBint emsg(int code, const char *msg);\fR
+\fBvoid eclear(void);\fR
 .HP 2
-\fBint emsgf(int code, const char *fmt, ...);\fR
+\fBint emsg(int \fIcode\fB, const char *\fImsg\fB);\fR
 .HP 2
-\fBint emsgsys(int code);\fR
+\fBint emsgf(int \fIcode\fB, const char *\fIfmt\fB, ...);\fR
 .HP 2
-\fBint excep(uint flags, ...);\fR
+\fBint emsgsys(int \fIcode\fB);\fR
+.HP 2
+\fBint excep(uint \fIflags\fB, ...);\fR
 .SH DESCRIPTION
 These routines provide a means to manage exceptions in C code, supplementing the \fIerrno\fR facility and functions such
 as \fBperror\fR() in the Standard C Library.
@@ -30,8 +32,11 @@ are set can subsequently be accessed and used by a function farther up the call 
 handle the exception by taking some type of action; for example, display the (error) message to the user and exit the
 program.
 .PP
-The exception code and message are saved in a global variable called \fIcxlExcep\fR of type \fBCXLExcep\fR, which is a structure
-that is defined to contain at least the following members:
+The \fBeclear\fR() function can be used to clear any existing exception code and message; for example, after a non-fatal
+error has been handled in a user's program.
+.PP
+The exception code and message are saved in a global variable called \fIcxlExcep\fR of type \fBCXLExcep\fR,
+which is a structure that is defined as follows:
 .sp
 .PD 0
 .RS 4
@@ -41,16 +46,29 @@ typedef struct {
 .HP 2
 int code;
 .HP 2
+ushort flags;
+.HP 2
 char *msg;
 .HP 2
 } CXLExcep;
 .RE
+.sp
+.nf
+#define ExcepMem	0x0002		// Error in memory-allocation function.
+.fi
 .RE
 .PD
 .PP
-Each time an exception code and message are set by one of these functions, they overwrite previous values.  Hence, only
+Each time an exception code and message are set, they overwrite previous values.  Hence, only
 the most-recently set exception code and message are available in \fIcxlExcep\fR.\fIcode\fR and
 \fIcxlExcep\fR.\fImsg\fR.
+.PP
+The \fIflags\fR member of the structure contains the bitwise OR of zero or more flags.  If the \fBExcepMem\fR
+flag is set, it indicates that a memory error occurred, such as a NULL return from malloc(3).  This is provided so that
+an appropriate action can be taken in the user program.
+.PP
+Note that if no exception message is set, both \fIcxlExcep\fR.\fIcode\fR and \fIcxlExcep\fR.\fIflags\fR will
+be zero and \fIcxlExcep\fR.\fImsg\fR will be NULL.
 .PP
 The functions operate as follows: \fBemsg\fR(), \fBemsgf\fR(), and \fBemsgsys\fR() all set \fIcxlExcep\fR.\fIcode\fR to
 \fIcode\fR (and return it), but provide different methods for setting the exception message.  \fBemsg\fR() sets

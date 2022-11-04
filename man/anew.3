@@ -4,18 +4,18 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ANEW 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ANEW 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBanew\fR, \fBainit\fR, \fBaclear\fR - create, initialize, or clear an array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *anew(ArraySize len, const Datum *pVal);\fR
+\fBArray *anew(ArraySize \fIlen\fB, const Datum *\fIpVal\fB);\fR
 .HP 2
-\fBvoid ainit(Array *pArray);\fR
+\fBvoid ainit(Array *\fIpArray\fB);\fR
 .HP 2
-\fBvoid aclear(Array *pArray);\fR
+\fBvoid aclear(Array *\fIpArray\fB);\fR
 .SH DESCRIPTION
 These functions either create an array by allocating an \fBArray\fR object in memory, or prepare an existing
 \fBArray\fR object for use.

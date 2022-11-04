@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH SPLIT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH SPLIT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBsplit\fR - split a string into an array of substrings.
 .SH SYNOPSIS
 \fB#include "cxl/string.h"\fR
 .HP 2
-\fBStrArray *split(short delim, char *src, int limit);\fR
+\fBStrArray *split(short \fIdelim\fB, char *\fIsrc\fB, int \fIlimit\fB);\fR
 .SH DESCRIPTION
 The \fBsplit\fR() function
 splits string \fIsrc\fR into an array of substrings using delimiter \fIdelim\fR and limit value \fIlimit\fR.
@@ -23,10 +23,11 @@ integer value in \fIdelim\fR, as follows (with values shown in hexadecimal):
 .IP \fBVALUE\fR 14
 \fBMEANING\fR
 .IP 0\~or\~'\~' 14
-Delimiter is white space.  One or more of the characters ' ', '\et', '\en', '\er', '\ef', '\ev' in sequence are treated
-as a single delimiter.  Additionally, if the delimiter is ' ', leading white space in the source string is ignored.
+Delimiter is white space.  One or more of the characters \(aq \(aq, \(aq\et\(aq, \(aq\en\(aq, \(aq\er\(aq,
+\(aq\ef\(aq, \(aq\ev\(aq in sequence are treated as a single delimiter.  Additionally, if the delimiter is
+\(aq \(aq, leading white space in the source string is ignored.
 .IP 1\~-\~0xFF 14
-8-bit value of a character to use as the delimiter, except ' ' (0x20).
+8-bit value of a character to use as the delimiter, except \(aq \(aq (0x20).
 .IP >\~0xFF 14
 No delimiter defined.  A single-element array is returned containing the original string in \fIsrc\fR, unmodified.
 .PD

@@ -30,13 +30,17 @@ typedef struct {
 
 // External function declarations.
 extern int join(Datum *pDest, StrArray *pSrc, const char *delim);
+extern int mbrev(char *str, size_t len);
 extern int memcasecmp(const void *str1, const void *str2, size_t len);
+extern void *memrev(void *str, size_t len);
 extern void *memstpcpy(void *dest, const void *src, size_t len);
 extern StrArray *split(short delim, char *src, int limit);
 extern char *stplcpy(char *dest, const char *src, size_t len);
+extern char *stplvizcpy(char *dest, size_t destLen, const void *src, size_t srcLen, ushort flags);
 extern char *strcbrk(const char *str, const char *charset);
 extern int strconv(char *dest, const char *src, const char **pSrcEnd, short termChar);
 extern char *strfit(char *dest, size_t maxLen, const char *src, size_t srcLen);
 extern char *strip(char *str, int loc);
+extern char *strrev(char *str);
 extern char *vizc(short c, ushort flags);
 #endif

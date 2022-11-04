@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ASLICE 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ASLICE 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBaslice\fR - create an array from a slice of another array.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *aslice(Array *pArray, ArraySize index, ArraySize len, ushort aflags);\fR
+\fBArray *aslice(Array *\fIpArray\fB, ArraySize \fIindex\fB, ArraySize \fIlen\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 The \fBaslice\fR() function creates an array from a "slice" of another array, subject to the operation flag
 in \fIaflags\fR, which is either \fBAOpCut\fR or zero.  More

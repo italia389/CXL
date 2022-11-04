@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH VIZC 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH VIZC 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBvizc\fR - convert a character to a string in visible form.
 .SH SYNOPSIS
 \fB#include "cxl/string.h"\fR
 .HP 2
-\fBchar *vizc(short c, ushort flags);\fR
+\fBchar *vizc(short \fIc\fB, ushort \fIflags\fB);\fR
 .SH DESCRIPTION
 The \fBvizc\fR() function converts character \fIc\fR to visible form according to the options in
 \fIflags\fR and stores the result as a string in an internal buffer.  Printable characters not
@@ -29,23 +29,23 @@ converted according to the following table:
 STRING FORM
 .IP --------------------- 26
 -----------
-.IP 000\ (nul) 26
+.IP "000 (nul)" 26
 ^@
-.IP 012\ (newline) 26
+.IP "012 (newline)" 26
 <NL>
-.IP 015\ (carriage\ return) 26
+.IP "015 (carriage return)" 26
 <CR>
-.IP 033\ (escape) 26
+.IP "033 (escape)" 26
 <ESC>
 .IP 034 26
-^\\
+^\e
 .IP 035 26
 ^\]
 .IP 036 26
 ^^
 .IP 037 26
 ^_
-.IP 177\ (delete) 26
+.IP "177 (delete)" 26
 ^?
 .PD
 .RE
@@ -66,7 +66,7 @@ Hexadecimal base (lower case letters).
 .IP VizBaseHEX 18
 Hexadecimal base (upper case letters).
 .IP VizSpace 18
-Make space character visible.
+Convert space character to <SPC>.
 .PD
 .RE
 .PP

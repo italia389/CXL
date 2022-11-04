@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH AFILL 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH AFILL 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBafill\fR - fill a slice of an array with a value.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBint afill(Array *pArray, const Datum *pVal, ArraySize index, ArraySize len, ushort aflags);\fR
+\fBint afill(Array *\fIpArray\fB, const Datum *\fIpVal\fB, ArraySize \fIindex\fB, ArraySize \fIlen\fB, ushort \fIaflags\fB);\fR
 .SH DESCRIPTION
 The \fBafill\fR() function replaces \fIlen\fR elements beginning at position \fIindex\fR in the array
 pointed to by \fIpArray\fR with copies of the datum pointed to by \fIpVal\fR, subject to the operation flag in

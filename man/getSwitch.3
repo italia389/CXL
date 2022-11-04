@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH GETSWITCH 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH GETSWITCH 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBgetSwitch\fR - get switches and arguments from an array of strings.
 .SH SYNOPSIS
 \fB#include "cxl/getswitch.h"\fR
 .HP 2
-\fBint getSwitch(int *pArgCount, char ***pArgList, Switch **pSwitchTable, uint switchCount, SwitchResult *pResult);\fR
+\fBint getSwitch(int *\fIpArgCount\fB, char ***\fIpArgList\fB, Switch **\fIpSwitchTable\fB, uint \fIswitchCount\fB, SwitchResult *\fIpResult\fB);\fR
 .SH DESCRIPTION
 The \fBgetSwitch\fR() function processes command-line switches of form -\fIname\fR [\fIarg\fR],
 where \fIname\fR is the name of a switch (which may be multiple characters) and \fIarg\fR is an
@@ -21,10 +21,10 @@ names (for example, -verbose with alias -v) and may have an optional or required
 argument.  Numeric switches may not have an argument.
 .PP
 The special switch "--" is used to delimit the end of the switches explicitly, otherwise
-scanning stops at a "-" argument, or the first argument found that does not begin with a '-'
-character (or a '+' character if a +\fIn\fR switch is allowed).  Additionally, a switch argument
-beginning with a '-' or '+' character may be specified by using "--" or "++" respectively at the beginning of
-the argument; the leading '-' or '+' character will be stripped off before the argument is returned.
+scanning stops at a "-" argument, or the first argument found that does not begin with a \(aq-\(aq
+character (or a \(aq+\(aq character if a +\fIn\fR switch is allowed).  Additionally, a switch argument
+beginning with a \(aq-\(aq or \(aq+\(aq character may be specified by using "--" or "++" respectively at the beginning of
+the argument; the leading \(aq-\(aq or \(aq+\(aq character will be stripped off before the argument is returned.
 .SS Overview
 All possible switches and their properties are specified in an array of "switch descriptors"
 (the "switch table") in any desired order.  The information for a switch descriptor (which
@@ -129,11 +129,11 @@ char *arg;
 .PD
 .PP
 The \fIname\fR member is a pointer to the actual switch name that was found in the
-*\fIpArgList\fR array; that is, a pointer to the character immediately following the leading '-'
+*\fIpArgList\fR array; that is, a pointer to the character immediately following the leading \(aq-\(aq
 character.  The \fIarg\fR member is a pointer to the switch argument in the *\fIpArgList\fR
 array if an argument was found, otherwise NULL.  If a numeric switch is found, \fIname\fR is
 set to NULL and \fIarg\fR is set to the actual switch that was found instead, including the
-leading '-' or '+' character.
+leading \(aq-\(aq or \(aq+\(aq character.
 .PP
 If any of the following occurs during argument scanning, scanning stops, *\fIpArgCount\fR
 is set to the number of arguments remaining, *\fIpArgList\fR is set to the argument following

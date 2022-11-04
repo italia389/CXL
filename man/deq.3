@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH DEQ 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH DEQ 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBdeq\fR - compare one datum to another and return Boolean result.
 .SH SYNOPSIS
 \fB#include "cxl/datum.h"\fR
 .HP 2
-\fBbool deq(const Datum *pDatum1, const Datum *pDatum2, ushort dflags);\fR
+\fBbool deq(const Datum *\fIpDatum1\fB, const Datum *\fIpDatum2\fB, ushort \fIdflags\fB);\fR
 .SH DESCRIPTION
 The \fBdeq\fR() function compares the two datums pointed to by \fIpDatum1\fR and \fIpDatum2\fR for equality,
 subject to the operation flag in \fIdflags\fR, which is either \fBDOpIgnore\fR or zero.  If \fIdflags\fR is

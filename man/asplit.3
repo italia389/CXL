@@ -4,14 +4,14 @@
 .\" "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
 .\"
 .ad l
-.TH ASPLIT 3 2022-06-04 "Ver. 1.1.0" "CXL Library Documentation"
+.TH ASPLIT 3 2022-11-04 "Ver. 1.2" "CXL Library Documentation"
 .nh \" Turn off hyphenation.
 .SH NAME
 \fBasplit\fR - split a string into an array of substrings.
 .SH SYNOPSIS
 \fB#include "cxl/array.h"\fR
 .HP 2
-\fBArray *asplit(short delim, const char *src, int limit);\fR
+\fBArray *asplit(short \fIdelim\fB, const char *\fIsrc\fB, int \fIlimit\fB);\fR
 .SH DESCRIPTION
 The \fBasplit\fR() function splits string \fIsrc\fR into an array using delimiter \fIdelim\fR and limit value
 \fIlimit\fR.  Substrings are separated by either a single 8-bit character, white space, a null string, or no
@@ -24,10 +24,11 @@ delimiter, as indicated by the integer value in \fIdelim\fR, as follows (with va
 .IP '\e0' 16
 Delimiter is a null string.  String is split into individual characters, including white space characters, if any.
 .IP '\~' 16
-Delimiter is white space.  One or more of the characters ' ', '\et', '\en', '\er', '\ef', '\ev' in sequence are treated
-as a single delimiter.  Additionally, leading white space in the string is ignored.
+Delimiter is white space.  One or more of the characters \(aq \(aq, \(aq\et\(aq, \(aq\en\(aq, \(aq\er\(aq,
+\(aq\ef\(aq, \(aq\ev\(aq in sequence are treated as a single delimiter.  Additionally, leading white space in
+the string is ignored.
 .IP 1\~-\~0xFF 16
-8-bit value of a character to use as the delimiter, except ' ' (0x20).
+8-bit value of a character to use as the delimiter, except \(aq \(aq (0x20).
 .IP <\~0\~or\~>\~0xFF 16
 No delimiter defined.  A single-element array is returned containing the original string in \fIsrc\fR, unmodified.
 .PD
@@ -51,7 +52,7 @@ Maximum number of array elements to return.
 Note that if the limit value is greater than zero, the last element of the array will contain embedded
 delimiter(s) if the number of delimiters in the string is equal to or greater than the limit.
 .SH RETURN VALUES
-If successful, \fBasplit\fR() returns a pointer to the array that is created.  It returns NULL on failure, and sets an
-exception code and message in the CXL Exception System to indicate the error.
+If successful, \fBasplit\fR() returns a pointer to the array that is created.  It returns NULL on failure, and
+sets an exception code and message in the CXL Exception System to indicate the error.
 .SH SEE ALSO
 aeach(3), aget(3), ajoin(3), cxl(3), cxl_array(7), excep(3), join(3), split(3)

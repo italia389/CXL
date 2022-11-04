@@ -1,4 +1,4 @@
-// CXL (c) Copyright 2020 Richard W. Marinelli
+// CXL (c) Copyright 2022 Richard W. Marinelli
 //
 // This work is licensed under the GNU General Public License (GPLv3).  To view a copy of this license, see the
 // "License.txt" file included with this distribution or visit http://www.gnu.org/licenses/gpl-3.0.en.html.
@@ -39,6 +39,7 @@ typedef struct {
 extern CXLExcep cxlExcep;
 
 // External function declarations.
+extern void eclear(void);
 extern int emsg(int code, const char *msg);
 extern int emsgf(int code, const char *fmt, ...);
 extern int emsgsys(int code);
